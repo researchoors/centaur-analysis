@@ -1,0 +1,191 @@
+{
+  "component": "profslice",
+  "source_file": "/tmp/centaur-src/service_analyses/profslice.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 26,
+  "citations": [
+    {
+      "file_path": "tools/infra/profslice/cli.py",
+      "start_line": 15,
+      "end_line": 18,
+      "claim": "The CLI uses Typer framework for command-line interface with help text",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/profslice/client.py",
+      "start_line": 57,
+      "end_line": 72,
+      "claim": "ProfilerClient handles HTTP fetching with configurable timeouts and size limits",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/profslice/client.py",
+      "start_line": 16,
+      "end_line": 22,
+      "claim": "Allowed hosts are restricted to Firefox Profiler services and Google Cloud Storage",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/profslice/profile.py",
+      "start_line": 147,
+      "end_line": 158,
+      "claim": "ProfileAnalyzer processes Firefox Profiler JSON format with category mapping",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/profslice/profile.py",
+      "start_line": 7,
+      "end_line": 21,
+      "claim": "ThreadSummary dataclass represents thread-level statistics",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/profslice/profile.py",
+      "start_line": 42,
+      "end_line": 51,
+      "claim": "Sample dataclass represents individual stack trace samples with timing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/profslice/profile.py",
+      "start_line": 65,
+      "end_line": 76,
+      "claim": "Marker dataclass represents performance events with categories and timing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/profslice/profile.py",
+      "start_line": 101,
+      "end_line": 112,
+      "claim": "HotspotEntry dataclass represents CPU usage aggregation with percentages",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/profslice/profile.py",
+      "start_line": 125,
+      "end_line": 135,
+      "claim": "TimelineBucket dataclass represents time-based analysis buckets",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/profslice/cli.py",
+      "start_line": 22,
+      "end_line": 52,
+      "claim": "Time range parser supports multiple formats including seconds and milliseconds",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/profslice/cli.py",
+      "start_line": 68,
+      "end_line": 97,
+      "claim": "Fetch command downloads profiles and displays metadata",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/profslice/cli.py",
+      "start_line": 103,
+      "end_line": 145,
+      "claim": "Threads command lists thread summaries with Rich table formatting",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/profslice/cli.py",
+      "start_line": 149,
+      "end_line": 180,
+      "claim": "Samples command extracts call stack samples with filtering options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/profslice/cli.py",
+      "start_line": 183,
+      "end_line": 217,
+      "claim": "Markers command extracts performance markers with filtering capabilities",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/profslice/cli.py",
+      "start_line": 221,
+      "end_line": 275,
+      "claim": "Hotspots command computes CPU hotspots by function or stack",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/profslice/cli.py",
+      "start_line": 279,
+      "end_line": 321,
+      "claim": "Timeline command generates time-bucketed analysis",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/profslice/cli.py",
+      "start_line": 324,
+      "end_line": 357,
+      "claim": "Info command shows profile metadata and summary statistics",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/profslice/client.py",
+      "start_line": 119,
+      "end_line": 134,
+      "claim": "Profile fetching handles both URLs and local file paths with automatic decompression",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/infra/profslice/profile.py",
+      "start_line": 237,
+      "end_line": 280,
+      "claim": "Stack resolution converts indexed stack tables to function name lists",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/infra/profslice/profile.py",
+      "start_line": 282,
+      "end_line": 325,
+      "claim": "Sample extraction filters by time range and resolves stacks with depth limits",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/infra/profslice/profile.py",
+      "start_line": 416,
+      "end_line": 487,
+      "claim": "Hotspot computation aggregates self and total samples by function or stack",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/infra/profslice/profile.py",
+      "start_line": 489,
+      "end_line": 544,
+      "claim": "Timeline analysis groups samples into time buckets with top function analysis",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/infra/profslice/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "Component depends on httpx, typer, rich, and python-dotenv with specific version constraints",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/profslice/cli.py",
+      "start_line": 3,
+      "end_line": 13,
+      "claim": "CLI imports use dotenv for configuration, typer for commands, rich for output, and centaur_sdk for tables",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/profslice/client.py",
+      "start_line": 11,
+      "end_line": 11,
+      "claim": "HTTP client uses httpx library for network requests",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/profslice/client.py",
+      "start_line": 92,
+      "end_line": 117,
+      "claim": "URL resolution handles share.firefox.dev, profiler.firefox.com, and storage.googleapis.com",
+      "section": "External Dependencies"
+    }
+  ]
+}

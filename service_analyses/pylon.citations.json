@@ -1,0 +1,149 @@
+{
+  "component": "pylon",
+  "source_file": "/tmp/centaur-src/service_analyses/pylon.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/business/pylon/pyproject.toml",
+      "start_line": 1,
+      "end_line": 10,
+      "claim": "Component metadata and dependencies including httpx, typer, and rich",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/business/pylon/client.py",
+      "start_line": 12,
+      "end_line": 18,
+      "claim": "PylonClient class definition with initialization parameters",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/pylon/client.py",
+      "start_line": 29,
+      "end_line": 48,
+      "claim": "Centralized HTTP request handling with authentication and error processing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/pylon/cli.py",
+      "start_line": 14,
+      "end_line": 16,
+      "claim": "Typer application setup for CLI interface",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/pylon/cli.py",
+      "start_line": 18,
+      "end_line": 21,
+      "claim": "Client factory function for lazy initialization",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/business/pylon/cli.py",
+      "start_line": 24,
+      "end_line": 37,
+      "claim": "Organization details command implementation",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/pylon/cli.py",
+      "start_line": 39,
+      "end_line": 52,
+      "claim": "Issues listing command with filtering options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/pylon/client.py",
+      "start_line": 54,
+      "end_line": 79,
+      "claim": "Issues listing API method with time-based filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/pylon/client.py",
+      "start_line": 108,
+      "end_line": 150,
+      "claim": "Issue creation API method with comprehensive options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/pylon/cli.py",
+      "start_line": 153,
+      "end_line": 191,
+      "claim": "Issue creation CLI command with argument parsing",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/pylon/client.py",
+      "start_line": 194,
+      "end_line": 208,
+      "claim": "Account listing API method with pagination support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/pylon/cli.py",
+      "start_line": 83,
+      "end_line": 102,
+      "claim": "Table formatting for issues list output using centaur_sdk Table",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/pylon/client.py",
+      "start_line": 19,
+      "end_line": 27,
+      "claim": "API key retrieval using centaur_sdk secret function",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/business/pylon/client.py",
+      "start_line": 9,
+      "end_line": 9,
+      "claim": "Base URL for Pylon API integration",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/business/pylon/pyproject.toml",
+      "start_line": 17,
+      "end_line": 19,
+      "claim": "Centaur tool configuration with secrets management",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/business/pylon/cli.py",
+      "start_line": 6,
+      "end_line": 8,
+      "claim": "Environment loading with python-dotenv for development",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/business/pylon/cli.py",
+      "start_line": 10,
+      "end_line": 12,
+      "claim": "Rich console and centaur_sdk imports for output formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/business/pylon/client.py",
+      "start_line": 6,
+      "end_line": 7,
+      "claim": "httpx import for HTTP client functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/business/pylon/client.py",
+      "start_line": 37,
+      "end_line": 38,
+      "claim": "httpx.Client usage for API requests with timeout",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/business/pylon/cli.py",
+      "start_line": 228,
+      "end_line": 262,
+      "claim": "Issue search command with filter parsing and validation",
+      "section": "API Surface"
+    }
+  ]
+}

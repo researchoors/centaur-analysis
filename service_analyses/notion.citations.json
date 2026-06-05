@@ -1,0 +1,149 @@
+{
+  "component": "notion",
+  "source_file": "/tmp/centaur-src/service_analyses/notion.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/productivity/notion/client.py",
+      "start_line": 13,
+      "end_line": 31,
+      "claim": "NotionClient class serves as the core API client with authentication and HTTP configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/notion/cli.py",
+      "start_line": 12,
+      "end_line": 13,
+      "claim": "CLI application built using Typer framework with rich console output",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/productivity/notion/client.py",
+      "start_line": 33,
+      "end_line": 43,
+      "claim": "_request method provides unified HTTP interface for all API operations",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/notion/cli.py",
+      "start_line": 64,
+      "end_line": 71,
+      "claim": "Me command demonstrates user management functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/notion/cli.py",
+      "start_line": 108,
+      "end_line": 123,
+      "claim": "Search command with filtering and pagination support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/notion/client.py",
+      "start_line": 61,
+      "end_line": 88,
+      "claim": "Search method with comprehensive filtering and sorting capabilities",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/notion/cli.py",
+      "start_line": 154,
+      "end_line": 182,
+      "claim": "Database command provides schema inspection and metadata display",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/notion/client.py",
+      "start_line": 117,
+      "end_line": 141,
+      "claim": "Query database method with filter and sort parameter support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/notion/cli.py",
+      "start_line": 234,
+      "end_line": 286,
+      "claim": "Page command with optional content retrieval and formatting",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/notion/client.py",
+      "start_line": 201,
+      "end_line": 225,
+      "claim": "Create page method with parent, properties, and children support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/notion/cli.py",
+      "start_line": 370,
+      "end_line": 401,
+      "claim": "Create page command demonstrates content creation workflow",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/notion/client.py",
+      "start_line": 403,
+      "end_line": 440,
+      "claim": "Block factory methods for creating various content types",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/notion/cli.py",
+      "start_line": 16,
+      "end_line": 32,
+      "claim": "Environment-based authentication with cascading .env file loading",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/notion/client.py",
+      "start_line": 17,
+      "end_line": 22,
+      "claim": "API key authentication integrated with centaur-sdk secret management",
+      "section": "Authentication System"
+    },
+    {
+      "file_path": "tools/productivity/notion/cli.py",
+      "start_line": 35,
+      "end_line": 56,
+      "claim": "Data formatting utilities including date formatting and ID extraction",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/notion/client.py",
+      "start_line": 375,
+      "end_line": 395,
+      "claim": "Text extraction utilities for processing Notion's rich text format",
+      "section": "Data Formatting Layer"
+    },
+    {
+      "file_path": "tools/productivity/notion/cli.py",
+      "start_line": 307,
+      "end_line": 367,
+      "claim": "Content rendering system with block-type specific formatting",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/productivity/notion/client.py",
+      "start_line": 362,
+      "end_line": 372,
+      "claim": "Pagination handling for retrieving complete page content",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/productivity/notion/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include httpx, typer, rich, and python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/notion/pyproject.toml",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "CLI entry point configured as 'notion' command",
+      "section": "API Surface"
+    }
+  ]
+}

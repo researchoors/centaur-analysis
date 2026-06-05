@@ -1,0 +1,114 @@
+{
+  "component": "centaur",
+  "source_file": "/tmp/centaur-src/service_analyses/centaur.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "packages/api-client/src/index.ts",
+      "start_line": 1,
+      "end_line": 10,
+      "claim": "The API client package exports CentaurClient and related types as the main public interface",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "packages/api-client/src/client.ts",
+      "start_line": 117,
+      "end_line": 133,
+      "claim": "CentaurClient is the primary HTTP client class using axios with authentication and timeout configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "packages/api-client/src/client.ts",
+      "start_line": 247,
+      "end_line": 293,
+      "claim": "The streamEvents method provides real-time event streaming using Server-Sent Events with async generators",
+      "section": "Event Streaming Infrastructure"
+    },
+    {
+      "file_path": "packages/harness-events/src/normalize.ts",
+      "start_line": 844,
+      "end_line": 883,
+      "claim": "The normalizeHarnessEvent function is the main dispatcher that handles three harness types: codex, pi-mono, and amp",
+      "section": "Event Normalizer"
+    },
+    {
+      "file_path": "packages/harness-events/src/types.ts",
+      "start_line": 1,
+      "end_line": 67,
+      "claim": "Comprehensive TypeScript type definitions for content blocks and canonical events across the system",
+      "section": "Type Definitions"
+    },
+    {
+      "file_path": "packages/harness-events/src/thread-key.ts",
+      "start_line": 1,
+      "end_line": 15,
+      "claim": "Thread key management utilities for parsing channel:timestamp format identifiers",
+      "section": "Thread Key Management"
+    },
+    {
+      "file_path": "services/slackbot/src/centaur/final-delivery.ts",
+      "start_line": 32,
+      "end_line": 46,
+      "claim": "Final delivery system uses polling with lease-based processing for reliable message delivery",
+      "section": "Final Delivery System"
+    },
+    {
+      "file_path": "services/slackbot/src/index.ts",
+      "start_line": 45,
+      "end_line": 46,
+      "claim": "Slack integration service instantiates CentaurHandoff for workflow management",
+      "section": "Slack Integration Service"
+    },
+    {
+      "file_path": "packages/api-client/package.json",
+      "start_line": 11,
+      "end_line": 15,
+      "claim": "API client depends on axios for HTTP communication and eventsource-parser for SSE streaming",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "services/slackbot/package.json",
+      "start_line": 19,
+      "end_line": 31,
+      "claim": "Slackbot service uses comprehensive dependencies including OpenTelemetry for observability and Slack APIs",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "packages/api-client/src/client.ts",
+      "start_line": 140,
+      "end_line": 150,
+      "claim": "The spawn method creates new agent threads with configurable harness and persona options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "packages/api-client/src/client.ts",
+      "start_line": 172,
+      "end_line": 184,
+      "claim": "The execute method triggers agent execution with platform and delivery options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "packages/api-client/src/client.ts",
+      "start_line": 186,
+      "end_line": 196,
+      "claim": "Workflow management includes starting, monitoring, and controlling workflow runs",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "packages/api-client/src/client.ts",
+      "start_line": 363,
+      "end_line": 371,
+      "claim": "Final delivery claim mechanism supports batched processing with lease management",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "services/slackbot/src/centaur/handoff.ts",
+      "start_line": 28,
+      "end_line": 40,
+      "claim": "CentaurHandoff service posts workflow runs to the Centaur API using fetch with authentication headers",
+      "section": "Data Flows"
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "component": "etherscan",
+  "source_file": "/tmp/centaur-src/service_analyses/etherscan.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 18,
+  "citations": [
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 9,
+      "end_line": 14,
+      "claim": "The EtherscanClient class serves as the primary interface for Etherscan API V2 interactions",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 16,
+      "end_line": 19,
+      "claim": "The component uses lazy initialization pattern for HTTP connections",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 21,
+      "end_line": 25,
+      "claim": "HTTP client is lazily initialized with configurable timeout",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 27,
+      "end_line": 32,
+      "claim": "API key management retrieves credentials from constructor or environment using centaur SDK",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 34,
+      "end_line": 43,
+      "claim": "Centralized request handler manages authentication and error processing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 44,
+      "end_line": 57,
+      "claim": "Request method implements comprehensive error handling for API responses",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 61,
+      "end_line": 73,
+      "claim": "Account operations include balance retrieval functionality",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 75,
+      "end_line": 109,
+      "claim": "Transaction history retrieval supports comprehensive pagination and filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 111,
+      "end_line": 143,
+      "claim": "Token transfer querying with contract filtering capabilities",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 147,
+      "end_line": 157,
+      "claim": "Contract ABI retrieval for verified contracts",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 159,
+      "end_line": 169,
+      "claim": "Contract source code access functionality",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 173,
+      "end_line": 182,
+      "claim": "ETH price statistics retrieval",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 200,
+      "end_line": 209,
+      "claim": "Gas price querying functionality",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 213,
+      "end_line": 242,
+      "claim": "Event logs querying with topic filtering support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 250,
+      "end_line": 254,
+      "claim": "Context manager protocol for resource cleanup",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 257,
+      "end_line": 261,
+      "claim": "Factory function for pre-configured client instances",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/client.py",
+      "start_line": 4,
+      "end_line": 6,
+      "claim": "Component imports httpx for HTTP operations and centaur SDK for secret management",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/etherscan/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include httpx, typer, rich, and python-dotenv",
+      "section": "External Dependencies"
+    }
+  ]
+}

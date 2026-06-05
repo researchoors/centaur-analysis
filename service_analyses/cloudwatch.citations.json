@@ -1,0 +1,170 @@
+{
+  "component": "cloudwatch",
+  "source_file": "/tmp/centaur-src/service_analyses/cloudwatch.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 23,
+  "citations": [
+    {
+      "file_path": "tools/infra/cloudwatch/pyproject.toml",
+      "start_line": 1,
+      "end_line": 8,
+      "claim": "Component metadata and boto3 dependency declaration",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/pyproject.toml",
+      "start_line": 15,
+      "end_line": 32,
+      "claim": "Iron-proxy aws_auth transform configuration for credential isolation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 30,
+      "end_line": 38,
+      "claim": "CloudWatchClient class definition with credential isolation architecture",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 24,
+      "end_line": 28,
+      "claim": "Placeholder credential constant for security isolation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 54,
+      "end_line": 63,
+      "claim": "boto3 session creation with placeholder credentials",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 86,
+      "end_line": 104,
+      "claim": "Log groups listing functionality with parameter validation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 106,
+      "end_line": 138,
+      "claim": "Log events filtering with time window resolution",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 142,
+      "end_line": 173,
+      "claim": "CloudWatch Logs Insights query initiation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 175,
+      "end_line": 185,
+      "claim": "Query results polling functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 197,
+      "end_line": 218,
+      "claim": "Metrics listing with namespace and name filtering",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 220,
+      "end_line": 263,
+      "claim": "Metric data retrieval with dimensions and statistics",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 267,
+      "end_line": 288,
+      "claim": "Alarm description with state filtering",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 290,
+      "end_line": 306,
+      "claim": "Alarm history retrieval functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 76,
+      "end_line": 82,
+      "claim": "Centralized error handling and parameter sanitization",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 358,
+      "end_line": 372,
+      "claim": "Response sanitization removing metadata and normalizing timestamps",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 324,
+      "end_line": 335,
+      "claim": "Flexible timestamp parsing supporting multiple formats",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 338,
+      "end_line": 346,
+      "claim": "Time window resolution with default 1-hour lookback",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/test_client.py",
+      "start_line": 17,
+      "end_line": 29,
+      "claim": "FakeBotoClient for testing without network access",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/test_client.py",
+      "start_line": 32,
+      "end_line": 44,
+      "claim": "RecordingCloudWatchClient test double implementation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 65,
+      "end_line": 73,
+      "claim": "Lazy initialization of boto3 clients",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 314,
+      "end_line": 318,
+      "claim": "Context manager protocol implementation",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/client.py",
+      "start_line": 375,
+      "end_line": 376,
+      "claim": "Factory function for default client instances",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/cloudwatch/.env.example",
+      "start_line": 1,
+      "end_line": 16,
+      "claim": "Configuration documentation for AWS credentials and region",
+      "section": "Dependencies"
+    }
+  ]
+}

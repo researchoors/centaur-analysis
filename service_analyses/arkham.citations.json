@@ -1,0 +1,149 @@
+{
+  "component": "arkham",
+  "source_file": "/tmp/centaur-src/service_analyses/arkham.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/crypto/arkham/client.py",
+      "start_line": 9,
+      "end_line": 16,
+      "claim": "ArkhamClient class definition with initialization parameters",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/arkham/client.py",
+      "start_line": 30,
+      "end_line": 50,
+      "claim": "Core _request method handling HTTP communication and error handling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/arkham/cli.py",
+      "start_line": 15,
+      "end_line": 16,
+      "claim": "Typer application initialization for CLI interface",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/arkham/cli.py",
+      "start_line": 19,
+      "end_line": 22,
+      "claim": "Client factory function for CLI commands",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/arkham/cli.py",
+      "start_line": 25,
+      "end_line": 37,
+      "claim": "USD value formatting with B/M/K suffixes",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/arkham/cli.py",
+      "start_line": 66,
+      "end_line": 71,
+      "claim": "Health command implementation",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/arkham/cli.py",
+      "start_line": 90,
+      "end_line": 106,
+      "claim": "Address command with multiple intelligence options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/arkham/cli.py",
+      "start_line": 214,
+      "end_line": 234,
+      "claim": "Transfers command with comprehensive filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/arkham/client.py",
+      "start_line": 113,
+      "end_line": 144,
+      "claim": "get_transfers method with extensive parameter support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/arkham/client.py",
+      "start_line": 66,
+      "end_line": 68,
+      "claim": "Address intelligence method",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/arkham/client.py",
+      "start_line": 89,
+      "end_line": 91,
+      "claim": "Entity intelligence method",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/arkham/client.py",
+      "start_line": 259,
+      "end_line": 267,
+      "claim": "Token holders method with pagination",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/arkham/client.py",
+      "start_line": 318,
+      "end_line": 320,
+      "claim": "Networks status endpoint",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/arkham/client.py",
+      "start_line": 24,
+      "end_line": 28,
+      "claim": "API key resolution from centaur_sdk secret management",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/arkham/pyproject.toml",
+      "start_line": 6,
+      "end_line": 10,
+      "claim": "External library dependencies with version constraints",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/arkham/cli.py",
+      "start_line": 3,
+      "end_line": 6,
+      "claim": "dotenv loading for environment configuration",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/arkham/cli.py",
+      "start_line": 10,
+      "end_line": 14,
+      "claim": "Import of external dependencies - typer, rich, centaur_sdk",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/arkham/client.py",
+      "start_line": 4,
+      "end_line": 4,
+      "claim": "httpx import for HTTP client functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/arkham/cli.py",
+      "start_line": 280,
+      "end_line": 316,
+      "claim": "Rich Table usage for formatted console output",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/arkham/cli.py",
+      "start_line": 649,
+      "end_line": 670,
+      "claim": "Raw API endpoint command for direct API access",
+      "section": "API Surface"
+    }
+  ]
+}

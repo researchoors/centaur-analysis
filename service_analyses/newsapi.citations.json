@@ -1,0 +1,142 @@
+{
+  "component": "newsapi",
+  "source_file": "/tmp/centaur-src/service_analyses/newsapi.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 19,
+  "citations": [
+    {
+      "file_path": "tools/research/newsapi/pyproject.toml",
+      "start_line": 1,
+      "end_line": 19,
+      "claim": "The component has dependencies on httpx, typer, and rich libraries",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/newsapi/client.py",
+      "start_line": 10,
+      "end_line": 18,
+      "claim": "NewsAPIClient class initialization and configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/newsapi/client.py",
+      "start_line": 26,
+      "end_line": 47,
+      "claim": "API key resolution through multiple sources including centaur-sdk and 1Password",
+      "section": "Secret Management Integration"
+    },
+    {
+      "file_path": "tools/research/newsapi/client.py",
+      "start_line": 49,
+      "end_line": 68,
+      "claim": "HTTP request handling with error management and JSON response processing",
+      "section": "NewsAPIClient Class"
+    },
+    {
+      "file_path": "tools/research/newsapi/client.py",
+      "start_line": 70,
+      "end_line": 89,
+      "claim": "Headlines API method implementation with parameter handling",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/newsapi/client.py",
+      "start_line": 91,
+      "end_line": 120,
+      "claim": "Search API method with comprehensive parameter support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/newsapi/client.py",
+      "start_line": 122,
+      "end_line": 136,
+      "claim": "Sources API method for listing available news sources",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/newsapi/cli.py",
+      "start_line": 14,
+      "end_line": 21,
+      "claim": "CLI application setup using Typer framework",
+      "section": "CLI Command Interface"
+    },
+    {
+      "file_path": "tools/research/newsapi/cli.py",
+      "start_line": 41,
+      "end_line": 56,
+      "claim": "Headlines command definition with multiple parameter options",
+      "section": "CLI Command Interface"
+    },
+    {
+      "file_path": "tools/research/newsapi/cli.py",
+      "start_line": 95,
+      "end_line": 109,
+      "claim": "Search command definition with comprehensive filtering options",
+      "section": "CLI Command Interface"
+    },
+    {
+      "file_path": "tools/research/newsapi/cli.py",
+      "start_line": 155,
+      "end_line": 167,
+      "claim": "Sources command definition for listing available news sources",
+      "section": "CLI Command Interface"
+    },
+    {
+      "file_path": "tools/research/newsapi/cli.py",
+      "start_line": 24,
+      "end_line": 29,
+      "claim": "Markdown table formatting utility function",
+      "section": "Output Formatting System"
+    },
+    {
+      "file_path": "tools/research/newsapi/cli.py",
+      "start_line": 32,
+      "end_line": 38,
+      "claim": "Text truncation utility for display formatting",
+      "section": "Output Formatting System"
+    },
+    {
+      "file_path": "tools/research/newsapi/cli.py",
+      "start_line": 73,
+      "end_line": 80,
+      "claim": "Markdown output format implementation in headlines command",
+      "section": "Output Formatting System"
+    },
+    {
+      "file_path": "tools/research/newsapi/cli.py",
+      "start_line": 82,
+      "end_line": 92,
+      "claim": "Rich table output format implementation",
+      "section": "Output Formatting System"
+    },
+    {
+      "file_path": "tools/research/newsapi/client.py",
+      "start_line": 13,
+      "end_line": 13,
+      "claim": "NewsAPI.org base URL configuration",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/research/newsapi/client.py",
+      "start_line": 144,
+      "end_line": 148,
+      "claim": "Context manager implementation for resource cleanup",
+      "section": "NewsAPIClient Class"
+    },
+    {
+      "file_path": "tools/research/newsapi/cli.py",
+      "start_line": 3,
+      "end_line": 5,
+      "claim": "Environment configuration loading with python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/newsapi/cli.py",
+      "start_line": 10,
+      "end_line": 12,
+      "claim": "Rich console and centaur-sdk Table imports for output formatting",
+      "section": "External Dependencies"
+    }
+  ]
+}

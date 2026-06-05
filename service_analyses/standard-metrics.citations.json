@@ -1,0 +1,114 @@
+{
+  "component": "standard-metrics",
+  "source_file": "/tmp/centaur-src/service_analyses/standard-metrics.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/crypto/standard-metrics/pyproject.toml",
+      "start_line": 1,
+      "end_line": 10,
+      "claim": "Component metadata and dependencies declaration",
+      "section": "Overview"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/client.py",
+      "start_line": 14,
+      "end_line": 27,
+      "claim": "StandardMetricsClient class definition with OAuth2 authentication",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/client.py",
+      "start_line": 28,
+      "end_line": 37,
+      "claim": "Credential retrieval from Centaur SDK secrets",
+      "section": "Authentication System"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/client.py",
+      "start_line": 39,
+      "end_line": 68,
+      "claim": "OAuth2 token caching and refresh mechanism",
+      "section": "Authentication System"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/cli.py",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "Typer CLI application initialization",
+      "section": "CLI Command Set"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/cli.py",
+      "start_line": 23,
+      "end_line": 57,
+      "claim": "Companies command with table formatting",
+      "section": "Rich Console Output"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/cli.py",
+      "start_line": 80,
+      "end_line": 133,
+      "claim": "Metrics command with flexible filtering",
+      "section": "CLI Command Set"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/cli.py",
+      "start_line": 136,
+      "end_line": 196,
+      "claim": "Financial metrics aggregation with currency formatting",
+      "section": "Financial Metrics Aggregation"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/client.py",
+      "start_line": 96,
+      "end_line": 110,
+      "claim": "Company listing API method with filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/client.py",
+      "start_line": 120,
+      "end_line": 148,
+      "claim": "Metrics retrieval with comprehensive filtering options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/client.py",
+      "start_line": 10,
+      "end_line": 11,
+      "claim": "Standard Metrics API base URLs and endpoints",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/client.py",
+      "start_line": 83,
+      "end_line": 94,
+      "claim": "HTTP request handling with error processing",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/pyproject.toml",
+      "start_line": 17,
+      "end_line": 22,
+      "claim": "Centaur tool configuration with secret management",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/cli.py",
+      "start_line": 147,
+      "end_line": 148,
+      "claim": "Financial categories definition for aggregation",
+      "section": "Financial Metrics Aggregation"
+    },
+    {
+      "file_path": "tools/crypto/standard-metrics/cli.py",
+      "start_line": 277,
+      "end_line": 299,
+      "claim": "Raw API access command for advanced usage",
+      "section": "API Surface"
+    }
+  ]
+}

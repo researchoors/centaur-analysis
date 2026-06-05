@@ -1,0 +1,114 @@
+{
+  "component": "figma",
+  "source_file": "/tmp/centaur-src/service_analyses/figma.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/productivity/figma/client.py",
+      "start_line": 25,
+      "end_line": 34,
+      "claim": "FigmaClient class handles authentication and API requests",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/figma/client.py",
+      "start_line": 11,
+      "end_line": 23,
+      "claim": "FigmaDesignSystem dataclass serves as structured output format",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/figma/cli.py",
+      "start_line": 16,
+      "end_line": 25,
+      "claim": "CLI provides crawl command with URL argument and JSON output option",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/figma/client.py",
+      "start_line": 55,
+      "end_line": 75,
+      "claim": "URL parser extracts file keys and node IDs from various Figma URL formats",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/figma/client.py",
+      "start_line": 166,
+      "end_line": 226,
+      "claim": "Tree extraction engine recursively walks document structure",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/figma/client.py",
+      "start_line": 228,
+      "end_line": 241,
+      "claim": "Color extraction converts Figma RGB to hex/RGBA format",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/figma/client.py",
+      "start_line": 100,
+      "end_line": 164,
+      "claim": "Main crawl method orchestrates data extraction flow",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/productivity/figma/pyproject.toml",
+      "start_line": 6,
+      "end_line": 10,
+      "claim": "Dependencies include typer, rich, and python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/figma/client.py",
+      "start_line": 30,
+      "end_line": 33,
+      "claim": "Authentication uses FIGMA_ACCESS_TOKEN or FIGMA environment variables",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/figma/cli.py",
+      "start_line": 38,
+      "end_line": 53,
+      "claim": "JSON output format provides structured data export",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/figma/client.py",
+      "start_line": 35,
+      "end_line": 52,
+      "claim": "HTTP client implements retry logic for rate limiting",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/productivity/figma/cli.py",
+      "start_line": 57,
+      "end_line": 123,
+      "claim": "CLI displays extracted data in formatted tables using Rich library",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/productivity/figma/client.py",
+      "start_line": 77,
+      "end_line": 98,
+      "claim": "Client provides methods for different Figma API endpoints",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/figma/pyproject.toml",
+      "start_line": 18,
+      "end_line": 21,
+      "claim": "Centaur configuration specifies secret management for FIGMA_ACCESS_TOKEN",
+      "section": "Authentication"
+    },
+    {
+      "file_path": "tools/productivity/figma/cli.py",
+      "start_line": 26,
+      "end_line": 36,
+      "claim": "Error handling for API failures and invalid URLs",
+      "section": "Architecture"
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "component": "telegram",
+  "source_file": "/tmp/centaur-src/service_analyses/telegram.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 16,
+  "citations": [
+    {
+      "file_path": "tools/comms/telegram/pyproject.toml",
+      "start_line": 6,
+      "end_line": 12,
+      "claim": "External dependencies include python-telegram-bot, telethon, typer, rich, and python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/comms/telegram/client.py",
+      "start_line": 34,
+      "end_line": 47,
+      "claim": "TelegramClient class provides Bot API wrapper functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/telegram/user_client.py",
+      "start_line": 34,
+      "end_line": 52,
+      "claim": "UserClient class provides MTProto client for user account access",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/telegram/cli.py",
+      "start_line": 15,
+      "end_line": 16,
+      "claim": "CLI interface built with typer framework and rich console",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/telegram/error.py",
+      "start_line": 4,
+      "end_line": 6,
+      "claim": "TelegramError provides custom exception hierarchy",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/telegram/client.py",
+      "start_line": 61,
+      "end_line": 86,
+      "claim": "send_message method demonstrates async message sending with formatted response",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/comms/telegram/user_client.py",
+      "start_line": 62,
+      "end_line": 72,
+      "claim": "login method initiates phone-based authentication flow",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/comms/telegram/user_client.py",
+      "start_line": 74,
+      "end_line": 91,
+      "claim": "verify_code method completes login with 2FA support detection",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/comms/telegram/client.py",
+      "start_line": 13,
+      "end_line": 21,
+      "claim": "Bot token retrieved from environment via Centaur SDK secret function",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/comms/telegram/user_client.py",
+      "start_line": 13,
+      "end_line": 24,
+      "claim": "API credentials retrieved from environment for MTProto authentication",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/comms/telegram/cli.py",
+      "start_line": 20,
+      "end_line": 27,
+      "claim": "send command demonstrates Bot API message sending with formatting options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/comms/telegram/cli.py",
+      "start_line": 265,
+      "end_line": 272,
+      "claim": "history command demonstrates user account message retrieval with search",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/comms/telegram/client.py",
+      "start_line": 222,
+      "end_line": 237,
+      "claim": "Synchronous wrapper functions provide convenience API for bot operations",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/comms/telegram/user_client.py",
+      "start_line": 153,
+      "end_line": 195,
+      "claim": "get_messages method shows async message iteration with rich metadata",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/comms/telegram/pyproject.toml",
+      "start_line": 20,
+      "end_line": 20,
+      "claim": "Bot token secret configuration for Centaur platform integration",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "tools/comms/telegram/cli.py",
+      "start_line": 13,
+      "end_line": 13,
+      "claim": "Centaur SDK Table import for consistent UI formatting",
+      "section": "External Systems"
+    }
+  ]
+}

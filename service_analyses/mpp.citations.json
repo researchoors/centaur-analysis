@@ -1,0 +1,135 @@
+{
+  "component": "mpp",
+  "source_file": "/tmp/centaur-src/service_analyses/mpp.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 18,
+  "citations": [
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 62,
+      "end_line": 74,
+      "claim": "MppClient class serves as the main orchestrator for all API interactions with lazy-loaded authentication",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 20,
+      "end_line": 41,
+      "claim": "Token normalization system uses mapping dictionaries to convert names to symbols and CoinGecko IDs",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 86,
+      "end_line": 94,
+      "claim": "Budget management implements daily spending caps with automatic resets and per-query tracking",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 75,
+      "end_line": 84,
+      "claim": "Authentication handler lazy-loads MPP private key from 1Password to prevent initialization failures",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 96,
+      "end_line": 110,
+      "claim": "Centralized HTTP request handler using httpx with MPP authentication headers",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 114,
+      "end_line": 136,
+      "claim": "Web search interface provides structured results from Parallel API at $0.01 per query",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 140,
+      "end_line": 168,
+      "claim": "Token price service uses CoinGecko primary with Codex fallback for comprehensive price data",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 257,
+      "end_line": 300,
+      "claim": "Price history service provides configurable timeframes with automatic data point reduction",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 304,
+      "end_line": 343,
+      "claim": "OHLC service provides candlestick data for advanced charting at $0.06 per query",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 347,
+      "end_line": 370,
+      "claim": "Trending tokens service returns top 10 trending tokens from CoinGecko",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 428,
+      "end_line": 459,
+      "claim": "Wallet analysis interface queries balances via Allium with USD value calculations",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 463,
+      "end_line": 502,
+      "claim": "Dune SQL engine executes queries with async polling and variable cost tracking",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 48,
+      "end_line": 59,
+      "claim": "Price formatting utility converts large numbers to human-readable format with K/M/B/T suffixes",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 515,
+      "end_line": 516,
+      "claim": "Factory function _client() provides MppClient instances for other components",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/mpp/pyproject.toml",
+      "start_line": 6,
+      "end_line": 9,
+      "claim": "Dependencies include httpx for HTTP requests and centaur_sdk for secret management",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 15,
+      "end_line": 16,
+      "claim": "Imports httpx for HTTP client functionality and centaur_sdk for secret access",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 1,
+      "end_line": 6,
+      "claim": "MPP client provides access to Parallel, CoinGecko, Codex, Allium, and Dune services with Tempo payments",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/mpp/client.py",
+      "start_line": 506,
+      "end_line": 512,
+      "claim": "Budget tracking provides daily spend monitoring with remaining budget calculations",
+      "section": "API Surface"
+    }
+  ]
+}

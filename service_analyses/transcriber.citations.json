@@ -1,0 +1,156 @@
+{
+  "component": "transcriber",
+  "source_file": "/tmp/centaur-src/service_analyses/transcriber.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 21,
+  "citations": [
+    {
+      "file_path": "tools/media/transcriber/client.py",
+      "start_line": 42,
+      "end_line": 46,
+      "claim": "TranscriberClient is the core transcription engine with model caching",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/transcriber/cli.py",
+      "start_line": 23,
+      "end_line": 26,
+      "claim": "CLI uses Typer framework with rich console output and singleton client instance",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/transcriber/client.py",
+      "start_line": 54,
+      "end_line": 65,
+      "claim": "Cross-platform audio recording with automatic backend detection",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/transcriber/client.py",
+      "start_line": 151,
+      "end_line": 190,
+      "claim": "Platform-specific model loading with MLX for macOS and faster-whisper for Linux",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/transcriber/cli.py",
+      "start_line": 29,
+      "end_line": 42,
+      "claim": "Background threading system for continuous audio recording",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/transcriber/client.py",
+      "start_line": 25,
+      "end_line": 39,
+      "claim": "Hallucination filtering removes common Whisper artifacts",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/transcriber/cli.py",
+      "start_line": 45,
+      "end_line": 68,
+      "claim": "Record command provides live streaming transcription functionality",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/transcriber/cli.py",
+      "start_line": 249,
+      "end_line": 258,
+      "claim": "File command enables batch transcription of existing audio files",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/transcriber/cli.py",
+      "start_line": 277,
+      "end_line": 284,
+      "claim": "Listen command provides continuous listening mode for repeated recordings",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/transcriber/cli.py",
+      "start_line": 338,
+      "end_line": 340,
+      "claim": "Models command lists available Whisper model variants",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/transcriber/client.py",
+      "start_line": 218,
+      "end_line": 223,
+      "claim": "Library provides programmatic API through transcribe_file method",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/transcriber/cli.py",
+      "start_line": 70,
+      "end_line": 88,
+      "claim": "Live recording flow uses background threading and chunk queuing",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/media/transcriber/cli.py",
+      "start_line": 104,
+      "end_line": 116,
+      "claim": "Real-time transcription with end phrase detection for stopping",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/media/transcriber/cli.py",
+      "start_line": 260,
+      "end_line": 274,
+      "claim": "File processing flow validates existence before transcription",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/media/transcriber/pyproject.toml",
+      "start_line": 6,
+      "end_line": 9,
+      "claim": "Core dependencies are typer for CLI and rich for terminal formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/transcriber/cli.py",
+      "start_line": 3,
+      "end_line": 5,
+      "claim": "Uses python-dotenv for environment configuration loading",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/transcriber/client.py",
+      "start_line": 159,
+      "end_line": 159,
+      "claim": "MLX-whisper is dynamically imported on macOS for hardware acceleration",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/transcriber/client.py",
+      "start_line": 185,
+      "end_line": 185,
+      "claim": "Faster-whisper is used on Linux/other platforms for CPU optimization",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/transcriber/client.py",
+      "start_line": 14,
+      "end_line": 22,
+      "claim": "Platform-specific model mapping for MLX and standard Whisper variants",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/media/transcriber/client.py",
+      "start_line": 138,
+      "end_line": 144,
+      "claim": "Audio recording abstracts platform differences with unified interface",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/media/transcriber/client.py",
+      "start_line": 146,
+      "end_line": 149,
+      "claim": "Hallucination detection filters low-quality transcription artifacts",
+      "section": "Architecture"
+    }
+  ]
+}

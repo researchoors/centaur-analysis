@@ -1,0 +1,2129 @@
+{
+  "schema_version": "2.0.0",
+  "source_repo": "/private/tmp/repos/centaur-src",
+  "source_commit": "",
+  "nodes": {
+    "components": {
+      "centaur-sdk": {
+        "name": "centaur-sdk",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "centaur_sdk",
+        "description": "Lightweight SDK for building Centaur-compatible tools",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "rich",
+            "version": ">=13.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "centaur_sdk/pyproject.toml"
+      },
+      "centaur-api": {
+        "name": "centaur-api",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "services/api",
+        "description": "Centaur API server",
+        "internal_dependencies": [
+          "centaur-sdk"
+        ],
+        "external_dependencies": [
+          {
+            "name": "asyncpg",
+            "version": ">=0.30.0"
+          },
+          {
+            "name": "anthropic",
+            "version": ">=0.54.0"
+          },
+          {
+            "name": "pgvector",
+            "version": ">=0.3.6"
+          },
+          {
+            "name": "httpx",
+            "version": ">=0.28.0"
+          },
+          {
+            "name": "openai",
+            "version": ">=1.60.0"
+          },
+          {
+            "name": "pydantic",
+            "version": ">=2.10.0"
+          },
+          {
+            "name": "pydantic-settings",
+            "version": ">=2.7.0"
+          },
+          {
+            "name": "structlog",
+            "version": ">=24.4.0"
+          },
+          {
+            "name": "tenacity",
+            "version": ">=9.0.0"
+          },
+          {
+            "name": "fastapi",
+            "version": ">=0.115.0"
+          },
+          {
+            "name": "uvicorn",
+            "version": "[standard"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "services/api/pyproject.toml"
+      },
+      "ashby": {
+        "name": "ashby",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/business/ashby",
+        "description": "Ashby ATS CLI for AI agents \u2014 query candidates, jobs, applications, interviews",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "pypdf",
+            "version": ">=6.6.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/business/ashby/pyproject.toml"
+      },
+      "attio": {
+        "name": "attio",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/business/attio",
+        "description": "Attio CRM \u2014 objects, records, lists, notes, tasks",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/business/attio/pyproject.toml"
+      },
+      "pylon": {
+        "name": "pylon",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/business/pylon",
+        "description": "Pylon CLI for AI agents - support issues, accounts, contacts",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/business/pylon/pyproject.toml"
+      },
+      "telegram": {
+        "name": "telegram",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/comms/telegram",
+        "description": "Telegram CLI for AI agents - send messages, search chats, gather context",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "python-telegram-bot",
+            "version": ">=21.0"
+          },
+          {
+            "name": "telethon",
+            "version": ">=1.36.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/comms/telegram/pyproject.toml"
+      },
+      "twitter": {
+        "name": "twitter",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/comms/twitter",
+        "description": "Twitter CLI for user profiles, followers, tweets, and search",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "httpx",
+            "version": ">=0.28.1"
+          },
+          {
+            "name": "tenacity",
+            "version": ">=8.0.0"
+          },
+          {
+            "name": "pydantic",
+            "version": ">=2.0.0"
+          },
+          {
+            "name": "pydantic-settings",
+            "version": ">=2.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/comms/twitter/pyproject.toml"
+      },
+      "alchemy": {
+        "name": "alchemy",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/alchemy",
+        "description": "Alchemy CLI for blockchain data, token balances, transfers, and prices",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/alchemy/pyproject.toml"
+      },
+      "allium": {
+        "name": "allium",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/crypto/allium",
+        "description": "Allium on-chain analytics \u2014 SQL queries, schema search, stablecoin analysis",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/allium/pyproject.toml"
+      },
+      "arkham": {
+        "name": "arkham",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/arkham",
+        "description": "Arkham Intelligence CLI for blockchain analytics and wallet tracking",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/arkham/pyproject.toml"
+      },
+      "coindesk": {
+        "name": "coindesk",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/coindesk",
+        "description": "CoinDesk CLI for crypto news",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "feedparser",
+            "version": ">=6.0.0"
+          },
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/coindesk/pyproject.toml"
+      },
+      "coingecko": {
+        "name": "coingecko",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/crypto/coingecko",
+        "description": "CoinGecko Pro API \u2014 prices, markets, trending coins, exchanges",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/coingecko/pyproject.toml"
+      },
+      "coinmetrics": {
+        "name": "coinmetrics",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/crypto/coinmetrics",
+        "description": "Coin Metrics API \u2014 asset metrics, market data, timeseries, exchanges",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/coinmetrics/pyproject.toml"
+      },
+      "databento": {
+        "name": "databento",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/crypto/databento",
+        "description": "Databento Historical API \u2014 stock market OHLCV data",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/databento/pyproject.toml"
+      },
+      "debank": {
+        "name": "debank",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/debank",
+        "description": "DeBank CLI for DeFi wallet data, token balances, and protocol positions",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/debank/pyproject.toml"
+      },
+      "defillama": {
+        "name": "defillama",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/crypto/defillama",
+        "description": "DefiLlama DeFi analytics \u2014 TVL, stablecoins, DEX volumes, bridges, fees",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/defillama/pyproject.toml"
+      },
+      "dune": {
+        "name": "dune",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/crypto/dune",
+        "description": "Dune Analytics \u2014 execute queries, fetch results, check status",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/dune/pyproject.toml"
+      },
+      "eodhd": {
+        "name": "eodhd",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/crypto/eodhd",
+        "description": "EODHD Financial API \u2014 real-time quotes and historical EOD prices",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/eodhd/pyproject.toml"
+      },
+      "etherscan": {
+        "name": "etherscan",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/etherscan",
+        "description": "Etherscan \u2014 Ethereum block explorer, transactions, contracts, and tokens",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/etherscan/pyproject.toml"
+      },
+      "kalshi": {
+        "name": "kalshi",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/crypto/kalshi",
+        "description": "Kalshi prediction market data \u2014 markets, events, trades, price history",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/kalshi/pyproject.toml"
+      },
+      "karma": {
+        "name": "karma",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/karma",
+        "description": "Karma \u2014 DAO delegate reputation, contributor scores, and governance analytics",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/karma/pyproject.toml"
+      },
+      "messari": {
+        "name": "messari",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/crypto/messari",
+        "description": "Messari crypto asset data \u2014 prices, metrics, profiles, markets, news",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/messari/pyproject.toml"
+      },
+      "mpp": {
+        "name": "mpp",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/mpp",
+        "description": "Market data via MPP (Machine Payments Protocol) \u2014 token prices, web search, on-chain data, trending tokens, wallet balances, and Dune SQL queries. Paid per-query with Tempo stablecoins.",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "centaur_sdk"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/mpp/pyproject.toml"
+      },
+      "nansen": {
+        "name": "nansen",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/crypto/nansen",
+        "description": "Nansen blockchain analytics \u2014 wallet labels, Smart Money, token data",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/nansen/pyproject.toml"
+      },
+      "polymarket": {
+        "name": "polymarket",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/crypto/polymarket",
+        "description": "Polymarket prediction market data \u2014 markets, events, prices, orderbooks",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/polymarket/pyproject.toml"
+      },
+      "snapshot": {
+        "name": "snapshot",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/snapshot",
+        "description": "Snapshot \u2014 off-chain governance voting, proposals, and spaces",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/snapshot/pyproject.toml"
+      },
+      "standard-metrics": {
+        "name": "standard-metrics",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/standard-metrics",
+        "description": "Standard Metrics CLI for portfolio company data and analytics",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/standard-metrics/pyproject.toml"
+      },
+      "tally": {
+        "name": "tally",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/tally",
+        "description": "Tally \u2014 on-chain governance proposals, voting, and delegates",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/tally/pyproject.toml"
+      },
+      "theblock": {
+        "name": "theblock",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/theblock",
+        "description": "The Block CLI for crypto news",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "feedparser",
+            "version": ">=6.0.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/theblock/pyproject.toml"
+      },
+      "token-terminal": {
+        "name": "token-terminal",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/token-terminal",
+        "description": "Token Terminal \u2014 protocol revenue, fees, financial statements, and metrics",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/token-terminal/pyproject.toml"
+      },
+      "tokenomist": {
+        "name": "tokenomist",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/crypto/tokenomist",
+        "description": "Tokenomist \u2014 token unlock schedules, vesting, emissions, and allocations",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/crypto/tokenomist/pyproject.toml"
+      },
+      "chart": {
+        "name": "chart",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/infra/chart",
+        "description": "Chart generation for Centaur. Single render_chart method returns base64 PNG images ready for Slack upload.",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "matplotlib",
+            "version": ">=3.7.0"
+          },
+          {
+            "name": "pandas",
+            "version": ">=2.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/infra/chart/pyproject.toml"
+      },
+      "cloudwatch": {
+        "name": "cloudwatch",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/infra/cloudwatch",
+        "description": "AWS CloudWatch \u2014 Logs Insights queries, log events, metrics, and alarms (read-only)",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "boto3",
+            "version": ">=1.34"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/infra/cloudwatch/pyproject.toml"
+      },
+      "demo": {
+        "name": "demo",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/infra/demo",
+        "description": "Demo tool for testing CD hot-reload",
+        "internal_dependencies": [],
+        "external_dependencies": [],
+        "key_files": [],
+        "manifest_path": "tools/infra/demo/pyproject.toml"
+      },
+      "grafana": {
+        "name": "grafana",
+        "kind": "frontend",
+        "type": "python-package",
+        "root_path": "tools/infra/grafana",
+        "description": "Grafana observability \u2014 dashboards, VictoriaMetrics, VictoriaLogs, alerts, annotations",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/infra/grafana/pyproject.toml"
+      },
+      "laminar": {
+        "name": "laminar",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/infra/laminar",
+        "description": "Laminar trace investigation for Centaur agent executions",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/infra/laminar/pyproject.toml"
+      },
+      "posthog": {
+        "name": "posthog",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/infra/posthog",
+        "description": "PostHog product analytics \u2014 HogQL queries, pageviews, breakdowns",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/infra/posthog/pyproject.toml"
+      },
+      "profslice": {
+        "name": "profslice",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/infra/profslice",
+        "description": "Firefox Profiler data extraction for LLM analysis",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/infra/profslice/pyproject.toml"
+      },
+      "reth": {
+        "name": "reth",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/infra/reth",
+        "description": "Reth CLI for AI agents - execution timings, performance metrics",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/infra/reth/pyproject.toml"
+      },
+      "reth-log-analyzer": {
+        "name": "reth-log-analyzer",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/infra/reth-log-analyzer",
+        "description": "Parse reth logs and generate performance graphs",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "pandas",
+            "version": ">=2.0.0"
+          },
+          {
+            "name": "matplotlib",
+            "version": ">=3.7.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/infra/reth-log-analyzer/pyproject.toml"
+      },
+      "sentry": {
+        "name": "sentry",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/infra/sentry",
+        "description": "Sentry issues \u2014 list/search issues, issue details, events, stacktraces, and tag values (read-only)",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/infra/sentry/pyproject.toml"
+      },
+      "vlogs": {
+        "name": "vlogs",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/infra/vlogs",
+        "description": "VictoriaLogs \u2014 LogsQL queries, field names, field values, and log streams",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/infra/vlogs/pyproject.toml"
+      },
+      "vmetrics": {
+        "name": "vmetrics",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/infra/vmetrics",
+        "description": "VictoriaMetrics \u2014 PromQL/MetricsQL queries for agent self-validation",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/infra/vmetrics/pyproject.toml"
+      },
+      "nano-banana": {
+        "name": "nano-banana",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/media/nano-banana",
+        "description": "Nano Banana CLI for Google Gemini image generation",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "google-genai",
+            "version": ">=1.0.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "Pillow",
+            "version": ">=10.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/media/nano-banana/pyproject.toml"
+      },
+      "transcriber": {
+        "name": "transcriber",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/media/transcriber",
+        "description": "Local-first voice transcription CLI using Whisper",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/media/transcriber/pyproject.toml"
+      },
+      "veo3": {
+        "name": "veo3",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/media/veo3",
+        "description": "Veo 3 CLI for Google",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "google-genai",
+            "version": ">=1.0.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/media/veo3/pyproject.toml"
+      },
+      "eng": {
+        "name": "eng",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/personas/eng",
+        "description": "Engineering persona \u2014 code review, debugging, repo work",
+        "internal_dependencies": [],
+        "external_dependencies": [],
+        "key_files": [],
+        "manifest_path": "tools/personas/eng/pyproject.toml"
+      },
+      "airtable": {
+        "name": "airtable",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/productivity/airtable",
+        "description": "Airtable API client for bases, schemas, views, and records",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/productivity/airtable/pyproject.toml"
+      },
+      "company_context": {
+        "name": "company_context",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/productivity/company_context",
+        "description": "Search indexed company history across multiple sources. Prefer this over direct Slack search for historical queries. Current sources: Slack, Google Drive, Google Calendar, Linear.",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "asyncpg",
+            "version": ">=0.30.0"
+          },
+          {
+            "name": "slack-sdk",
+            "version": ">=3.27.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/productivity/company_context/pyproject.toml"
+      },
+      "centaur-composio-tool": {
+        "name": "centaur-composio-tool",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/productivity/composio",
+        "description": "Execute tools from 1000+ services via Composio (GitHub, Gmail, Slack, Notion, etc.)",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "composio",
+            "version": ">=0.13.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/productivity/composio/pyproject.toml"
+      },
+      "figma": {
+        "name": "figma",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/productivity/figma",
+        "description": "Figma design system extraction and analysis",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/productivity/figma/pyproject.toml"
+      },
+      "granola": {
+        "name": "granola",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/productivity/granola",
+        "description": "Granola meeting notes CLI for AI agents",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/productivity/granola/pyproject.toml"
+      },
+      "gsuite": {
+        "name": "gsuite",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/productivity/gsuite",
+        "description": "Gmail, Calendar, Drive, Docs, Sheets, Slides, Analytics",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "google-api-python-client",
+            "version": ">=2.100.0"
+          },
+          {
+            "name": "google-analytics-data",
+            "version": ">=0.18.0"
+          },
+          {
+            "name": "google-analytics-admin",
+            "version": ">=0.22.0"
+          },
+          {
+            "name": "google-auth-httplib2",
+            "version": ">=0.2.0"
+          },
+          {
+            "name": "google-auth-oauthlib",
+            "version": ">=1.2.0"
+          },
+          {
+            "name": "httplib2",
+            "version": ">=0.20.0"
+          },
+          {
+            "name": "pysocks",
+            "version": ">=1.7.1"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/productivity/gsuite/pyproject.toml"
+      },
+      "linear": {
+        "name": "linear",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/productivity/linear",
+        "description": "Linear issue tracking \u2014 issues, projects, cycles, teams",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/productivity/linear/pyproject.toml"
+      },
+      "notion": {
+        "name": "notion",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/productivity/notion",
+        "description": "Notion pages, databases, blocks, comments",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/productivity/notion/pyproject.toml"
+      },
+      "opentable": {
+        "name": "opentable",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/productivity/opentable",
+        "description": "OpenTable CLI for searching restaurant reservations",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "browser-use",
+            "version": ">=0.11.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/productivity/opentable/pyproject.toml"
+      },
+      "slack": {
+        "name": "slack",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/productivity/slack",
+        "description": "Search Slack messages, channels, threads, users",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "slack-sdk",
+            "version": ">=3.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "structlog",
+            "version": ">=24.4.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/productivity/slack/pyproject.toml"
+      },
+      "archiver": {
+        "name": "archiver",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/archiver",
+        "description": "Document extraction via Reducto for investment materials",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "browser-use-sdk",
+            "version": ">=2.0.14"
+          },
+          {
+            "name": "httpx",
+            "version": ">=0.28.1"
+          },
+          {
+            "name": "pillow",
+            "version": ">=12.1.0"
+          },
+          {
+            "name": "playwright",
+            "version": ">=1.58.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.2.1"
+          },
+          {
+            "name": "requests",
+            "version": ">=2.32.5"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/archiver/pyproject.toml"
+      },
+      "congress": {
+        "name": "congress",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/congress",
+        "description": "Congress.gov API CLI",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/congress/pyproject.toml"
+      },
+      "crunchbase": {
+        "name": "crunchbase",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/crunchbase",
+        "description": "Crunchbase Enterprise API CLI for company and funding data",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/crunchbase/pyproject.toml"
+      },
+      "docsend": {
+        "name": "docsend",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/docsend",
+        "description": "DocSend document downloader \u2014 cloud browser + Playwright",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "browser-use-sdk",
+            "version": ">=2.0.14"
+          },
+          {
+            "name": "httpx",
+            "version": ">=0.28.0"
+          },
+          {
+            "name": "pillow",
+            "version": ">=12.0.0"
+          },
+          {
+            "name": "playwright",
+            "version": ">=1.50.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/docsend/pyproject.toml"
+      },
+      "fedreg": {
+        "name": "fedreg",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/fedreg",
+        "description": "Federal Register CLI for regulatory data",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/fedreg/pyproject.toml"
+      },
+      "googlenews": {
+        "name": "googlenews",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/googlenews",
+        "description": "Google News RSS CLI for news search and headlines",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "feedparser",
+            "version": ">=6.0.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/googlenews/pyproject.toml"
+      },
+      "harmonic": {
+        "name": "harmonic",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/harmonic",
+        "description": "Harmonic.AI API CLI for startup discovery and company/people enrichment",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/harmonic/pyproject.toml"
+      },
+      "invest-intake": {
+        "name": "invest-intake",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/invest_intake",
+        "description": "Normalize mixed raw invest inputs into a clean context pack",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/invest_intake/pyproject.toml"
+      },
+      "investmemos": {
+        "name": "investmemos",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/investmemos",
+        "description": "Postgres-backed investment memo search and retrieval",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "asyncpg",
+            "version": ">=0.30.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/investmemos/pyproject.toml"
+      },
+      "legistorm": {
+        "name": "legistorm",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/legistorm",
+        "description": "LegiStorm CLI for congressional data",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/legistorm/pyproject.toml"
+      },
+      "listennotes": {
+        "name": "listennotes",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/listennotes",
+        "description": "Listen Notes CLI for podcast data",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/listennotes/pyproject.toml"
+      },
+      "newsapi": {
+        "name": "newsapi",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/newsapi",
+        "description": "NewsAPI CLI for news search and headlines",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/newsapi/pyproject.toml"
+      },
+      "openfec": {
+        "name": "openfec",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/openfec",
+        "description": "OpenFEC CLI for federal election data",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/openfec/pyproject.toml"
+      },
+      "plural": {
+        "name": "plural",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/plural",
+        "description": "Plural (Open States) API \u2014 state legislation, legislators, committees, and events",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/plural/pyproject.toml"
+      },
+      "sensortower": {
+        "name": "sensortower",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/sensortower",
+        "description": "SensorTower CLI for mobile app analytics",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/sensortower/pyproject.toml"
+      },
+      "similarweb": {
+        "name": "similarweb",
+        "kind": "cli",
+        "type": "python-package",
+        "root_path": "tools/research/similarweb",
+        "description": "SimilarWeb web traffic and market intelligence",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/similarweb/pyproject.toml"
+      },
+      "websearch": {
+        "name": "websearch",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/websearch",
+        "description": "Web search and deep research via Parallel (free MCP or paid REST); optional Claude synthesis",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "anthropic",
+            "version": ">=0.54.0"
+          },
+          {
+            "name": "httpx",
+            "version": ">=0.28.0"
+          },
+          {
+            "name": "parallel-web",
+            "version": ">=0.6.0"
+          },
+          {
+            "name": "pydantic",
+            "version": ">=2.10.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/websearch/pyproject.toml"
+      },
+      "youtube": {
+        "name": "youtube",
+        "kind": "library",
+        "type": "python-package",
+        "root_path": "tools/research/youtube",
+        "description": "YouTube CLI for video data",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "httpx",
+            "version": ">=0.27.0"
+          },
+          {
+            "name": "typer",
+            "version": ">=0.12.0"
+          },
+          {
+            "name": "rich",
+            "version": ">=13.0.0"
+          },
+          {
+            "name": "python-dotenv",
+            "version": ">=1.0.0"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "tools/research/youtube/pyproject.toml"
+      },
+      "centaur-docs": {
+        "name": "centaur-docs",
+        "kind": "service",
+        "type": "typescript-package",
+        "root_path": "docs",
+        "description": "",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "react",
+            "version": "^19.0.0"
+          },
+          {
+            "name": "react-dom",
+            "version": "^19.0.0"
+          },
+          {
+            "name": "vocs",
+            "version": "https://pkg.pr.new/vocs@3f54829"
+          },
+          {
+            "name": "waku",
+            "version": "1.0.0-alpha.6"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "docs/package.json"
+      },
+      "centaur": {
+        "name": "centaur",
+        "kind": "library",
+        "type": "typescript-package",
+        "root_path": ".",
+        "description": "",
+        "internal_dependencies": [],
+        "external_dependencies": [],
+        "key_files": [],
+        "manifest_path": "package.json"
+      },
+      "@centaur/api-client": {
+        "name": "@centaur/api-client",
+        "kind": "library",
+        "type": "typescript-package",
+        "root_path": "packages/api-client",
+        "description": "",
+        "internal_dependencies": [
+          "@centaur/harness-events"
+        ],
+        "external_dependencies": [
+          {
+            "name": "axios",
+            "version": "^1.13.6"
+          },
+          {
+            "name": "eventsource-parser",
+            "version": "^3.0.6"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "packages/api-client/package.json"
+      },
+      "@centaur/harness-events": {
+        "name": "@centaur/harness-events",
+        "kind": "library",
+        "type": "typescript-package",
+        "root_path": "packages/harness-events",
+        "description": "",
+        "internal_dependencies": [],
+        "external_dependencies": [],
+        "key_files": [],
+        "manifest_path": "packages/harness-events/package.json"
+      },
+      "slackbot": {
+        "name": "slackbot",
+        "kind": "library",
+        "type": "typescript-package",
+        "root_path": "services/slackbot",
+        "description": "",
+        "internal_dependencies": [],
+        "external_dependencies": [
+          {
+            "name": "@opentelemetry/api",
+            "version": "^1.9.1"
+          },
+          {
+            "name": "@opentelemetry/exporter-trace-otlp-proto",
+            "version": "^0.218.0"
+          },
+          {
+            "name": "@opentelemetry/resources",
+            "version": "^2.7.1"
+          },
+          {
+            "name": "@opentelemetry/sdk-trace-base",
+            "version": "^2.7.1"
+          },
+          {
+            "name": "@opentelemetry/sdk-trace-node",
+            "version": "^2.7.1"
+          },
+          {
+            "name": "@opentelemetry/semantic-conventions",
+            "version": "^1.41.1"
+          },
+          {
+            "name": "@slack/types",
+            "version": "^2.19.0"
+          },
+          {
+            "name": "@slack/web-api",
+            "version": "^7.15.2"
+          },
+          {
+            "name": "@std/ulid",
+            "version": "npm:@jsr/std__ulid"
+          },
+          {
+            "name": "hono",
+            "version": "^4.12.18"
+          },
+          {
+            "name": "zod",
+            "version": "^4.4.3"
+          }
+        ],
+        "key_files": [],
+        "manifest_path": "services/slackbot/package.json"
+      }
+    },
+    "external_services": {}
+  },
+  "edges": [
+    {
+      "source": "centaur-api",
+      "target": "centaur-sdk",
+      "type": "depends_on"
+    },
+    {
+      "source": "@centaur/api-client",
+      "target": "@centaur/harness-events",
+      "type": "depends_on"
+    }
+  ],
+  "analysis": {},
+  "metadata": {
+    "component_count": 80,
+    "external_service_count": 0,
+    "edge_count": 2,
+    "analyzed_count": 0,
+    "by_kind": {
+      "library": 58,
+      "service": 1,
+      "cli": 20,
+      "frontend": 1
+    },
+    "by_edge_type": {
+      "depends_on": 2
+    }
+  }
+}

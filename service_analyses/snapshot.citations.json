@@ -1,0 +1,121 @@
+{
+  "component": "snapshot",
+  "source_file": "/tmp/centaur-src/service_analyses/snapshot.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 16,
+  "citations": [
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 9,
+      "end_line": 14,
+      "claim": "SnapshotClient is the primary interface for Snapshot GraphQL API interactions",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 16,
+      "end_line": 21,
+      "claim": "Constructor accepts optional API key and timeout configuration",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 22,
+      "end_line": 30,
+      "claim": "HTTP client is lazily initialized with optional API key headers",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 32,
+      "end_line": 36,
+      "claim": "API key retrieval uses centaur_sdk secret management with fallback",
+      "section": "Authentication System"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 38,
+      "end_line": 48,
+      "claim": "GraphQL query execution with error handling and response validation",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 50,
+      "end_line": 80,
+      "claim": "get_space method retrieves detailed space information via GraphQL",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 82,
+      "end_line": 116,
+      "claim": "list_spaces method provides pagination and sorting for space queries",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 118,
+      "end_line": 150,
+      "claim": "get_proposal method fetches complete proposal data including voting results",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 152,
+      "end_line": 197,
+      "claim": "list_proposals method supports state filtering and pagination",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 199,
+      "end_line": 229,
+      "claim": "get_votes method retrieves vote records with ordering by voting power",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 231,
+      "end_line": 256,
+      "claim": "get_voting_power method calculates voting power in specific contexts",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 258,
+      "end_line": 268,
+      "claim": "Context manager support with proper HTTP client cleanup",
+      "section": "Resource Management"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 271,
+      "end_line": 273,
+      "claim": "Factory function creates configured client instances",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include httpx for HTTP, typer for CLI, rich for formatting, and python-dotenv for configuration",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/pyproject.toml",
+      "start_line": 19,
+      "end_line": 19,
+      "claim": "Component configured for HTTP secrets management with SNAPSHOT_API_KEY",
+      "section": "Authentication System"
+    },
+    {
+      "file_path": "tools/crypto/snapshot/client.py",
+      "start_line": 4,
+      "end_line": 6,
+      "claim": "Dependencies on httpx for HTTP client and centaur_sdk for secret management",
+      "section": "External Dependencies"
+    }
+  ]
+}

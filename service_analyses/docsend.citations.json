@@ -1,0 +1,142 @@
+{
+  "component": "docsend",
+  "source_file": "/tmp/centaur-src/service_analyses/docsend.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 19,
+  "citations": [
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 1,
+      "end_line": 11,
+      "claim": "Component implements multi-strategy slide capture using DOM extraction and API fallbacks",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 69,
+      "end_line": 71,
+      "claim": "DocsendClient is the main interface class for PDF document downloading",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 72,
+      "end_line": 91,
+      "claim": "Download method signature accepts URL, email, passcode, and verification_link parameters",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 256,
+      "end_line": 295,
+      "claim": "_detect_state function identifies document protection state through DOM inspection",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 460,
+      "end_line": 477,
+      "claim": "DOM extraction uses JavaScript evaluation to find preso-view page-view images",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 480,
+      "end_line": 514,
+      "claim": "API fallback strategy uses DocSend's internal /page_data/ endpoints",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 517,
+      "end_line": 533,
+      "claim": "Image download uses httpx for parallel fetching with RGBA to RGB conversion",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 25,
+      "end_line": 25,
+      "claim": "Component integrates with Centaur SDK for secret management",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 31,
+      "end_line": 35,
+      "claim": "API key retrieval uses Centaur secret management with fallback to environment variables",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 47,
+      "end_line": 57,
+      "claim": "Browser-use WebSocket URL construction supports proxy and profile configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 38,
+      "end_line": 44,
+      "claim": "TLS preparation configures Node.js certificates for corporate firewall environments",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 445,
+      "end_line": 457,
+      "claim": "Navigation strategy forces rendering by walking through all slides with keyboard events",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 221,
+      "end_line": 239,
+      "claim": "PDF assembly uses PIL to create multi-page documents with base64 encoding",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 298,
+      "end_line": 314,
+      "claim": "Verification wall detection looks for specific phrases in page body text",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/docsend/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "Component depends on browser-use-sdk, httpx, pillow, and playwright",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/docsend/pyproject.toml",
+      "start_line": 19,
+      "end_line": 19,
+      "claim": "Centaur configuration defines BROWSER_USE_API_KEY as HTTP secret for connect.browser-use.com",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 92,
+      "end_line": 102,
+      "claim": "Download method handles both running and non-running event loops through thread pool execution",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 560,
+      "end_line": 561,
+      "claim": "Factory function _client() provides configured DocsendClient instances",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/docsend/client.py",
+      "start_line": 550,
+      "end_line": 557,
+      "claim": "Error handling returns structured dictionaries with status, error, and metadata fields",
+      "section": "API Surface"
+    }
+  ]
+}

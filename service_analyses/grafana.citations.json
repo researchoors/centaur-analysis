@@ -1,0 +1,121 @@
+{
+  "component": "grafana",
+  "source_file": "/tmp/centaur-src/service_analyses/grafana.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 16,
+  "citations": [
+    {
+      "file_path": "tools/infra/grafana/client.py",
+      "start_line": 56,
+      "end_line": 63,
+      "claim": "GrafanaClient is the primary HTTP client handling all Grafana API interactions",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/grafana/cli.py",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "CLI application is built with Typer framework providing help and command structure",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/grafana/client.py",
+      "start_line": 19,
+      "end_line": 53,
+      "claim": "Thread debug URL builder parses various Slack URL formats to extract channel/timestamp pairs",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/grafana/client.py",
+      "start_line": 97,
+      "end_line": 108,
+      "claim": "Authentication system supports both API tokens and basic auth with fallback mechanisms",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/grafana/client.py",
+      "start_line": 181,
+      "end_line": 211,
+      "claim": "Datasource proxy interface provides direct access to VictoriaMetrics through Grafana",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/grafana/cli.py",
+      "start_line": 23,
+      "end_line": 56,
+      "claim": "Dashboard search command with tag filtering and rich table output",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/grafana/cli.py",
+      "start_line": 114,
+      "end_line": 147,
+      "claim": "MetricsQL query command with range query support and structured output",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/grafana/cli.py",
+      "start_line": 150,
+      "end_line": 177,
+      "claim": "VictoriaLogs query command with LogsQL expression support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/grafana/cli.py",
+      "start_line": 248,
+      "end_line": 271,
+      "claim": "Thread debug URL generation command for Slack integration",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/grafana/client.py",
+      "start_line": 147,
+      "end_line": 167,
+      "claim": "Dashboard search functionality with query and tag filtering parameters",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/grafana/client.py",
+      "start_line": 233,
+      "end_line": 264,
+      "claim": "VictoriaLogs query method using POST requests with NDJSON response parsing",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/infra/grafana/client.py",
+      "start_line": 290,
+      "end_line": 298,
+      "claim": "Alert querying through Grafana's Prometheus-compatible alert API",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/infra/grafana/client.py",
+      "start_line": 332,
+      "end_line": 364,
+      "claim": "Thread debug URL builder supports multiple Slack URL formats for incident response",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/infra/grafana/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include httpx for HTTP client, typer for CLI, rich for formatting, and python-dotenv for configuration",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/infra/grafana/cli.py",
+      "start_line": 9,
+      "end_line": 11,
+      "claim": "Uses centaur_sdk for Table rendering and dotenv for environment loading",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/infra/grafana/client.py",
+      "start_line": 11,
+      "end_line": 11,
+      "claim": "Integrates with centaur_sdk secret management for secure credential handling",
+      "section": "Dependencies"
+    }
+  ]
+}

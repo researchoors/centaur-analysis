@@ -1,0 +1,142 @@
+{
+  "component": "archiver",
+  "source_file": "/tmp/centaur-src/service_analyses/archiver.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 19,
+  "citations": [
+    {
+      "file_path": "tools/research/archiver/__init__.py",
+      "start_line": 1,
+      "end_line": 1,
+      "claim": "Document extraction via Reducto for investment materials",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/research/archiver/client.py",
+      "start_line": 23,
+      "end_line": 25,
+      "claim": "ArchiverClient provides extraction-first client for investment document parsing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/archiver/client.py",
+      "start_line": 59,
+      "end_line": 82,
+      "claim": "download() method handles DocSend/Google sources with authentication",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/archiver/client.py",
+      "start_line": 169,
+      "end_line": 211,
+      "claim": "extract_source() provides one-shot download and extraction pipeline",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/archiver/download/orchestrator.py",
+      "start_line": 260,
+      "end_line": 283,
+      "claim": "Download orchestrator routes to appropriate adapters and handles fallback",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/archiver/download/docsend.py",
+      "start_line": 78,
+      "end_line": 88,
+      "claim": "DocSend adapter supports multiple document states including password protection",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/archiver/download/google.py",
+      "start_line": 46,
+      "end_line": 84,
+      "claim": "Google adapter parses various Google URL formats and supports multiple content types",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/archiver/ingest/parse.py",
+      "start_line": 44,
+      "end_line": 109,
+      "claim": "Reducto parser uses structured schema for investment document metadata extraction",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/archiver/ingest/parse.py",
+      "start_line": 250,
+      "end_line": 301,
+      "claim": "Parse manifest implements parallel processing with upload and job submission",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/archiver/cli.py",
+      "start_line": 16,
+      "end_line": 16,
+      "claim": "CLI provides Typer-based interface for document extraction",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/archiver/cli.py",
+      "start_line": 114,
+      "end_line": 166,
+      "claim": "Download command supports interactive authentication prompts",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/archiver/utils.py",
+      "start_line": 16,
+      "end_line": 29,
+      "claim": "FileRecord dataclass provides standardized file metadata structure",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/archiver/docsend/playwright.py",
+      "start_line": 106,
+      "end_line": 116,
+      "claim": "DocSend Playwright module provides low-level browser automation primitives",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/archiver/pyproject.toml",
+      "start_line": 6,
+      "end_line": 14,
+      "claim": "Dependencies include typer, browser-use-sdk, httpx, pillow, playwright, python-dotenv, requests",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/archiver/ingest/parse.py",
+      "start_line": 20,
+      "end_line": 26,
+      "claim": "Integration with Reducto AI platform for document parsing",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/archiver/client.py",
+      "start_line": 10,
+      "end_line": 10,
+      "claim": "Integration with centaur_sdk for attachment handling",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/archiver/ingest/parse.py",
+      "start_line": 303,
+      "end_line": 323,
+      "claim": "Parallel polling of parse and extract jobs using ThreadPoolExecutor",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/archiver/download/orchestrator.py",
+      "start_line": 171,
+      "end_line": 201,
+      "claim": "Fallback to standalone DocSend client when primary scraping fails",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/archiver/download/google.py",
+      "start_line": 87,
+      "end_line": 110,
+      "claim": "Google adapter uses gog CLI tool for authenticated access",
+      "section": "External Dependencies"
+    }
+  ]
+}

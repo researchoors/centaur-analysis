@@ -1,0 +1,163 @@
+{
+  "component": "coingecko",
+  "source_file": "/tmp/centaur-src/service_analyses/coingecko.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 22,
+  "citations": [
+    {
+      "file_path": "tools/crypto/coingecko/cli.py",
+      "start_line": 14,
+      "end_line": 14,
+      "claim": "Defines the primary CLI application using Typer with the name 'coingecko'",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 9,
+      "end_line": 16,
+      "claim": "CoinGeckoClient class provides core HTTP client functionality with configurable timeout",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/cli.py",
+      "start_line": 24,
+      "end_line": 36,
+      "claim": "format_number function handles large number formatting with B/M/K suffixes",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/cli.py",
+      "start_line": 39,
+      "end_line": 44,
+      "claim": "print_markdown_table function generates markdown-formatted table output",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/cli.py",
+      "start_line": 47,
+      "end_line": 53,
+      "claim": "Price command supports multiple output formats including JSON and markdown",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 24,
+      "end_line": 28,
+      "claim": "Authentication system uses centaur_sdk secret management for API key retrieval",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 36,
+      "end_line": 41,
+      "claim": "API requests include authentication via x-cg-pro-api-key header",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 47,
+      "end_line": 50,
+      "claim": "Comprehensive error handling converts HTTP errors to RuntimeError with descriptive messages",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 19,
+      "end_line": 22,
+      "claim": "HTTP client uses lazy initialization pattern",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/cli.py",
+      "start_line": 3,
+      "end_line": 5,
+      "claim": "Configuration management uses python-dotenv for environment variable loading",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 52,
+      "end_line": 68,
+      "claim": "get_price method provides current cryptocurrency prices with market data",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 70,
+      "end_line": 86,
+      "claim": "get_markets method lists coins by market capitalization",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 88,
+      "end_line": 97,
+      "claim": "get_coin method retrieves detailed coin information",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 99,
+      "end_line": 101,
+      "claim": "get_trending method accesses trending cryptocurrencies endpoint",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 14,
+      "end_line": 14,
+      "claim": "Base URL points to CoinGecko Pro API at pro-api.coingecko.com",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "Dependencies include httpx for HTTP client, typer for CLI, rich for formatting, and python-dotenv",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/cli.py",
+      "start_line": 4,
+      "end_line": 4,
+      "claim": "httpx imported for HTTP client functionality",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/cli.py",
+      "start_line": 9,
+      "end_line": 9,
+      "claim": "typer imported for CLI framework",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/cli.py",
+      "start_line": 10,
+      "end_line": 10,
+      "claim": "rich.console imported for styled terminal output",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/cli.py",
+      "start_line": 12,
+      "end_line": 12,
+      "claim": "centaur_sdk Table imported for rich console tables",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 6,
+      "end_line": 6,
+      "claim": "centaur_sdk secret function imported for secure environment variable access",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/coingecko/client.py",
+      "start_line": 135,
+      "end_line": 139,
+      "claim": "Context manager support for automatic resource cleanup",
+      "section": "Key Components"
+    }
+  ]
+}

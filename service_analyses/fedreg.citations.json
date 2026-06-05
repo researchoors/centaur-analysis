@@ -1,0 +1,128 @@
+{
+  "component": "fedreg",
+  "source_file": "/tmp/centaur-src/service_analyses/fedreg.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 17,
+  "citations": [
+    {
+      "file_path": "tools/research/fedreg/client.py",
+      "start_line": 6,
+      "end_line": 14,
+      "claim": "FederalRegisterClient implements lazy initialization of HTTP client",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/fedreg/client.py",
+      "start_line": 21,
+      "end_line": 34,
+      "claim": "Error handling converts HTTP exceptions to RuntimeError with descriptive messages",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/fedreg/cli.py",
+      "start_line": 13,
+      "end_line": 13,
+      "claim": "CLI uses Typer framework for command-line interface",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/fedreg/cli.py",
+      "start_line": 98,
+      "end_line": 132,
+      "claim": "Search command provides comprehensive document search with filtering options",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/fedreg/cli.py",
+      "start_line": 48,
+      "end_line": 96,
+      "claim": "Multiple output formats supported: console tables, markdown, and JSON",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/fedreg/cli.py",
+      "start_line": 134,
+      "end_line": 179,
+      "claim": "Document command retrieves single documents by FR number",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/fedreg/cli.py",
+      "start_line": 181,
+      "end_line": 226,
+      "claim": "Agencies command lists all Federal Register agencies",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/fedreg/cli.py",
+      "start_line": 264,
+      "end_line": 318,
+      "claim": "Public inspection command provides current regulatory documents under review",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/fedreg/cli.py",
+      "start_line": 321,
+      "end_line": 337,
+      "claim": "Comments-open command finds documents with active comment periods",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/fedreg/client.py",
+      "start_line": 9,
+      "end_line": 9,
+      "claim": "Federal Register API base URL is https://www.federalregister.gov/api/v1",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/research/fedreg/client.py",
+      "start_line": 36,
+      "end_line": 66,
+      "claim": "Search articles method provides comprehensive document search with type and agency filters",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/fedreg/client.py",
+      "start_line": 127,
+      "end_line": 131,
+      "claim": "Context manager support for proper resource cleanup",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/fedreg/pyproject.toml",
+      "start_line": 6,
+      "end_line": 10,
+      "claim": "Runtime dependencies are httpx, typer, and rich",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/fedreg/cli.py",
+      "start_line": 10,
+      "end_line": 11,
+      "claim": "Rich Console and centaur_sdk.cli_tables used for output formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/fedreg/cli.py",
+      "start_line": 23,
+      "end_line": 29,
+      "claim": "Text truncation utility for consistent output formatting",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/fedreg/pyproject.toml",
+      "start_line": 18,
+      "end_line": 19,
+      "claim": "Tool configuration specifies client.py module and federalregister.gov host",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/research/fedreg/.env.example",
+      "start_line": 1,
+      "end_line": 1,
+      "claim": "No API key required as Federal Register provides a public API",
+      "section": "External Systems"
+    }
+  ]
+}

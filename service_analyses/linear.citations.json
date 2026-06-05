@@ -1,0 +1,149 @@
+{
+  "component": "linear",
+  "source_file": "/tmp/centaur-src/service_analyses/linear.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/productivity/linear/pyproject.toml",
+      "start_line": 1,
+      "end_line": 11,
+      "claim": "The component has dependencies on httpx, typer, rich, and python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/linear/pyproject.toml",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "The CLI entry point is defined as 'linear = linear.cli:app'",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/linear/pyproject.toml",
+      "start_line": 21,
+      "end_line": 25,
+      "claim": "Component uses centaur secrets for LINEAR_API_KEY authentication",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/productivity/linear/cli.py",
+      "start_line": 12,
+      "end_line": 12,
+      "claim": "CLI application is built with Typer framework",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/linear/cli.py",
+      "start_line": 36,
+      "end_line": 42,
+      "claim": "The me command shows authenticated user information",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/linear/cli.py",
+      "start_line": 67,
+      "end_line": 86,
+      "claim": "Issues command supports filtering by team, assignee, state with JSON output option",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/linear/cli.py",
+      "start_line": 207,
+      "end_line": 228,
+      "claim": "Create command supports full issue creation with team, description, assignee, due date, priority, and parent options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/linear/cli.py",
+      "start_line": 670,
+      "end_line": 684,
+      "claim": "Weekly report command integrates GitHub and Slack for enriched reporting",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/linear/client.py",
+      "start_line": 9,
+      "end_line": 15,
+      "claim": "Client inherits from LinearReadonlyClient from api.integrations.linear",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "tools/productivity/linear/client.py",
+      "start_line": 18,
+      "end_line": 23,
+      "claim": "LinearClient extends LinearReadonlyClient with mutation capabilities",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/linear/client.py",
+      "start_line": 86,
+      "end_line": 134,
+      "claim": "Create issue method uses GraphQL mutation with comprehensive input parameters",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/linear/client.py",
+      "start_line": 192,
+      "end_line": 242,
+      "claim": "Label resolution system handles team-scoped vs workspace labels with conflict detection",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/linear/integrations.py",
+      "start_line": 31,
+      "end_line": 43,
+      "claim": "GitHub client uses httpx with bearer token authentication",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/linear/integrations.py",
+      "start_line": 105,
+      "end_line": 127,
+      "claim": "Slack integration uses optional slack_sdk with dynamic import",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/linear/integrations.py",
+      "start_line": 151,
+      "end_line": 162,
+      "claim": "LinearEnricher class coordinates GitHub and Slack integration for issue enrichment",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/linear/integrations.py",
+      "start_line": 195,
+      "end_line": 223,
+      "claim": "Issue enrichment uses search term extraction and prefers PRs over commits",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/productivity/linear/integrations.py",
+      "start_line": 257,
+      "end_line": 268,
+      "claim": "Weekly report function combines time-filtered issues with external link enrichment",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/linear/cli.py",
+      "start_line": 16,
+      "end_line": 33,
+      "claim": "Client initialization supports multiple .env file locations for configuration",
+      "section": "Configuration Management"
+    },
+    {
+      "file_path": "tools/productivity/linear/cli.py",
+      "start_line": 182,
+      "end_line": 205,
+      "claim": "Fetch asset command downloads Linear-hosted files with base64 encoding",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/productivity/linear/integrations.py",
+      "start_line": 15,
+      "end_line": 28,
+      "claim": "GitHub token fallback uses gh CLI tool when environment variable not available",
+      "section": "Component Interactions"
+    }
+  ]
+}

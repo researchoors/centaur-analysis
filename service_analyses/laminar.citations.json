@@ -1,0 +1,149 @@
+{
+  "component": "laminar",
+  "source_file": "/tmp/centaur-src/service_analyses/laminar.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 56,
+      "end_line": 63,
+      "claim": "LaminarClient is the primary interface for querying Laminar traces through SQL API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 11,
+      "end_line": 15,
+      "claim": "Component uses hardcoded defaults for cluster-local and external URLs with project ID",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 80,
+      "end_line": 87,
+      "claim": "Configuration follows cascading pattern: constructor \u2192 environment \u2192 defaults",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 119,
+      "end_line": 137,
+      "claim": "_query method centralizes SQL execution against Laminar app-server API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 32,
+      "end_line": 47,
+      "claim": "_interesting_attributes filters trace attributes by Centaur-specific prefixes",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 165,
+      "end_line": 187,
+      "claim": "recent_traces provides basic trace listing with span counts and metadata",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 189,
+      "end_line": 238,
+      "claim": "find_traces searches by Centaur identifiers using complex JOIN query",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 240,
+      "end_line": 295,
+      "claim": "get_trace retrieves detailed span information with optional input/output data",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 297,
+      "end_line": 357,
+      "claim": "diagnose_thread provides comprehensive thread analysis including errors and performance",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 139,
+      "end_line": 155,
+      "claim": "health method provides connectivity verification and configuration validation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/pyproject.toml",
+      "start_line": 6,
+      "end_line": 8,
+      "claim": "Component depends only on httpx for HTTP client functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 9,
+      "end_line": 9,
+      "claim": "httpx imported for HTTP client functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 5,
+      "end_line": 7,
+      "claim": "Standard library imports include json, os, and typing for core functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 108,
+      "end_line": 111,
+      "claim": "HTTP client instantiated with base_url and timeout configuration",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 393,
+      "end_line": 397,
+      "claim": "Context manager support for automatic client cleanup",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 18,
+      "end_line": 19,
+      "claim": "Parameter validation using _clamp_int for safety bounds",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 22,
+      "end_line": 29,
+      "claim": "_safe_json provides robust JSON parsing with error handling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 50,
+      "end_line": 53,
+      "claim": "_truncate limits string lengths with truncation indicators",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 121,
+      "end_line": 123,
+      "claim": "API requires either project_id or api_key for authentication",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/laminar/client.py",
+      "start_line": 291,
+      "end_line": 295,
+      "claim": "Trace results include external URL for UI navigation",
+      "section": "API Surface"
+    }
+  ]
+}

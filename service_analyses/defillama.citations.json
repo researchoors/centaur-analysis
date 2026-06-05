@@ -1,0 +1,114 @@
+{
+  "component": "defillama",
+  "source_file": "/tmp/centaur-src/service_analyses/defillama.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/crypto/defillama/client.py",
+      "start_line": 40,
+      "end_line": 44,
+      "claim": "The core client class manages HTTP communications with four distinct DefiLlama API endpoints",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/defillama/client.py",
+      "start_line": 54,
+      "end_line": 58,
+      "claim": "Client supports four distinct API endpoints: main, stablecoins, bridges, and pro",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/defillama/cli.py",
+      "start_line": 15,
+      "end_line": 16,
+      "claim": "CLI uses Typer framework for command structure",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/defillama/cli.py",
+      "start_line": 42,
+      "end_line": 48,
+      "claim": "Commands support multiple output formats including JSON and markdown",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/defillama/cli.py",
+      "start_line": 23,
+      "end_line": 31,
+      "claim": "Number formatting utility for human-readable financial values",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/defillama/client.py",
+      "start_line": 73,
+      "end_line": 93,
+      "claim": "Centralized request handler with authentication and error handling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/defillama/client.py",
+      "start_line": 35,
+      "end_line": 37,
+      "claim": "Perpetuals detection heuristic system",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/defillama/client.py",
+      "start_line": 278,
+      "end_line": 289,
+      "claim": "Intelligent error handling with suggestions for perpetuals venues",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/defillama/client.py",
+      "start_line": 67,
+      "end_line": 71,
+      "claim": "API key management through instance parameters and environment variables",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/defillama/cli.py",
+      "start_line": 9,
+      "end_line": 9,
+      "claim": "Uses centaur SDK for table formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/defillama/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External library dependencies with version constraints",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/defillama/cli.py",
+      "start_line": 174,
+      "end_line": 182,
+      "claim": "Protocols command with filtering by category and chain",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/defillama/cli.py",
+      "start_line": 521,
+      "end_line": 568,
+      "claim": "Raw command for direct API access with parameter support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/defillama/client.py",
+      "start_line": 136,
+      "end_line": 143,
+      "claim": "Stablecoins API methods for market cap analysis",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/defillama/client.py",
+      "start_line": 252,
+      "end_line": 263,
+      "claim": "DEX volume methods for trading analytics",
+      "section": "API Surface"
+    }
+  ]
+}

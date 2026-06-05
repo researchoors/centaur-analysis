@@ -1,0 +1,149 @@
+{
+  "component": "harmonic",
+  "source_file": "/tmp/centaur-src/service_analyses/harmonic.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/research/harmonic/client.py",
+      "start_line": 195,
+      "end_line": 202,
+      "claim": "HarmonicClient class provides authenticated HTTP requests with configurable timeout",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/harmonic/cli.py",
+      "start_line": 15,
+      "end_line": 16,
+      "claim": "CLI implements Typer framework with rich console integration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/harmonic/client.py",
+      "start_line": 9,
+      "end_line": 14,
+      "claim": "Data normalization pipeline includes text cleaning functions",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/harmonic/client.py",
+      "start_line": 210,
+      "end_line": 214,
+      "claim": "Authentication system integrates with Centaur SDK for secret management",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/harmonic/cli.py",
+      "start_line": 25,
+      "end_line": 35,
+      "claim": "Output formatting system provides money formatting with K/M/B suffixes",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/harmonic/client.py",
+      "start_line": 403,
+      "end_line": 492,
+      "claim": "Advanced people recruiting search with multiple filter types",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/harmonic/client.py",
+      "start_line": 241,
+      "end_line": 244,
+      "claim": "Centralized error handling converts HTTP exceptions to RuntimeError",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/harmonic/cli.py",
+      "start_line": 70,
+      "end_line": 159,
+      "claim": "Company enrichment command supports multiple identifiers and output formats",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/harmonic/client.py",
+      "start_line": 246,
+      "end_line": 273,
+      "claim": "Company enrichment method accepts multiple identifier types",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/harmonic/cli.py",
+      "start_line": 161,
+      "end_line": 213,
+      "claim": "Person enrichment command provides LinkedIn URL-based enrichment",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/harmonic/client.py",
+      "start_line": 275,
+      "end_line": 277,
+      "claim": "Person enrichment method takes LinkedIn URL parameter",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/harmonic/cli.py",
+      "start_line": 216,
+      "end_line": 294,
+      "claim": "Natural language search command with pagination and threshold support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/harmonic/client.py",
+      "start_line": 525,
+      "end_line": 538,
+      "claim": "Scout Search uses natural language queries with similarity thresholds",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/harmonic/pyproject.toml",
+      "start_line": 6,
+      "end_line": 10,
+      "claim": "Dependencies include httpx >=0.27.0, typer >=0.12.0, rich >=13.0.0",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/research/harmonic/client.py",
+      "start_line": 4,
+      "end_line": 4,
+      "claim": "httpx used for HTTP client functionality",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/research/harmonic/cli.py",
+      "start_line": 10,
+      "end_line": 10,
+      "claim": "typer used for CLI framework",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/research/harmonic/cli.py",
+      "start_line": 11,
+      "end_line": 11,
+      "claim": "rich used for console output formatting",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/research/harmonic/client.py",
+      "start_line": 6,
+      "end_line": 6,
+      "claim": "centaur_sdk.secret imported for API key management",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/research/harmonic/cli.py",
+      "start_line": 13,
+      "end_line": 13,
+      "claim": "centaur_sdk.Table imported for formatted table output",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/research/harmonic/pyproject.toml",
+      "start_line": 18,
+      "end_line": 18,
+      "claim": "Centaur configuration defines HARMONIC_API_KEY as HTTP secret for api.harmonic.ai",
+      "section": "Dependencies"
+    }
+  ]
+}

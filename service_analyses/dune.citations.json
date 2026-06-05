@@ -1,0 +1,177 @@
+{
+  "component": "dune",
+  "source_file": "/tmp/centaur-src/service_analyses/dune.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 24,
+  "citations": [
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 1,
+      "end_line": 15,
+      "claim": "The CLI module imports essential libraries for command-line functionality, rich output, and environment configuration",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 26,
+      "end_line": 27,
+      "claim": "Uses Typer framework for CLI creation with help text and Rich console for formatted output",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/dune/client.py",
+      "start_line": 8,
+      "end_line": 24,
+      "claim": "DuneClient class provides authenticated HTTP client with base URL and API key configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/dune/client.py",
+      "start_line": 26,
+      "end_line": 36,
+      "claim": "Internal _request method handles HTTP communication with error handling and JSON response parsing",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 30,
+      "end_line": 58,
+      "claim": "Execute command accepts query ID and optional JSON parameters, returning execution information",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 60,
+      "end_line": 90,
+      "claim": "Status command provides execution state checking with colored output based on query state",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 92,
+      "end_line": 135,
+      "claim": "Results command retrieves and displays query results in formatted table with row limiting",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 137,
+      "end_line": 199,
+      "claim": "Run command implements the complete execute-and-wait workflow with polling and timeout handling",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 168,
+      "end_line": 199,
+      "claim": "Polling loop with status spinner and timeout protection for long-running queries",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 234,
+      "end_line": 251,
+      "claim": "Cancel command provides execution cancellation functionality",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 253,
+      "end_line": 282,
+      "claim": "Query command retrieves and displays query metadata including parameters",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 284,
+      "end_line": 304,
+      "claim": "Raw command allows direct API endpoint access for debugging and advanced usage",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/dune/client.py",
+      "start_line": 38,
+      "end_line": 51,
+      "claim": "Execute query method handles POST request with optional parameters",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/dune/client.py",
+      "start_line": 53,
+      "end_line": 62,
+      "claim": "Get execution status method retrieves query state and queue information",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/dune/client.py",
+      "start_line": 64,
+      "end_line": 73,
+      "claim": "Get execution results method retrieves completed query data",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/dune/client.py",
+      "start_line": 17,
+      "end_line": 24,
+      "claim": "HTTP client configured with Dune API base URL and authentication headers",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/dune/client.py",
+      "start_line": 129,
+      "end_line": 133,
+      "claim": "Factory function integration with centaur_sdk for API key management",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 11,
+      "end_line": 11,
+      "claim": "Imports Table class from centaur_sdk for rich table formatting",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 20,
+      "end_line": 24,
+      "claim": "Singleton pattern for client instance management with lazy initialization",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/dune/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "Dependencies include httpx for HTTP client, typer for CLI, rich for output, and python-dotenv for configuration",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/dune/pyproject.toml",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "CLI script entry point configured as 'dune' command pointing to cli.py app",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/dune/pyproject.toml",
+      "start_line": 21,
+      "end_line": 23,
+      "claim": "Centaur configuration specifies module and secret management for DUNE_API_KEY",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/dune/cli.py",
+      "start_line": 124,
+      "end_line": 131,
+      "claim": "Results display uses Rich Table with column formatting and row limiting",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/dune/client.py",
+      "start_line": 11,
+      "end_line": 16,
+      "claim": "Client initialization requires API key and provides helpful error message with setup instructions",
+      "section": "External Systems"
+    }
+  ]
+}

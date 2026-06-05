@@ -1,0 +1,114 @@
+{
+  "component": "kalshi",
+  "source_file": "/tmp/centaur-src/service_analyses/kalshi.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/crypto/kalshi/client.py",
+      "start_line": 6,
+      "end_line": 15,
+      "claim": "The KalshiClient class manages HTTP communication with configurable timeout",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/client.py",
+      "start_line": 40,
+      "end_line": 49,
+      "claim": "The _request method handles HTTP errors and converts them to RuntimeError",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/cli.py",
+      "start_line": 11,
+      "end_line": 12,
+      "claim": "The CLI uses Typer framework for command structure",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/cli.py",
+      "start_line": 47,
+      "end_line": 57,
+      "claim": "Markets command provides filtering options and multiple output formats",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/cli.py",
+      "start_line": 21,
+      "end_line": 26,
+      "claim": "Format price utility converts cents to readable price format",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/cli.py",
+      "start_line": 28,
+      "end_line": 36,
+      "claim": "Format volume utility adds K/M suffixes for large numbers",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/cli.py",
+      "start_line": 73,
+      "end_line": 95,
+      "claim": "CLI supports JSON and markdown output modes in addition to rich tables",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/cli.py",
+      "start_line": 227,
+      "end_line": 255,
+      "claim": "History command requires two API calls - market details then candlesticks",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/client.py",
+      "start_line": 51,
+      "end_line": 80,
+      "claim": "List markets method supports filtering by status, event, and series",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/client.py",
+      "start_line": 124,
+      "end_line": 151,
+      "claim": "Candlesticks method provides OHLC data with configurable time periods",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/client.py",
+      "start_line": 12,
+      "end_line": 14,
+      "claim": "Client connects to Kalshi elections API at api.elections.kalshi.com",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "Component depends on httpx, typer, rich, and python-dotenv packages",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/cli.py",
+      "start_line": 9,
+      "end_line": 9,
+      "claim": "Uses centaur_sdk Table for rich console formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/cli.py",
+      "start_line": 383,
+      "end_line": 406,
+      "claim": "Search command filters markets by title, ticker, and subtitle matching",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/kalshi/cli.py",
+      "start_line": 449,
+      "end_line": 470,
+      "claim": "Raw command allows direct API endpoint access for debugging",
+      "section": "Key Components"
+    }
+  ]
+}

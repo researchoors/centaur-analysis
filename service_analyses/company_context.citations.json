@@ -1,0 +1,149 @@
+{
+  "component": "company_context",
+  "source_file": "/tmp/centaur-src/service_analyses/company_context.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 297,
+      "end_line": 298,
+      "claim": "CompanyContextClient is the primary interface class",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 477,
+      "end_line": 485,
+      "claim": "search() is the core search functionality with filtering options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 134,
+      "end_line": 150,
+      "claim": "_search_terms() extracts meaningful search terms while filtering stop words",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 153,
+      "end_line": 165,
+      "claim": "_search_where_clause() builds ParadeDB query clauses with relevance boosting",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 168,
+      "end_line": 191,
+      "claim": "_body_preview() creates contextual document previews centered on query matches",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 315,
+      "end_line": 433,
+      "claim": "_search_async() implements core search with BM25 ranking and live Slack integration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 239,
+      "end_line": 255,
+      "claim": "_load_slack_client() provides runtime discovery and loading of Slack client",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 258,
+      "end_line": 294,
+      "claim": "_live_slack_result() normalizes live Slack messages to document format",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 203,
+      "end_line": 219,
+      "claim": "_document_summary() standardizes document metadata extraction",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 102,
+      "end_line": 120,
+      "claim": "_parse_datetime_filter() provides robust ISO 8601 date parsing with timezone handling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 14,
+      "end_line": 14,
+      "claim": "asyncpg is used as the PostgreSQL driver",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/company_context/pyproject.toml",
+      "start_line": 7,
+      "end_line": 8,
+      "claim": "asyncpg>=0.30.0 and slack-sdk>=3.27.0 are the external dependencies",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 16,
+      "end_line": 16,
+      "claim": "centaur_sdk.tool_sdk provides the secret() function for configuration",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 574,
+      "end_line": 581,
+      "claim": "list_documents() provides chronological document listing with filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 756,
+      "end_line": 762,
+      "claim": "read_document() retrieves full document content with optional truncation and related documents",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 621,
+      "end_line": 622,
+      "claim": "latest_date() returns indexing freshness information",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 785,
+      "end_line": 786,
+      "claim": "_client() is the factory function providing standard client instances",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 393,
+      "end_line": 412,
+      "claim": "Live Slack integration supplements indexed results when gaps are detected",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 334,
+      "end_line": 376,
+      "claim": "The component queries a company_context_documents table with ParadeDB search",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/productivity/company_context/client.py",
+      "start_line": 241,
+      "end_line": 255,
+      "claim": "Dynamic slack component loading uses file system discovery and runtime module loading",
+      "section": "Component Interactions"
+    }
+  ]
+}

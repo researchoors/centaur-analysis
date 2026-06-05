@@ -1,0 +1,114 @@
+{
+  "component": "reth",
+  "source_file": "/tmp/centaur-src/service_analyses/reth.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/infra/reth/pyproject.toml",
+      "start_line": 1,
+      "end_line": 10,
+      "claim": "The component is a Python package with dependencies on httpx, typer, and rich",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/reth/client.py",
+      "start_line": 11,
+      "end_line": 16,
+      "claim": "RethClient is the core API client class that interfaces with ethPandaOps",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth/client.py",
+      "start_line": 33,
+      "end_line": 54,
+      "claim": "get_execution_timings method fetches raw timing data from ethPandaOps API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth/client.py",
+      "start_line": 56,
+      "end_line": 91,
+      "claim": "aggregate_timings provides statistical analysis including percentiles and rankings",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth/cli.py",
+      "start_line": 18,
+      "end_line": 26,
+      "claim": "The timings command provides execution timing statistics with multiple output formats",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth/cli.py",
+      "start_line": 104,
+      "end_line": 109,
+      "claim": "The slow command identifies and displays the slowest execution payloads",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth/cli.py",
+      "start_line": 14,
+      "end_line": 14,
+      "claim": "Uses typer framework for CLI command structure",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/reth/cli.py",
+      "start_line": 10,
+      "end_line": 10,
+      "claim": "Uses rich.console for colored terminal output",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/reth/cli.py",
+      "start_line": 12,
+      "end_line": 12,
+      "claim": "Uses centaur_sdk Table for structured console output formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/reth/client.py",
+      "start_line": 7,
+      "end_line": 8,
+      "claim": "Integrates with ethPandaOps monitoring infrastructure at lab.ethpandaops.io",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/infra/reth/client.py",
+      "start_line": 42,
+      "end_line": 42,
+      "claim": "Queries the int_engine_new_payload endpoint for execution timing data",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/infra/reth/cli.py",
+      "start_line": 93,
+      "end_line": 101,
+      "claim": "Special highlighting for Reth performance with rank-based messaging",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/reth/cli.py",
+      "start_line": 50,
+      "end_line": 63,
+      "claim": "Supports JSON and Slack output formats for integration workflows",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/reth/client.py",
+      "start_line": 18,
+      "end_line": 31,
+      "claim": "parse_duration method converts human-readable time strings to seconds",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth/cli.py",
+      "start_line": 77,
+      "end_line": 77,
+      "claim": "Reth client entries are highlighted with bold green styling",
+      "section": "Data Flows"
+    }
+  ]
+}

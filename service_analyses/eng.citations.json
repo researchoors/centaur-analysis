@@ -1,0 +1,65 @@
+{
+  "component": "eng",
+  "source_file": "/tmp/centaur-src/service_analyses/eng.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 8,
+  "citations": [
+    {
+      "file_path": "tools/personas/eng/pyproject.toml",
+      "start_line": 1,
+      "end_line": 9,
+      "claim": "The persona configuration defines metadata including name, description, type, engine, and prompt file location",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/personas/eng/PROMPT.md",
+      "start_line": 1,
+      "end_line": 12,
+      "claim": "The persona provides structured engineering workflow guidance with five primary goals",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/personas/eng/PROMPT.md",
+      "start_line": 13,
+      "end_line": 22,
+      "claim": "Engineering workflow includes research-first approach, explicit planning, precise implementation, and thorough validation",
+      "section": "Workflow Patterns"
+    },
+    {
+      "file_path": "tools/personas/eng/PROMPT.md",
+      "start_line": 17,
+      "end_line": 21,
+      "claim": "Validation requirements specify Python ruff check, TypeScript tsc --noEmit, and targeted testing",
+      "section": "Quality Gates"
+    },
+    {
+      "file_path": "tools/personas/eng/PROMPT.md",
+      "start_line": 23,
+      "end_line": 28,
+      "claim": "Debugging workflow emphasizes investigation before redesign with evidence-based findings",
+      "section": "Workflow Patterns"
+    },
+    {
+      "file_path": "tools/personas/eng/PROMPT.md",
+      "start_line": 29,
+      "end_line": 34,
+      "claim": "Quality bar prioritizes maintainability, reliability, minimal diffs, and complete architecture changes",
+      "section": "Quality Gates"
+    },
+    {
+      "file_path": "tools/personas/eng/PROMPT.md",
+      "start_line": 35,
+      "end_line": 40,
+      "claim": "Response style contract specifies outcome-first reporting and technical fidelity preservation",
+      "section": "Response Style Contract"
+    },
+    {
+      "file_path": "tools/personas/eng/PROMPT.md",
+      "start_line": 41,
+      "end_line": 44,
+      "claim": "Budget guidance provides complexity-based response patterns for simple, auto, and complex modes",
+      "section": "Key Components"
+    }
+  ]
+}

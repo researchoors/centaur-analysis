@@ -1,0 +1,142 @@
+{
+  "component": "coindesk",
+  "source_file": "/tmp/centaur-src/service_analyses/coindesk.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 19,
+  "citations": [
+    {
+      "file_path": "tools/crypto/coindesk/client.py",
+      "start_line": 12,
+      "end_line": 22,
+      "claim": "CoinDeskClient class definition with timeout configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/client.py",
+      "start_line": 15,
+      "end_line": 19,
+      "claim": "RSS URL and User-Agent configuration for browser-like headers",
+      "section": "RSS Feed Fetcher"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/client.py",
+      "start_line": 24,
+      "end_line": 56,
+      "claim": "Primary RSS feed fetching with HTTP client and fallback handling",
+      "section": "RSS Feed Fetcher"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/client.py",
+      "start_line": 58,
+      "end_line": 64,
+      "claim": "Fallback parsing strategy for JSON and HTML content",
+      "section": "Fallback Parsers"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/client.py",
+      "start_line": 66,
+      "end_line": 95,
+      "claim": "JSON parsing implementation with multiple field mapping strategies",
+      "section": "Fallback Parsers"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/client.py",
+      "start_line": 97,
+      "end_line": 126,
+      "claim": "HTML parsing using regex to extract article links",
+      "section": "Fallback Parsers"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/client.py",
+      "start_line": 129,
+      "end_line": 141,
+      "claim": "URL validation and normalization for CoinDesk domains only",
+      "section": "URL Validation"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/client.py",
+      "start_line": 161,
+      "end_line": 164,
+      "claim": "Public news() method API",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/client.py",
+      "start_line": 166,
+      "end_line": 177,
+      "claim": "Public search() method with keyword filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/cli.py",
+      "start_line": 16,
+      "end_line": 16,
+      "claim": "Typer CLI application definition",
+      "section": "CLI Interface"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/cli.py",
+      "start_line": 41,
+      "end_line": 46,
+      "claim": "News command definition with output format options",
+      "section": "CLI Interface"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/cli.py",
+      "start_line": 81,
+      "end_line": 87,
+      "claim": "Search command definition with query parameter",
+      "section": "CLI Interface"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/cli.py",
+      "start_line": 68,
+      "end_line": 78,
+      "claim": "Rich table formatting for console output",
+      "section": "CLI Interface"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies list with version constraints",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/client.py",
+      "start_line": 147,
+      "end_line": 158,
+      "claim": "Article data structure standardization in _parse_entries",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/tests/test_client.py",
+      "start_line": 6,
+      "end_line": 22,
+      "claim": "Test for JSON fallback parsing functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/tests/test_client.py",
+      "start_line": 25,
+      "end_line": 41,
+      "claim": "Test for HTML fallback parsing with link extraction",
+      "section": "Fallback Parsers"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/client.py",
+      "start_line": 28,
+      "end_line": 34,
+      "claim": "Browser-like HTTP headers to avoid blocking",
+      "section": "RSS Feed Fetcher"
+    },
+    {
+      "file_path": "tools/crypto/coindesk/cli.py",
+      "start_line": 12,
+      "end_line": 12,
+      "claim": "Integration with centaur_sdk Table component",
+      "section": "External Dependencies"
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "component": "databento",
+  "source_file": "/tmp/centaur-src/service_analyses/databento.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 16,
+  "citations": [
+    {
+      "file_path": "tools/crypto/databento/pyproject.toml",
+      "start_line": 1,
+      "end_line": 14,
+      "claim": "The component is a Python CLI tool named databento with a console script entry point",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/databento/cli.py",
+      "start_line": 11,
+      "end_line": 11,
+      "claim": "Uses Typer framework for CLI interface with help text for stock market OHLCV data",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/databento/client.py",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "DatabentoClient class serves as the core HTTP client for Databento Historical API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/databento/cli.py",
+      "start_line": 15,
+      "end_line": 22,
+      "claim": "The prices command accepts symbol, start/end dates, schema, and JSON output options",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/databento/client.py",
+      "start_line": 16,
+      "end_line": 23,
+      "claim": "Authentication system uses centaur SDK secret manager with fallback error handling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/databento/client.py",
+      "start_line": 69,
+      "end_line": 78,
+      "claim": "Error handling covers different HTTP status codes with specific logic for 422/403",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/databento/cli.py",
+      "start_line": 6,
+      "end_line": 9,
+      "claim": "Uses python-dotenv for environment variable configuration management",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/databento/client.py",
+      "start_line": 29,
+      "end_line": 34,
+      "claim": "HTTP client initialization uses httpx with base URL, basic auth, and timeout configuration",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/databento/client.py",
+      "start_line": 81,
+      "end_line": 85,
+      "claim": "Response parsing handles JSONL format by splitting lines and parsing each as JSON",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/databento/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include httpx, typer, rich, and python-dotenv with specific version constraints",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/databento/client.py",
+      "start_line": 6,
+      "end_line": 8,
+      "claim": "Uses httpx for HTTP client functionality and centaur_sdk for secret management",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/databento/cli.py",
+      "start_line": 5,
+      "end_line": 7,
+      "claim": "CLI layer imports typer for command framework and rich for console formatting",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/databento/client.py",
+      "start_line": 10,
+      "end_line": 10,
+      "claim": "Base URL points to Databento Historical API at hist.databento.com",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/databento/client.py",
+      "start_line": 54,
+      "end_line": 62,
+      "claim": "API request uses specific parameters including XNAS.ITCH dataset and JSON encoding",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/databento/client.py",
+      "start_line": 65,
+      "end_line": 65,
+      "claim": "Makes GET requests to /timeseries.get_range endpoint",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/databento/cli.py",
+      "start_line": 16,
+      "end_line": 21,
+      "claim": "CLI interface supports symbol, start, end, schema, and json options",
+      "section": "API Surface"
+    }
+  ]
+}

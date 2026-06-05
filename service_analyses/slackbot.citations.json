@@ -1,0 +1,149 @@
+{
+  "component": "slackbot",
+  "source_file": "/tmp/centaur-src/service_analyses/slackbot.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "services/slackbot/src/index.ts",
+      "start_line": 1,
+      "end_line": 50,
+      "claim": "The main application uses Hono web framework and imports key modules for Slack integration, Centaur handoff, and agent sessions",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "services/slackbot/src/index.ts",
+      "start_line": 65,
+      "end_line": 100,
+      "claim": "The application uses middleware for tracing, logging, timeout handling, and request ID generation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/slackbot/src/index.ts",
+      "start_line": 139,
+      "end_line": 170,
+      "claim": "Slack event handler implements deduplication and background processing",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "services/slackbot/src/centaur/handoff.ts",
+      "start_line": 16,
+      "end_line": 81,
+      "claim": "CentaurHandoff class sends normalized events to Centaur workflow API with tracing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/slackbot/src/slack/normalize.ts",
+      "start_line": 64,
+      "end_line": 135,
+      "claim": "Event normalization transforms Slack events into standardized format with mention detection",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/slackbot/src/slack/agent-session.ts",
+      "start_line": 122,
+      "end_line": 150,
+      "claim": "AgentSessionRenderer manages streaming agent execution sessions with real-time updates",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/slackbot/src/centaur/final-delivery.ts",
+      "start_line": 32,
+      "end_line": 60,
+      "claim": "Final delivery poller runs every 2 seconds to claim and deliver completed workflow results",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/slackbot/src/slack/dedup.ts",
+      "start_line": 1,
+      "end_line": 32,
+      "claim": "EventDeduper provides TTL-based deduplication for Slack webhook events",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/slackbot/src/config.ts",
+      "start_line": 3,
+      "end_line": 75,
+      "claim": "Configuration uses Zod schema for validating environment variables with defaults",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/slackbot/src/slack/signature.ts",
+      "start_line": 7,
+      "end_line": 46,
+      "claim": "Signature verification implements HMAC-SHA256 validation for Slack webhooks",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/slackbot/src/otel.ts",
+      "start_line": 23,
+      "end_line": 72,
+      "claim": "OpenTelemetry integration provides distributed tracing with OTLP export",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/slackbot/src/logging.ts",
+      "start_line": 47,
+      "end_line": 94,
+      "claim": "Logging system automatically redacts PII including emails, SSNs, and tokens",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/slackbot/package.json",
+      "start_line": 19,
+      "end_line": 31,
+      "claim": "Runtime dependencies include Hono, Slack Web API, OpenTelemetry, and Zod",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "services/slackbot/src/index.ts",
+      "start_line": 103,
+      "end_line": 120,
+      "claim": "Health endpoints provide basic and readiness checks",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "services/slackbot/src/index.ts",
+      "start_line": 179,
+      "end_line": 195,
+      "claim": "Message API endpoints support posting, updating, and deleting Slack messages",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "services/slackbot/src/index.ts",
+      "start_line": 254,
+      "end_line": 280,
+      "claim": "Streaming API provides start, append, and stop operations for real-time messages",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "services/slackbot/src/index.ts",
+      "start_line": 325,
+      "end_line": 400,
+      "claim": "Agent session API manages execution sessions with text, step, and completion endpoints",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "services/slackbot/src/index.ts",
+      "start_line": 526,
+      "end_line": 580,
+      "claim": "Slack event processing includes authorization checks and normalization",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "services/slackbot/src/index.ts",
+      "start_line": 673,
+      "end_line": 720,
+      "claim": "Slack command handler integrates with Linear API for feedback issue creation",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "services/slackbot/src/constants.ts",
+      "start_line": 1,
+      "end_line": 39,
+      "claim": "Slack reply limits define message size constraints for various content types",
+      "section": "Key Components"
+    }
+  ]
+}

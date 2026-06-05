@@ -1,0 +1,114 @@
+{
+  "component": "sentry",
+  "source_file": "/tmp/centaur-src/service_analyses/sentry.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 18,
+      "end_line": 24,
+      "claim": "The SentryClient class encapsulates all HTTP communication with the Sentry API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 1,
+      "end_line": 7,
+      "claim": "The component provides read-only access to Sentry API for issue browsing without AI features",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 44,
+      "end_line": 46,
+      "claim": "Authentication system uses Bearer tokens from centaur_sdk.secret or environment variables",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 73,
+      "end_line": 75,
+      "claim": "Navigation methods provide organization and project discovery",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 83,
+      "end_line": 114,
+      "claim": "Issue management API supports native Sentry query syntax and pagination",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 148,
+      "end_line": 164,
+      "claim": "Event processing methods access individual error events with stacktraces",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 166,
+      "end_line": 176,
+      "claim": "Tag analysis functionality retrieves tag value distributions for issues",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 38,
+      "end_line": 42,
+      "claim": "Client supports both SaaS and self-hosted Sentry instances through configurable URLs",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 49,
+      "end_line": 57,
+      "claim": "Client manages internal httpx.Client instance with timeout and redirect handling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 185,
+      "end_line": 189,
+      "claim": "Context manager support enables automatic resource cleanup",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/sentry/pyproject.toml",
+      "start_line": 6,
+      "end_line": 8,
+      "claim": "httpx>=0.27.0 is the primary external dependency for HTTP communication",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 13,
+      "end_line": 13,
+      "claim": "httpx is imported as the HTTP client library",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 192,
+      "end_line": 193,
+      "claim": "Factory function _client() creates default SentryClient instances",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/sentry/test_client.py",
+      "start_line": 14,
+      "end_line": 25,
+      "claim": "RecordingSentryClient test double captures API calls for unit testing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/sentry/client.py",
+      "start_line": 59,
+      "end_line": 69,
+      "claim": "Request method handles parameter cleaning and error responses",
+      "section": "Data Flows"
+    }
+  ]
+}

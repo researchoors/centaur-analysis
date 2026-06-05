@@ -1,0 +1,114 @@
+{
+  "component": "youtube",
+  "source_file": "/tmp/centaur-src/service_analyses/youtube.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/research/youtube/client.py",
+      "start_line": 21,
+      "end_line": 28,
+      "claim": "YouTubeClient class is the core client handling all YouTube API interactions",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/youtube/cli.py",
+      "start_line": 14,
+      "end_line": 15,
+      "claim": "Typer-based CLI interface with multiple commands",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/youtube/client.py",
+      "start_line": 261,
+      "end_line": 276,
+      "claim": "list_transcripts method for listing available caption tracks",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/youtube/client.py",
+      "start_line": 278,
+      "end_line": 336,
+      "claim": "get_transcript method with time-based slicing and language selection",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/youtube/cli.py",
+      "start_line": 73,
+      "end_line": 93,
+      "claim": "search command with filtering and output format options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/youtube/cli.py",
+      "start_line": 133,
+      "end_line": 146,
+      "claim": "video command for detailed video information",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/youtube/client.py",
+      "start_line": 338,
+      "end_line": 356,
+      "claim": "Multi-layered authentication system with fallback options",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/youtube/client.py",
+      "start_line": 125,
+      "end_line": 137,
+      "claim": "Transcript extraction using InnerTube API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/youtube/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include httpx, typer, rich, and python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/youtube/cli.py",
+      "start_line": 24,
+      "end_line": 34,
+      "claim": "Data formatting utilities for number abbreviation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/youtube/cli.py",
+      "start_line": 37,
+      "end_line": 52,
+      "claim": "Duration parsing from ISO 8601 format for human-readable display",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/youtube/client.py",
+      "start_line": 40,
+      "end_line": 64,
+      "claim": "Sophisticated URL normalization for YouTube video IDs",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/youtube/client.py",
+      "start_line": 381,
+      "end_line": 396,
+      "claim": "search method for YouTube content search",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/youtube/client.py",
+      "start_line": 398,
+      "end_line": 404,
+      "claim": "get_video method for detailed video information",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/youtube/client.py",
+      "start_line": 406,
+      "end_line": 412,
+      "claim": "get_channel method for channel details and statistics",
+      "section": "API Surface"
+    }
+  ]
+}

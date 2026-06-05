@@ -1,0 +1,86 @@
+{
+  "component": "karma",
+  "source_file": "/tmp/centaur-src/service_analyses/karma.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 11,
+  "citations": [
+    {
+      "file_path": "tools/crypto/karma/client.py",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "Main client class provides access to DAO delegate reputation scores and governance metrics",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/karma/client.py",
+      "start_line": 13,
+      "end_line": 16,
+      "claim": "Client initialization with configurable timeout and base URL setup",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/karma/client.py",
+      "start_line": 24,
+      "end_line": 35,
+      "claim": "HTTP request handling with error processing and JSON response parsing",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/karma/client.py",
+      "start_line": 37,
+      "end_line": 43,
+      "claim": "list_daos method retrieves all supported DAOs with pagination",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/karma/client.py",
+      "start_line": 45,
+      "end_line": 71,
+      "claim": "get_delegates method provides paginated delegate listings with sorting options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/karma/client.py",
+      "start_line": 73,
+      "end_line": 86,
+      "claim": "get_delegate method retrieves individual delegate profiles by DAO and address",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/karma/client.py",
+      "start_line": 88,
+      "end_line": 101,
+      "claim": "get_delegate_activity method returns voting and proposal activity for delegates",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/karma/client.py",
+      "start_line": 114,
+      "end_line": 124,
+      "claim": "Context manager implementation for proper resource management",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/karma/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include httpx for HTTP requests and CLI libraries",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/karma/pyproject.toml",
+      "start_line": 18,
+      "end_line": 20,
+      "claim": "Component configuration specifies API host and module structure",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/karma/.env.example",
+      "start_line": 1,
+      "end_line": 1,
+      "claim": "No API key required for public endpoints",
+      "section": "External Dependencies"
+    }
+  ]
+}

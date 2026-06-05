@@ -1,0 +1,149 @@
+{
+  "component": "veo3",
+  "source_file": "/tmp/centaur-src/service_analyses/veo3.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/media/veo3/client.py",
+      "start_line": 13,
+      "end_line": 22,
+      "claim": "Veo3Client class definition with model configuration constants",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/veo3/cli.py",
+      "start_line": 10,
+      "end_line": 11,
+      "claim": "Main Typer application instance for CLI interface",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/veo3/cli.py",
+      "start_line": 25,
+      "end_line": 41,
+      "claim": "Generate command signature and parameters",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/veo3/client.py",
+      "start_line": 70,
+      "end_line": 79,
+      "claim": "Generate method signature with all parameters",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/veo3/client.py",
+      "start_line": 113,
+      "end_line": 126,
+      "claim": "Video generation API call and polling implementation",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/media/veo3/client.py",
+      "start_line": 36,
+      "end_line": 43,
+      "claim": "API key resolution using centaur_sdk secret management",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/veo3/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "Complete dependency list with version constraints",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/veo3/cli.py",
+      "start_line": 64,
+      "end_line": 81,
+      "claim": "from-image command definition for image-to-video generation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/veo3/cli.py",
+      "start_line": 105,
+      "end_line": 116,
+      "claim": "extend command for video extension functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/veo3/client.py",
+      "start_line": 190,
+      "end_line": 200,
+      "claim": "Image upload and generation process for image-to-video",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/media/veo3/cli.py",
+      "start_line": 3,
+      "end_line": 8,
+      "claim": "Import statements showing dependency usage",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/veo3/client.py",
+      "start_line": 7,
+      "end_line": 10,
+      "claim": "Google GenAI SDK and centaur_sdk imports",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/veo3/client.py",
+      "start_line": 98,
+      "end_line": 105,
+      "claim": "Parameter validation for model, aspect ratio, and resolution",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/media/veo3/cli.py",
+      "start_line": 45,
+      "end_line": 61,
+      "claim": "Error handling and user feedback in CLI commands",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/media/veo3/cli.py",
+      "start_line": 139,
+      "end_line": 153,
+      "claim": "Models command for listing available models with rich table output",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/veo3/client.py",
+      "start_line": 51,
+      "end_line": 68,
+      "claim": "list_models method returning model information",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/veo3/pyproject.toml",
+      "start_line": 18,
+      "end_line": 22,
+      "claim": "Centaur tool configuration with secrets management",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/veo3/cli.py",
+      "start_line": 20,
+      "end_line": 22,
+      "claim": "Progress callback system for user feedback",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/veo3/client.py",
+      "start_line": 122,
+      "end_line": 126,
+      "claim": "Polling loop implementation for async operations",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/media/veo3/client.py",
+      "start_line": 136,
+      "end_line": 138,
+      "claim": "File download and save process",
+      "section": "Data Flows"
+    }
+  ]
+}

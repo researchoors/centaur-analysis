@@ -1,0 +1,128 @@
+{
+  "component": "tally",
+  "source_file": "/tmp/centaur-src/service_analyses/tally.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 17,
+  "citations": [
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 9,
+      "end_line": 14,
+      "claim": "TallyClient class provides main interface for Tally governance API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 16,
+      "end_line": 22,
+      "claim": "Constructor accepts API key and timeout parameters with secret management fallback",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 30,
+      "end_line": 41,
+      "claim": "GraphQL query execution with error handling and authentication",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 43,
+      "end_line": 70,
+      "claim": "list_organizations method with GraphQL query for organization data",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 72,
+      "end_line": 97,
+      "claim": "get_organization method for retrieving single organization by slug",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 99,
+      "end_line": 133,
+      "claim": "list_governors method with optional organization filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 135,
+      "end_line": 191,
+      "claim": "list_proposals method with governor and organization filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 193,
+      "end_line": 235,
+      "claim": "get_proposal method for retrieving single proposal by ID",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 237,
+      "end_line": 281,
+      "claim": "list_delegates method with organization filtering and sorting options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 283,
+      "end_line": 293,
+      "claim": "Resource management with context manager protocol and manual cleanup",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 4,
+      "end_line": 4,
+      "claim": "httpx library import for HTTP client functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 6,
+      "end_line": 6,
+      "claim": "centaur_sdk import for secret management integration",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 17,
+      "end_line": 19,
+      "claim": "API key resolution using centaur_sdk secret function with fallback",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 20,
+      "end_line": 20,
+      "claim": "Base URL configuration for Tally GraphQL API endpoint",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/tally/client.py",
+      "start_line": 24,
+      "end_line": 28,
+      "claim": "Lazy initialization of httpx client with timeout configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/tally/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include httpx, typer, rich, and python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/tally/pyproject.toml",
+      "start_line": 18,
+      "end_line": 19,
+      "claim": "Centaur configuration specifies client.py module and API key secret",
+      "section": "Architecture"
+    }
+  ]
+}

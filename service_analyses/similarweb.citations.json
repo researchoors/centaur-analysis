@@ -1,0 +1,156 @@
+{
+  "component": "similarweb",
+  "source_file": "/tmp/centaur-src/service_analyses/similarweb.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 21,
+  "citations": [
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 11,
+      "end_line": 11,
+      "claim": "Main Typer application that orchestrates all CLI commands",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/client.py",
+      "start_line": 26,
+      "end_line": 33,
+      "claim": "Core API client class that handles all communication with the SimilarWeb REST API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 69,
+      "end_line": 80,
+      "claim": "Traffic analysis command for website traffic metrics",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 122,
+      "end_line": 127,
+      "claim": "Ranking commands for global, country, and industry rankings",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 182,
+      "end_line": 190,
+      "claim": "Traffic sources analysis functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 245,
+      "end_line": 253,
+      "claim": "Geographic analysis commands",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 303,
+      "end_line": 309,
+      "claim": "Competitive intelligence tools for similar websites",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 350,
+      "end_line": 359,
+      "claim": "Keyword research functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 410,
+      "end_line": 415,
+      "claim": "Mobile app intelligence commands",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 21,
+      "end_line": 50,
+      "claim": "Output formatting utilities for numbers, percentages, and tables",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 52,
+      "end_line": 66,
+      "claim": "Date handling utilities for parsing and default ranges",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 468,
+      "end_line": 473,
+      "claim": "Raw API access for advanced users",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/similarweb/client.py",
+      "start_line": 58,
+      "end_line": 84,
+      "claim": "HTTP request handling with authentication and error management",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 15,
+      "end_line": 18,
+      "claim": "Lazy client instantiation pattern",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/research/similarweb/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies: httpx, typer, rich, python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/similarweb/client.py",
+      "start_line": 6,
+      "end_line": 6,
+      "claim": "httpx used for HTTP client functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 6,
+      "end_line": 7,
+      "claim": "typer and rich used for CLI framework and console output",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/similarweb/client.py",
+      "start_line": 8,
+      "end_line": 8,
+      "claim": "centaur_sdk integration for secret management",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 9,
+      "end_line": 9,
+      "claim": "centaur_sdk Table class for rich table rendering",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/similarweb/client.py",
+      "start_line": 37,
+      "end_line": 37,
+      "claim": "SimilarWeb API base URL configuration",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/research/similarweb/cli.py",
+      "start_line": 89,
+      "end_line": 93,
+      "claim": "Error handling pattern with user-friendly messages",
+      "section": "Data Flows"
+    }
+  ]
+}

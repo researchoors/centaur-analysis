@@ -1,0 +1,114 @@
+{
+  "component": "eodhd",
+  "source_file": "/tmp/centaur-src/service_analyses/eodhd.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/crypto/eodhd/pyproject.toml",
+      "start_line": 1,
+      "end_line": 11,
+      "claim": "Component is a Python package with httpx, typer, rich, and python-dotenv dependencies",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/pyproject.toml",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "CLI entry point configured as 'eodhd' command pointing to cli:app",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/pyproject.toml",
+      "start_line": 21,
+      "end_line": 23,
+      "claim": "Centaur configuration specifies client.py module and EODHD_API_KEY secret",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/client.py",
+      "start_line": 10,
+      "end_line": 19,
+      "claim": "EodhdClient class handles API key initialization and validation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/client.py",
+      "start_line": 21,
+      "end_line": 39,
+      "claim": "HTTP request method with authentication, error handling, and JSON parsing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/client.py",
+      "start_line": 41,
+      "end_line": 47,
+      "claim": "get_quote method for real-time equity quotes with automatic .US suffix",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/client.py",
+      "start_line": 49,
+      "end_line": 70,
+      "claim": "get_eod_prices method for historical data with optional date filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/client.py",
+      "start_line": 73,
+      "end_line": 76,
+      "claim": "Factory function using Centaur SDK secret management",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/cli.py",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "Typer application setup with name and help description",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/cli.py",
+      "start_line": 21,
+      "end_line": 43,
+      "claim": "Quote command with symbol argument and JSON output option",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/cli.py",
+      "start_line": 45,
+      "end_line": 69,
+      "claim": "EOD command with date filtering and display formatting",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/cli.py",
+      "start_line": 33,
+      "end_line": 42,
+      "claim": "Rich console formatting with color-coded output for market data",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/cli.py",
+      "start_line": 5,
+      "end_line": 11,
+      "claim": "Import dependencies including typer, dotenv, rich, and client module",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/client.py",
+      "start_line": 7,
+      "end_line": 7,
+      "claim": "Base URL configuration for EODHD API endpoints",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/eodhd/client.py",
+      "start_line": 30,
+      "end_line": 31,
+      "claim": "httpx client configuration with base URL and timeout settings",
+      "section": "External Dependencies"
+    }
+  ]
+}

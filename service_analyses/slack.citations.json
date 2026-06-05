@@ -1,0 +1,128 @@
+{
+  "component": "slack",
+  "source_file": "/tmp/centaur-src/service_analyses/slack.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 17,
+  "citations": [
+    {
+      "file_path": "tools/productivity/slack/pyproject.toml",
+      "start_line": 1,
+      "end_line": 33,
+      "claim": "Component metadata, dependencies, and secret configuration",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/slack/cli.py",
+      "start_line": 12,
+      "end_line": 14,
+      "claim": "Typer CLI application setup with rich console integration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/slack/cli.py",
+      "start_line": 17,
+      "end_line": 42,
+      "claim": "Send message command with threading and attribution support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/slack/cli.py",
+      "start_line": 45,
+      "end_line": 78,
+      "claim": "Message search command with channel filtering and output formatting",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/slack/cli.py",
+      "start_line": 808,
+      "end_line": 850,
+      "claim": "Feedback collection system with multiple analysis modes",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/slack/client.py",
+      "start_line": 72,
+      "end_line": 106,
+      "claim": "SlackClient class with comprehensive error handling and caching configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/slack/client.py",
+      "start_line": 107,
+      "end_line": 129,
+      "claim": "Client initialization with bot and search token support",
+      "section": "Authentication and Rate Limiting"
+    },
+    {
+      "file_path": "tools/productivity/slack/client.py",
+      "start_line": 134,
+      "end_line": 146,
+      "claim": "Rate limit and authentication error detection logic",
+      "section": "Authentication and Rate Limiting"
+    },
+    {
+      "file_path": "tools/productivity/slack/client.py",
+      "start_line": 196,
+      "end_line": 242,
+      "claim": "Rate limit retry mechanism with exponential backoff",
+      "section": "Authentication and Rate Limiting"
+    },
+    {
+      "file_path": "tools/productivity/slack/client.py",
+      "start_line": 615,
+      "end_line": 643,
+      "claim": "Dual-mode message search with native API and local fallback",
+      "section": "Message Search System"
+    },
+    {
+      "file_path": "tools/productivity/slack/client.py",
+      "start_line": 669,
+      "end_line": 712,
+      "claim": "Native Slack search implementation using search.messages API",
+      "section": "Message Search System"
+    },
+    {
+      "file_path": "tools/productivity/slack/client.py",
+      "start_line": 464,
+      "end_line": 537,
+      "claim": "Bot channel listing with membership filtering and caching",
+      "section": "User and Channel Management"
+    },
+    {
+      "file_path": "tools/productivity/slack/client.py",
+      "start_line": 1373,
+      "end_line": 1422,
+      "claim": "Message sending with channel resolution and attribution",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/slack/feedback.py",
+      "start_line": 1,
+      "end_line": 29,
+      "claim": "Feedback system for automated bot improvement with Slack integration",
+      "section": "Feedback Collection Engine"
+    },
+    {
+      "file_path": "tools/productivity/slack/feedback.py",
+      "start_line": 74,
+      "end_line": 106,
+      "claim": "Feedback signal extraction and structured item representation",
+      "section": "Feedback Collection Engine"
+    },
+    {
+      "file_path": "tools/productivity/slack/feedback.py",
+      "start_line": 116,
+      "end_line": 124,
+      "claim": "Centaur agent client for dispatching improvement runs",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/productivity/slack/feedback.py",
+      "start_line": 155,
+      "end_line": 208,
+      "claim": "Agent improvement run orchestration with thread management",
+      "section": "External Systems"
+    }
+  ]
+}

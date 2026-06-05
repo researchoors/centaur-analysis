@@ -1,0 +1,121 @@
+{
+  "component": "polymarket",
+  "source_file": "/tmp/centaur-src/service_analyses/polymarket.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 16,
+  "citations": [
+    {
+      "file_path": "tools/crypto/polymarket/client.py",
+      "start_line": 6,
+      "end_line": 14,
+      "claim": "PolymarketClient class manages connections to both Polymarket APIs with timeout configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/client.py",
+      "start_line": 22,
+      "end_line": 30,
+      "claim": "Unified error handling and response processing through _request method",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/cli.py",
+      "start_line": 10,
+      "end_line": 10,
+      "claim": "Typer-based CLI application with help description",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/cli.py",
+      "start_line": 66,
+      "end_line": 75,
+      "claim": "Markets command with limit, closed, and output format options",
+      "section": "CLI Command Structure"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/cli.py",
+      "start_line": 118,
+      "end_line": 125,
+      "claim": "Market command for specific market details",
+      "section": "CLI Command Structure"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/cli.py",
+      "start_line": 161,
+      "end_line": 168,
+      "claim": "Trades command requiring market condition ID",
+      "section": "CLI Command Structure"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/cli.py",
+      "start_line": 207,
+      "end_line": 216,
+      "claim": "History command with interval and fidelity options",
+      "section": "CLI Command Structure"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/cli.py",
+      "start_line": 20,
+      "end_line": 28,
+      "claim": "Number formatting with K/M/B suffixes for readability",
+      "section": "Data Parsing Utilities"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/cli.py",
+      "start_line": 38,
+      "end_line": 45,
+      "claim": "Price parsing from JSON arrays with error handling",
+      "section": "Data Parsing Utilities"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/cli.py",
+      "start_line": 77,
+      "end_line": 79,
+      "claim": "JSON output format support",
+      "section": "Output Formatting System"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/cli.py",
+      "start_line": 98,
+      "end_line": 115,
+      "claim": "Rich table formatting with styled columns",
+      "section": "Output Formatting System"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/client.py",
+      "start_line": 32,
+      "end_line": 48,
+      "claim": "List markets method with filtering and ordering parameters",
+      "section": "Python API"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/client.py",
+      "start_line": 94,
+      "end_line": 103,
+      "claim": "Price retrieval from CLOB API with token ID and side parameters",
+      "section": "Python API"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies with version constraints",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/client.py",
+      "start_line": 11,
+      "end_line": 12,
+      "claim": "Integration with Gamma and CLOB API endpoints",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/polymarket/cli.py",
+      "start_line": 14,
+      "end_line": 17,
+      "claim": "Client instantiation through get_client factory function",
+      "section": "Data Flows"
+    }
+  ]
+}

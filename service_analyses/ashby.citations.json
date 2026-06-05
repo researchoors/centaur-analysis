@@ -1,0 +1,114 @@
+{
+  "component": "ashby",
+  "source_file": "/tmp/centaur-src/service_analyses/ashby.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/business/ashby/client.py",
+      "start_line": 11,
+      "end_line": 30,
+      "claim": "AshbyClient implements HTTP basic authentication with API key management",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/ashby/client.py",
+      "start_line": 53,
+      "end_line": 76,
+      "claim": "Pagination support with cursor-based navigation for large result sets",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/ashby/client.py",
+      "start_line": 32,
+      "end_line": 51,
+      "claim": "Comprehensive error handling for API responses including 401/403 status codes",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/business/ashby/cli.py",
+      "start_line": 16,
+      "end_line": 17,
+      "claim": "Typer-based CLI application with rich console formatting",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/ashby/cli.py",
+      "start_line": 728,
+      "end_line": 742,
+      "claim": "Advanced candidate screening functionality with background information",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/ashby/cli.py",
+      "start_line": 1274,
+      "end_line": 1289,
+      "claim": "Access control system prevents sharing of employee candidate data",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/ashby/client.py",
+      "start_line": 79,
+      "end_line": 94,
+      "claim": "Job listing and filtering functionality with status-based filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/ashby/client.py",
+      "start_line": 101,
+      "end_line": 119,
+      "claim": "Candidate search with email/name detection and flexible search parameters",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/business/ashby/client.py",
+      "start_line": 209,
+      "end_line": 228,
+      "claim": "Resume file URL generation and download functionality",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/business/ashby/cli.py",
+      "start_line": 857,
+      "end_line": 903,
+      "claim": "PDF text extraction using pypdf library for resume analysis",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/business/ashby/cli.py",
+      "start_line": 20,
+      "end_line": 58,
+      "claim": "Integration with pmadmin database for employee verification",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/business/ashby/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies: httpx, typer, rich, pypdf for HTTP, CLI, formatting, and PDF processing",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/business/ashby/client.py",
+      "start_line": 8,
+      "end_line": 8,
+      "claim": "Ashby API base URL configuration",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/business/ashby/client.py",
+      "start_line": 23,
+      "end_line": 30,
+      "claim": "HTTP client configuration with timeout and authentication headers",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/business/ashby/cli.py",
+      "start_line": 1140,
+      "end_line": 1147,
+      "claim": "Interviewer statistics analysis for grading pattern identification",
+      "section": "API Surface"
+    }
+  ]
+}

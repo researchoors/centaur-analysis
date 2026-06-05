@@ -1,0 +1,114 @@
+{
+  "component": "centaur-sdk",
+  "source_file": "/tmp/centaur-src/service_analyses/centaur-sdk.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "centaur_sdk/__init__.py",
+      "start_line": 1,
+      "end_line": 7,
+      "claim": "SDK provides secret resolution, table utilities, and tool context management as its primary API",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "centaur_sdk/tool_sdk.py",
+      "start_line": 19,
+      "end_line": 25,
+      "claim": "ToolContext dataclass contains name, secrets dict, thread_key, and container_id fields",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "centaur_sdk/tool_sdk.py",
+      "start_line": 47,
+      "end_line": 76,
+      "claim": "Secret resolution follows three-tier fallback: tool context \u2192 backend \u2192 default \u2192 KeyError",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "centaur_sdk/backends/base.py",
+      "start_line": 9,
+      "end_line": 18,
+      "claim": "SecretBackend abstract base class defines async get() and list_keys() methods",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "centaur_sdk/backends/stub.py",
+      "start_line": 17,
+      "end_line": 33,
+      "claim": "StubBackend returns key names as values for firewall injection in server mode",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "centaur_sdk/backends/env.py",
+      "start_line": 10,
+      "end_line": 17,
+      "claim": "EnvBackend reads secrets from os.environ for CLI mode",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "centaur_sdk/backends/registry.py",
+      "start_line": 24,
+      "end_line": 37,
+      "claim": "Registry auto-configures StubBackend by default for server security",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "centaur_sdk/logging.py",
+      "start_line": 38,
+      "end_line": 58,
+      "claim": "JsonFormatter produces structured single-line JSON logs with timestamp and service fields",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "centaur_sdk/cli_tables.py",
+      "start_line": 10,
+      "end_line": 30,
+      "claim": "render_text_table provides plain-text table formatting with auto-sized columns",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "centaur_sdk/tool_sdk.py",
+      "start_line": 93,
+      "end_line": 136,
+      "claim": "save_attachment uploads binary data to Centaur API with Base64 encoding",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "centaur_sdk/pyproject.toml",
+      "start_line": 8,
+      "end_line": 10,
+      "claim": "Rich library (>=13.0) is the only required external dependency",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "centaur_sdk/tool_sdk.py",
+      "start_line": 79,
+      "end_line": 91,
+      "claim": "current_thread_key() extracts thread identifier from tool context for scoped operations",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "centaur_sdk/tool_sdk.py",
+      "start_line": 27,
+      "end_line": 39,
+      "claim": "Context management uses Python contextvars for thread-safe tool isolation",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "centaur_sdk/backends/base.py",
+      "start_line": 20,
+      "end_line": 34,
+      "claim": "get_sync() method handles both async and sync execution contexts using thread pools",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "centaur_sdk/tool_sdk.py",
+      "start_line": 104,
+      "end_line": 123,
+      "claim": "Attachment upload uses urllib.request to POST to Centaur API with JSON payload",
+      "section": "External Dependencies"
+    }
+  ]
+}

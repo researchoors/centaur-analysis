@@ -1,0 +1,114 @@
+{
+  "component": "crunchbase",
+  "source_file": "/tmp/centaur-src/service_analyses/crunchbase.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/research/crunchbase/client.py",
+      "start_line": 40,
+      "end_line": 47,
+      "claim": "CrunchbaseClient class is the core HTTP client that handles all API communication",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/crunchbase/client.py",
+      "start_line": 12,
+      "end_line": 20,
+      "claim": "Field aliasing system maps common LLM-generated field name mistakes",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/crunchbase/cli.py",
+      "start_line": 9,
+      "end_line": 12,
+      "claim": "CLI interface is built with Typer framework",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/research/crunchbase/cli.py",
+      "start_line": 55,
+      "end_line": 69,
+      "claim": "format_money function converts monetary values to human-readable formats",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/crunchbase/cli.py",
+      "start_line": 112,
+      "end_line": 121,
+      "claim": "Organization lookup command supports fields and cards parameters",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/crunchbase/client.py",
+      "start_line": 91,
+      "end_line": 104,
+      "claim": "get_organization method provides entity lookup functionality",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/crunchbase/client.py",
+      "start_line": 203,
+      "end_line": 219,
+      "claim": "Search methods support complex queries with POST requests",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/crunchbase/client.py",
+      "start_line": 7,
+      "end_line": 7,
+      "claim": "Component imports secret function from centaur_sdk",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/crunchbase/client.py",
+      "start_line": 43,
+      "end_line": 46,
+      "claim": "Base URL points to Crunchbase API v4 endpoint",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/research/crunchbase/client.py",
+      "start_line": 61,
+      "end_line": 89,
+      "claim": "HTTP requests use X-cb-user-key header for authentication",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/research/crunchbase/pyproject.toml",
+      "start_line": 6,
+      "end_line": 10,
+      "claim": "External dependencies include httpx, typer, and rich",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/crunchbase/cli.py",
+      "start_line": 14,
+      "end_line": 25,
+      "claim": "Default field sets are defined for organization lookups",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/crunchbase/cli.py",
+      "start_line": 470,
+      "end_line": 476,
+      "claim": "Recent funding command provides specialized filtering for large funding rounds",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/crunchbase/cli.py",
+      "start_line": 294,
+      "end_line": 310,
+      "claim": "Search command supports multiple collections and output formats",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/crunchbase/client.py",
+      "start_line": 23,
+      "end_line": 37,
+      "claim": "Field normalization function removes duplicates and handles aliases",
+      "section": "Data Flows"
+    }
+  ]
+}

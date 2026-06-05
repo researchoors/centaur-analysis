@@ -1,0 +1,128 @@
+{
+  "component": "chart",
+  "source_file": "/tmp/centaur-src/service_analyses/chart.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 17,
+  "citations": [
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 70,
+      "end_line": 72,
+      "claim": "The main API entry point providing chart generation services",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 73,
+      "end_line": 102,
+      "claim": "Contains a single public method render_chart that handles all chart types",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 19,
+      "end_line": 22,
+      "claim": "Automatically selects appropriate x-axis column from DataFrame",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 29,
+      "end_line": 39,
+      "claim": "Intelligently chooses y-axis columns, prioritizing numeric data",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 25,
+      "end_line": 26,
+      "claim": "Filters DataFrame columns to numeric types for plotting",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 42,
+      "end_line": 60,
+      "claim": "Applies consistent styling including titles, subtitles, grid lines",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 62,
+      "end_line": 67,
+      "claim": "Converts matplotlib figures to base64-encoded PNG strings",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 118,
+      "end_line": 151,
+      "claim": "Pie Charts: Circular visualizations with percentage labels",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 153,
+      "end_line": 170,
+      "claim": "Bar Charts: Vertical bar plots with support for multiple series",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 171,
+      "end_line": 173,
+      "claim": "Scatter Plots: Point-based visualizations for correlation analysis",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 174,
+      "end_line": 185,
+      "claim": "Line Charts: Default handler for time series and continuous data",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 16,
+      "end_line": 16,
+      "claim": "Uses the Okabe-Ito color scheme for accessibility",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 12,
+      "end_line": 12,
+      "claim": "Uses matplotlib's Agg backend for headless server environments",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 117,
+      "end_line": 117,
+      "claim": "8:4.5 aspect ratio with tight layout and clean styling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/chart/pyproject.toml",
+      "start_line": 6,
+      "end_line": 9,
+      "claim": "Core plotting library providing figure creation, chart rendering, and PNG export capabilities",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 109,
+      "end_line": 111,
+      "claim": "DataFrame library for data processing and column type detection",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/chart/client.py",
+      "start_line": 195,
+      "end_line": 196,
+      "claim": "The _client() function provides a simple factory method",
+      "section": "API Surface"
+    }
+  ]
+}

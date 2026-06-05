@@ -1,0 +1,114 @@
+{
+  "component": "vmetrics",
+  "source_file": "/tmp/centaur-src/service_analyses/vmetrics.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 9,
+      "end_line": 14,
+      "claim": "Main client class that provides all VictoriaMetrics interaction capabilities",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 16,
+      "end_line": 19,
+      "claim": "Constructor supports URL and timeout configuration",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 22,
+      "end_line": 26,
+      "claim": "Base URL resolution from constructor parameter or environment variable",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 29,
+      "end_line": 32,
+      "claim": "Lazy initialization of HTTP client with base URL and timeout configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 34,
+      "end_line": 47,
+      "claim": "Query method executes instant PromQL/MetricsQL queries",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 49,
+      "end_line": 70,
+      "claim": "Query range method performs range queries with time bounds and step configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 72,
+      "end_line": 92,
+      "claim": "Series method discovers time series matching label selectors",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 94,
+      "end_line": 102,
+      "claim": "Label values method retrieves all values for specific labels",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 104,
+      "end_line": 113,
+      "claim": "Metric names method lists available metrics with optional prefix filtering",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 115,
+      "end_line": 121,
+      "claim": "Ready method provides health check mechanism",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 128,
+      "end_line": 132,
+      "claim": "Context manager implementation for automatic resource cleanup",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 135,
+      "end_line": 161,
+      "claim": "Response formatting function transforms VictoriaMetrics API responses into normalized format",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 164,
+      "end_line": 165,
+      "claim": "Factory function for creating pre-configured client instances",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/pyproject.toml",
+      "start_line": 6,
+      "end_line": 8,
+      "claim": "httpx dependency version constraint and usage",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/vmetrics/client.py",
+      "start_line": 6,
+      "end_line": 6,
+      "claim": "httpx import for HTTP client functionality",
+      "section": "External Dependencies"
+    }
+  ]
+}

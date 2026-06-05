@@ -1,0 +1,114 @@
+{
+  "component": "listennotes",
+  "source_file": "/tmp/centaur-src/service_analyses/listennotes.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/research/listennotes/pyproject.toml",
+      "start_line": 1,
+      "end_line": 19,
+      "claim": "Component metadata and dependencies including httpx, typer, and rich",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/listennotes/client.py",
+      "start_line": 10,
+      "end_line": 18,
+      "claim": "ListenNotesClient class initialization with API key and timeout configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/listennotes/client.py",
+      "start_line": 25,
+      "end_line": 43,
+      "claim": "Multi-layered authentication system checking instance, SDK, and 1Password sources",
+      "section": "Authentication System"
+    },
+    {
+      "file_path": "tools/research/listennotes/client.py",
+      "start_line": 45,
+      "end_line": 65,
+      "claim": "Core HTTP request method with error handling and JSON response parsing",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/listennotes/client.py",
+      "start_line": 67,
+      "end_line": 81,
+      "claim": "Search method supporting episodes and podcasts with filtering parameters",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/listennotes/client.py",
+      "start_line": 83,
+      "end_line": 89,
+      "claim": "Individual podcast and episode retrieval methods",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/listennotes/client.py",
+      "start_line": 97,
+      "end_line": 101,
+      "claim": "Context manager implementation for resource cleanup",
+      "section": "HTTP Client Management"
+    },
+    {
+      "file_path": "tools/research/listennotes/cli.py",
+      "start_line": 14,
+      "end_line": 15,
+      "claim": "Typer application setup for CLI interface",
+      "section": "CLI Commands"
+    },
+    {
+      "file_path": "tools/research/listennotes/cli.py",
+      "start_line": 44,
+      "end_line": 51,
+      "claim": "Search command with multiple output format options",
+      "section": "CLI Commands"
+    },
+    {
+      "file_path": "tools/research/listennotes/cli.py",
+      "start_line": 81,
+      "end_line": 95,
+      "claim": "Rich table formatting for episode search results",
+      "section": "Output Formatters"
+    },
+    {
+      "file_path": "tools/research/listennotes/cli.py",
+      "start_line": 67,
+      "end_line": 78,
+      "claim": "Markdown table output formatting implementation",
+      "section": "Output Formatters"
+    },
+    {
+      "file_path": "tools/research/listennotes/cli.py",
+      "start_line": 128,
+      "end_line": 133,
+      "claim": "Podcast details command with JSON and markdown output options",
+      "section": "CLI Commands"
+    },
+    {
+      "file_path": "tools/research/listennotes/cli.py",
+      "start_line": 161,
+      "end_line": 166,
+      "claim": "Episode details command supporting multiple output formats",
+      "section": "CLI Commands"
+    },
+    {
+      "file_path": "tools/research/listennotes/cli.py",
+      "start_line": 24,
+      "end_line": 33,
+      "claim": "Duration formatting utility for human-readable time display",
+      "section": "Output Formatters"
+    },
+    {
+      "file_path": "tools/research/listennotes/client.py",
+      "start_line": 15,
+      "end_line": 15,
+      "claim": "Listen Notes API base URL configuration",
+      "section": "External Systems"
+    }
+  ]
+}

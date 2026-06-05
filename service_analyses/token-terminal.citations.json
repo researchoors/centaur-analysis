@@ -1,0 +1,149 @@
+{
+  "component": "token-terminal",
+  "source_file": "/tmp/centaur-src/service_analyses/token-terminal.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 9,
+      "end_line": 13,
+      "claim": "The TokenTerminalClient class serves as the primary interface for accessing Token Terminal API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 15,
+      "end_line": 15,
+      "claim": "The library connects to Token Terminal API at api.tokenterminal.com/v2",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 17,
+      "end_line": 20,
+      "claim": "Client initialization uses API key and timeout configuration with lazy HTTP client initialization",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 23,
+      "end_line": 26,
+      "claim": "HTTP client uses lazy initialization pattern for resource management",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 28,
+      "end_line": 47,
+      "claim": "The _request method serves as central HTTP request dispatcher with error handling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 34,
+      "end_line": 38,
+      "claim": "All requests use bearer token authentication with application/json accept headers",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 44,
+      "end_line": 47,
+      "claim": "Error handling converts HTTP and network errors into runtime exceptions",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 51,
+      "end_line": 60,
+      "claim": "list_projects method provides access to all available protocols",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 62,
+      "end_line": 71,
+      "claim": "get_project method retrieves detailed information for specific protocols",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 73,
+      "end_line": 94,
+      "claim": "get_project_metrics provides time-series metrics for protocols with configurable intervals",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 96,
+      "end_line": 113,
+      "claim": "get_financial_statement method retrieves financial statements for protocols",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 117,
+      "end_line": 123,
+      "claim": "list_market_sectors method provides access to market sector data",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 125,
+      "end_line": 146,
+      "claim": "get_market_sector_metrics provides aggregated metrics by market sector",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 154,
+      "end_line": 158,
+      "claim": "Context manager support provides automatic resource cleanup",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 161,
+      "end_line": 168,
+      "claim": "Factory function creates client instances using environment-based API key management",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 4,
+      "end_line": 4,
+      "claim": "Uses httpx library for HTTP client functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/client.py",
+      "start_line": 6,
+      "end_line": 6,
+      "claim": "Imports secret management from centaur SDK",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "Dependencies include httpx, typer, rich, and python-dotenv with specific version constraints",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/pyproject.toml",
+      "start_line": 19,
+      "end_line": 19,
+      "claim": "Configuration includes secret management for TOKEN_TERMINAL_API_KEY",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/token-terminal/pyproject.toml",
+      "start_line": 2,
+      "end_line": 3,
+      "claim": "Library provides access to protocol revenue, fees, financial statements, and metrics",
+      "section": "Architecture"
+    }
+  ]
+}

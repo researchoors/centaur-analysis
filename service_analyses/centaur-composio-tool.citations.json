@@ -1,0 +1,121 @@
+{
+  "component": "centaur-composio-tool",
+  "source_file": "/tmp/centaur-src/service_analyses/centaur-composio-tool.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 16,
+  "citations": [
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 33,
+      "end_line": 38,
+      "claim": "The ComposioClient class manages authentication and API interactions with Composio's platform",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 40,
+      "end_line": 45,
+      "claim": "Composio client is instantiated lazily only when needed to reduce startup overhead",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 17,
+      "end_line": 30,
+      "claim": "_extract_tools function normalizes Composio's tool metadata into simplified format",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 47,
+      "end_line": 58,
+      "claim": "list_tools method provides toolkit-specific tool discovery with error handling",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 60,
+      "end_line": 72,
+      "claim": "search_tools method enables cross-toolkit text search with 20 result limit",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 74,
+      "end_line": 110,
+      "claim": "execute method handles tool invocation with flexible argument passing and bypasses version checking",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 112,
+      "end_line": 133,
+      "claim": "get_tool_schema provides runtime schema discovery for dynamic parameter validation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 136,
+      "end_line": 137,
+      "claim": "Factory function returns configured ComposioClient instance following centaur conventions",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 7,
+      "end_line": 7,
+      "claim": "centaur_sdk provides secret management functionality for API key retrieval",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 42,
+      "end_line": 42,
+      "claim": "Composio SDK is imported lazily for API interactions",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/composio/pyproject.toml",
+      "start_line": 6,
+      "end_line": 8,
+      "claim": "Component depends on composio>=0.13.0 as its primary external dependency",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/composio/pyproject.toml",
+      "start_line": 19,
+      "end_line": 21,
+      "claim": "COMPOSIO_API_KEY secret is configured for backend.composio.dev API authentication",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 11,
+      "end_line": 14,
+      "claim": "Default user_id 'centaur' provides shared scope for connected accounts in deployment",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 91,
+      "end_line": 96,
+      "claim": "Tool execution bypasses version checking for practical deployment scenarios",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 66,
+      "end_line": 67,
+      "claim": "Search results are limited to first 20 items for performance",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/composio/client.py",
+      "start_line": 56,
+      "end_line": 58,
+      "claim": "All API calls use structured error handling with warning-level logging",
+      "section": "Architecture"
+    }
+  ]
+}

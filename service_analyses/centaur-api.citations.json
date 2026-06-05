@@ -1,0 +1,121 @@
+{
+  "component": "centaur-api",
+  "source_file": "/tmp/centaur-src/service_analyses/centaur-api.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 16,
+  "citations": [
+    {
+      "file_path": "services/api/api/app.py",
+      "start_line": 289,
+      "end_line": 294,
+      "claim": "FastAPI application with comprehensive middleware and lifecycle management",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/api/api/app.py",
+      "start_line": 182,
+      "end_line": 287,
+      "claim": "Complex lifespan management with graceful shutdown and worker orchestration",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "services/api/api/agent.py",
+      "start_line": 1,
+      "end_line": 13,
+      "claim": "Agent orchestration with session mapping and streaming architecture",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/api/api/sandbox/kubernetes.py",
+      "start_line": 1,
+      "end_line": 6,
+      "claim": "Kubernetes-based sandbox backend for agent execution isolation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/api/api/workflow_engine.py",
+      "start_line": 1,
+      "end_line": 14,
+      "claim": "Checkpoint-replay workflow engine inspired by Cloudflare Workflows",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/api/api/tool_manager.py",
+      "start_line": 1,
+      "end_line": 3,
+      "claim": "Dynamic tool discovery and loading system",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/api/api/routers/agent.py",
+      "start_line": 240,
+      "end_line": 284,
+      "claim": "Agent execution endpoint with auto-orchestration capability",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "services/api/api/routers/workflows.py",
+      "start_line": 74,
+      "end_line": 89,
+      "claim": "Workflow creation endpoint with access control",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "services/api/pyproject.toml",
+      "start_line": 6,
+      "end_line": 33,
+      "claim": "Comprehensive dependency list including FastAPI, AsyncPG, Kubernetes client, and AI APIs",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "services/api/api/tool_manager.py",
+      "start_line": 41,
+      "end_line": 42,
+      "claim": "Integration with centaur-sdk for tool context management",
+      "section": "Internal Dependencies"
+    },
+    {
+      "file_path": "services/api/api/integrations/linear/client.py",
+      "start_line": 8,
+      "end_line": 9,
+      "claim": "Use of centaur-sdk secret management in external integrations",
+      "section": "Internal Dependencies"
+    },
+    {
+      "file_path": "services/api/api/db.py",
+      "start_line": 100,
+      "end_line": 119,
+      "claim": "Database layer with connection pooling and migration support",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "services/api/api/slackbot_client.py",
+      "start_line": 34,
+      "end_line": 94,
+      "claim": "Slack integration with retry logic and error handling",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "services/api/api/app.py",
+      "start_line": 319,
+      "end_line": 475,
+      "claim": "Comprehensive HTTP middleware with tracing, metrics, and request instrumentation",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "services/api/api/tool_server_app.py",
+      "start_line": 1,
+      "end_line": 10,
+      "claim": "Separate tool-server entrypoint sharing the same image and tool manager",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "services/api/api/config.py",
+      "start_line": 7,
+      "end_line": 21,
+      "claim": "Pydantic-based configuration management with environment variable support",
+      "section": "Key Components"
+    }
+  ]
+}

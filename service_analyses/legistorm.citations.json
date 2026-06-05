@@ -1,0 +1,114 @@
+{
+  "component": "legistorm",
+  "source_file": "/tmp/centaur-src/service_analyses/legistorm.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/research/legistorm/client.py",
+      "start_line": 13,
+      "end_line": 24,
+      "claim": "The LegiStormClient class definition with BASE_URL and issue endpoint candidates",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/legistorm/client.py",
+      "start_line": 25,
+      "end_line": 39,
+      "claim": "Constructor showing API key management and caching initialization",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/legistorm/client.py",
+      "start_line": 47,
+      "end_line": 51,
+      "claim": "API key resolution using centaur SDK secret management",
+      "section": "Authentication Management"
+    },
+    {
+      "file_path": "tools/research/legistorm/client.py",
+      "start_line": 53,
+      "end_line": 70,
+      "claim": "HTTP request method with error handling and authentication headers",
+      "section": "LegiStormClient Class"
+    },
+    {
+      "file_path": "tools/research/legistorm/client.py",
+      "start_line": 300,
+      "end_line": 334,
+      "claim": "Issue portfolio caching system with cache key generation and TTL",
+      "section": "Caching System"
+    },
+    {
+      "file_path": "tools/research/legistorm/client.py",
+      "start_line": 354,
+      "end_line": 374,
+      "claim": "Endpoint discovery logic testing multiple candidate endpoints",
+      "section": "Issue Portfolio Intelligence System"
+    },
+    {
+      "file_path": "tools/research/legistorm/client.py",
+      "start_line": 101,
+      "end_line": 117,
+      "claim": "Staff ID extraction from multiple possible nested locations",
+      "section": "Data Extraction Utilities"
+    },
+    {
+      "file_path": "tools/research/legistorm/client.py",
+      "start_line": 407,
+      "end_line": 440,
+      "claim": "Public API method for getting congressional members",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/legistorm/client.py",
+      "start_line": 478,
+      "end_line": 530,
+      "claim": "Enhanced staff method with issue portfolio enrichment",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/legistorm/cli.py",
+      "start_line": 10,
+      "end_line": 17,
+      "claim": "CLI application setup using Typer and client factory function",
+      "section": "CLI Commands Module"
+    },
+    {
+      "file_path": "tools/research/legistorm/cli.py",
+      "start_line": 90,
+      "end_line": 98,
+      "claim": "Members command definition with comprehensive parameter options",
+      "section": "CLI Commands Module"
+    },
+    {
+      "file_path": "tools/research/legistorm/cli.py",
+      "start_line": 222,
+      "end_line": 235,
+      "claim": "Staff portfolios command showing issue endpoint override capability",
+      "section": "CLI Commands Module"
+    },
+    {
+      "file_path": "tools/research/legistorm/pyproject.toml",
+      "start_line": 6,
+      "end_line": 10,
+      "claim": "External dependencies: httpx, typer, and rich",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/legistorm/pyproject.toml",
+      "start_line": 18,
+      "end_line": 21,
+      "claim": "Centaur configuration showing API host and secret requirements",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/legistorm/tests/test_client.py",
+      "start_line": 6,
+      "end_line": 31,
+      "claim": "Test demonstrating issue portfolio caching behavior",
+      "section": "Caching System"
+    }
+  ]
+}

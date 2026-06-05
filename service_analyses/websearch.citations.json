@@ -1,0 +1,114 @@
+{
+  "component": "websearch",
+  "source_file": "/tmp/centaur-src/service_analyses/websearch.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/research/websearch/pyproject.toml",
+      "start_line": 6,
+      "end_line": 14,
+      "claim": "The component has seven external runtime dependencies: anthropic, httpx, parallel-web, pydantic, python-dotenv, rich, and typer",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/websearch/client.py",
+      "start_line": 66,
+      "end_line": 110,
+      "claim": "WebSearchClient acts as the main facade class orchestrating web search operations with credential detection and backend routing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/websearch/_parallel.py",
+      "start_line": 112,
+      "end_line": 147,
+      "claim": "ParallelBackend manages interactions with both REST API and MCP protocol based on API key availability",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/websearch/client.py",
+      "start_line": 264,
+      "end_line": 280,
+      "claim": "ClaudeSynthesisPipeline implements a three-stage synthesis process: reviewer, writer, and citation validation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/websearch/client.py",
+      "start_line": 138,
+      "end_line": 211,
+      "claim": "The search method supports both free MCP and paid REST backends with automatic fallback and synthesis options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/websearch/client.py",
+      "start_line": 212,
+      "end_line": 261,
+      "claim": "Deep research functionality requires PARALLEL_API_KEY and supports processor selection from the pro/ultra families",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/websearch/_parallel.py",
+      "start_line": 190,
+      "end_line": 222,
+      "claim": "The backend implements automatic fallback from REST to MCP when authentication fails",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/research/websearch/client.py",
+      "start_line": 39,
+      "end_line": 64,
+      "claim": "Credential detection uses both tool context and secret() to support server and CLI environments",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/research/websearch/_parallel.py",
+      "start_line": 317,
+      "end_line": 343,
+      "claim": "Deep research validates processor selection to pro/ultra families and sets processor-appropriate timeouts",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/websearch/client.py",
+      "start_line": 281,
+      "end_line": 317,
+      "claim": "The synthesis pipeline returns both report content and validation errors, preserving writer output even when citation repair fails",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/websearch/client.py",
+      "start_line": 427,
+      "end_line": 466,
+      "claim": "Citation validation implements a repair loop with up to 2 attempts to fix invalid source IDs",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/websearch/models.py",
+      "start_line": 10,
+      "end_line": 40,
+      "claim": "Response models use Pydantic with backward compatibility fields like exa_request_ids as aliases",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/websearch/cli.py",
+      "start_line": 24,
+      "end_line": 112,
+      "claim": "CLI interface provides search command with filtering options and pretty-printing modes",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/websearch/cli.py",
+      "start_line": 115,
+      "end_line": 183,
+      "claim": "Deep research CLI command supports processor selection and includes backward compatibility warnings",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/websearch/prompts.py",
+      "start_line": 3,
+      "end_line": 69,
+      "claim": "System prompts define structured templates for evidence review, report writing, and citation repair with specific JSON schemas",
+      "section": "Key Components"
+    }
+  ]
+}

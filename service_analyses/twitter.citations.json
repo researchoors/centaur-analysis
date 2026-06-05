@@ -1,0 +1,149 @@
+{
+  "component": "twitter",
+  "source_file": "/tmp/centaur-src/service_analyses/twitter.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/comms/twitter/cli.py",
+      "start_line": 17,
+      "end_line": 18,
+      "claim": "Typer-based CLI application with 8 commands",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/twitter/cli.py",
+      "start_line": 70,
+      "end_line": 75,
+      "claim": "User command with JSON and markdown output options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/comms/twitter/client.py",
+      "start_line": 50,
+      "end_line": 69,
+      "claim": "Synchronous wrapper around async TwitterClient SDK",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/twitter/client.py",
+      "start_line": 76,
+      "end_line": 96,
+      "claim": "Article expansion via FxTwitter API integration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/twitter/sdk/clients/twitter.py",
+      "start_line": 22,
+      "end_line": 39,
+      "claim": "TwitterClient inherits from SynopticClient for extensibility",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/twitter/sdk/clients/synoptic.py",
+      "start_line": 97,
+      "end_line": 116,
+      "claim": "Async HTTP client with retry logic and connection reuse",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/twitter/sdk/clients/synoptic.py",
+      "start_line": 35,
+      "end_line": 54,
+      "claim": "Retry configuration and API usage tracking structures",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/twitter/sdk/clients/synoptic.py",
+      "start_line": 172,
+      "end_line": 185,
+      "claim": "Exponential backoff retry decorator with logging",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/twitter/sdk/clients/synoptic.py",
+      "start_line": 62,
+      "end_line": 82,
+      "claim": "TTL cache implementation for API responses",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/twitter/sdk/config.py",
+      "start_line": 7,
+      "end_line": 18,
+      "claim": "Pydantic settings with environment variable support",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/twitter/sdk/models.py",
+      "start_line": 8,
+      "end_line": 17,
+      "claim": "Provider enum and Pydantic data models",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/comms/twitter/pyproject.toml",
+      "start_line": 6,
+      "end_line": 13,
+      "claim": "External dependencies: typer, rich, httpx, tenacity, pydantic",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/comms/twitter/client.py",
+      "start_line": 10,
+      "end_line": 10,
+      "claim": "centaur_sdk import for secret management",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/comms/twitter/cli.py",
+      "start_line": 13,
+      "end_line": 13,
+      "claim": "centaur_sdk Table import for formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/comms/twitter/client.py",
+      "start_line": 120,
+      "end_line": 139,
+      "claim": "Follower pagination with batch processing",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/comms/twitter/client.py",
+      "start_line": 191,
+      "end_line": 199,
+      "claim": "Tweet lookup with automatic article expansion",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/comms/twitter/sdk/clients/synoptic.py",
+      "start_line": 355,
+      "end_line": 375,
+      "claim": "Followers API endpoint with cursor pagination",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/comms/twitter/client.py",
+      "start_line": 16,
+      "end_line": 16,
+      "claim": "FxTwitter API base URL configuration",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/comms/twitter/cli.py",
+      "start_line": 298,
+      "end_line": 305,
+      "claim": "Search command with query and result type options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/comms/twitter/cli.py",
+      "start_line": 450,
+      "end_line": 458,
+      "claim": "Usage command for API credit monitoring",
+      "section": "API Surface"
+    }
+  ]
+}

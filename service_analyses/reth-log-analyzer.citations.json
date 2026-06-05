@@ -1,0 +1,149 @@
+{
+  "component": "reth-log-analyzer",
+  "source_file": "/tmp/centaur-src/service_analyses/reth-log-analyzer.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/infra/reth-log-analyzer/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include typer, rich, pandas, and matplotlib",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/parser.py",
+      "start_line": 9,
+      "end_line": 25,
+      "claim": "BlockMetrics dataclass contains timing, gas, and metadata fields",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/client.py",
+      "start_line": 12,
+      "end_line": 14,
+      "claim": "RethLogAnalyzerClient serves as the main API class",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/client.py",
+      "start_line": 15,
+      "end_line": 32,
+      "claim": "Client provides parse method for extracting metrics with filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/client.py",
+      "start_line": 34,
+      "end_line": 61,
+      "claim": "Client provides generate_graphs method for visualization creation",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/client.py",
+      "start_line": 63,
+      "end_line": 120,
+      "claim": "Client provides summary method for statistical analysis",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/parser.py",
+      "start_line": 29,
+      "end_line": 44,
+      "claim": "BLOCK_ADDED_RE regex pattern extracts block completion metrics",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/parser.py",
+      "start_line": 46,
+      "end_line": 51,
+      "claim": "STATE_ROOT_RE regex pattern extracts state root timing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/parser.py",
+      "start_line": 80,
+      "end_line": 149,
+      "claim": "parse_log_file function implements line-by-line regex-based parsing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/graphs.py",
+      "start_line": 1,
+      "end_line": 7,
+      "claim": "Graph module implements Centaur visual standards with Okabe-Ito palette",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/graphs.py",
+      "start_line": 24,
+      "end_line": 30,
+      "claim": "Color palette uses Okabe-Ito standards for accessibility",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/graphs.py",
+      "start_line": 52,
+      "end_line": 80,
+      "claim": "metrics_to_dataframe converts BlockMetrics to pandas with derived calculations",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/graphs.py",
+      "start_line": 301,
+      "end_line": 345,
+      "claim": "generate_all_graphs creates four visualization types with consistent naming",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/cli.py",
+      "start_line": 17,
+      "end_line": 18,
+      "claim": "CLI uses typer framework with rich console output",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/cli.py",
+      "start_line": 21,
+      "end_line": 78,
+      "claim": "Parse command provides tabular output with summary statistics",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/cli.py",
+      "start_line": 80,
+      "end_line": 109,
+      "claim": "Graphs command generates PNG files to specified output directory",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/cli.py",
+      "start_line": 111,
+      "end_line": 190,
+      "claim": "Summary command provides performance reports with markdown support",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/cli.py",
+      "start_line": 13,
+      "end_line": 13,
+      "claim": "Imports Table from centaur_sdk for rich formatting",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/graphs.py",
+      "start_line": 13,
+      "end_line": 21,
+      "claim": "Uses matplotlib with Agg backend and numpy for calculations",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/reth-log-analyzer/cli.py",
+      "start_line": 10,
+      "end_line": 11,
+      "claim": "CLI imports typer and rich for interface functionality",
+      "section": "External Dependencies"
+    }
+  ]
+}

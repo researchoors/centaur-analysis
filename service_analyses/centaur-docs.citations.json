@@ -1,0 +1,114 @@
+{
+  "component": "centaur-docs",
+  "source_file": "/tmp/centaur-src/service_analyses/centaur-docs.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "docs/package.json",
+      "start_line": 1,
+      "end_line": 25,
+      "claim": "The component uses React 19, Vocs framework, and Wrangler for Cloudflare deployment",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "docs/vocs.config.ts",
+      "start_line": 14,
+      "end_line": 25,
+      "claim": "The site is configured for static generation with dark theme and SEO optimization",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "docs/sidebar.ts",
+      "start_line": 3,
+      "end_line": 59,
+      "claim": "Documentation is organized into Start, Operate, Extend Centaur, Secrets, and Reference sections",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "docs/scripts/build-og.ts",
+      "start_line": 1,
+      "end_line": 30,
+      "claim": "Open Graph images are pre-generated at build time using SVG templates and custom fonts",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "docs/scripts/build-md.sh",
+      "start_line": 1,
+      "end_line": 16,
+      "claim": "MDX pages are copied to public/md/ as plain markdown for agent consumption",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "docs/components/ThreadPanel.tsx",
+      "start_line": 1,
+      "end_line": 25,
+      "claim": "Interactive React components showcase real Slack conversation examples",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "docs/wrangler.jsonc",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "Site deploys to centaur.run domain via Cloudflare Workers",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "docs/pages/index.mdx",
+      "start_line": 1,
+      "end_line": 12,
+      "claim": "Landing page uses custom layout with hero section and disabled sidebar",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "docs/pages/what-is-centaur.mdx",
+      "start_line": 6,
+      "end_line": 10,
+      "claim": "Documentation explains Centaur as a control plane for shared AI agents",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "docs/pages/_root.css",
+      "start_line": 1,
+      "end_line": 26,
+      "claim": "Global styling uses CSS custom properties for theming and brand colors",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "docs/vocs.config.ts",
+      "start_line": 54,
+      "end_line": 59,
+      "claim": "Open Graph images are generated with path-based slug mapping",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "docs/public/centaur-brand-menu.js",
+      "start_line": 16,
+      "end_line": 29,
+      "claim": "Brand menu provides downloads and GitHub access via right-click on logo",
+      "section": "User Interface Features"
+    },
+    {
+      "file_path": "docs/scripts/build-og.ts",
+      "start_line": 109,
+      "end_line": 113,
+      "claim": "Google Fonts are loaded dynamically for Open Graph image generation",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "docs/scripts/build-og.ts",
+      "start_line": 395,
+      "end_line": 446,
+      "claim": "Build process generates PNG cards for each route with fallback handling",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "docs/package.json",
+      "start_line": 5,
+      "end_line": 12,
+      "claim": "Build pipeline includes markdown copying, brand bundling, and OG generation",
+      "section": "Data Flows"
+    }
+  ]
+}

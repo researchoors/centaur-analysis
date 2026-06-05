@@ -1,0 +1,149 @@
+{
+  "component": "plural",
+  "source_file": "/tmp/centaur-src/service_analyses/plural.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 7,
+      "end_line": 16,
+      "claim": "PluralClient class serves as the main HTTP client implementing the Open States API v3 interface",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 10,
+      "end_line": 10,
+      "claim": "Base URL points to Open States API v3 at https://v3.openstates.org",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 23,
+      "end_line": 27,
+      "claim": "API key management integrates with centaur_sdk.secret for secure credential handling",
+      "section": "Authentication Flow"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 29,
+      "end_line": 42,
+      "claim": "Centralized request handling with automatic authentication and structured error handling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 45,
+      "end_line": 66,
+      "claim": "Jurisdictions API supports listing and filtering of states, territories, and municipalities",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 87,
+      "end_line": 122,
+      "claim": "People API provides comprehensive legislator search with jurisdiction, name, and role filtering",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 124,
+      "end_line": 141,
+      "claim": "Geolocation-based legislator lookup using latitude and longitude coordinates",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 145,
+      "end_line": 204,
+      "claim": "Bills API supports comprehensive search with full-text queries, date filters, and sponsor lookup",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 247,
+      "end_line": 269,
+      "claim": "Committees API provides jurisdiction-based committee listing with chamber filtering",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 290,
+      "end_line": 323,
+      "claim": "Events API enables legislative event retrieval with date range and bill association filtering",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/plural/cli.py",
+      "start_line": 15,
+      "end_line": 16,
+      "claim": "CLI built with Typer framework providing rich command-line interface",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/plural/cli.py",
+      "start_line": 31,
+      "end_line": 64,
+      "claim": "Jurisdictions command provides tabular output with jurisdiction data",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/plural/cli.py",
+      "start_line": 66,
+      "end_line": 116,
+      "claim": "People command enables legislator search with rich table formatting",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/plural/pyproject.toml",
+      "start_line": 6,
+      "end_line": 10,
+      "claim": "External dependencies include httpx for HTTP client, typer for CLI, and rich for formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/plural/pyproject.toml",
+      "start_line": 18,
+      "end_line": 19,
+      "claim": "Centaur configuration specifies API key secrets management for Open States API",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 3,
+      "end_line": 4,
+      "claim": "Integration with httpx for HTTP client and centaur_sdk for secret management",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/plural/cli.py",
+      "start_line": 9,
+      "end_line": 11,
+      "claim": "CLI uses typer for command parsing and rich for console output formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 347,
+      "end_line": 351,
+      "claim": "Context manager support for proper resource cleanup of HTTP connections",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/research/plural/client.py",
+      "start_line": 354,
+      "end_line": 355,
+      "claim": "Factory function provides convenient client instantiation",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/plural/.env.example",
+      "start_line": 1,
+      "end_line": 1,
+      "claim": "Configuration requires PLURAL_API_KEY from open.pluralpolicy.com",
+      "section": "External Dependencies"
+    }
+  ]
+}

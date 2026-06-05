@@ -1,0 +1,114 @@
+{
+  "component": "invest-intake",
+  "source_file": "/tmp/centaur-src/service_analyses/invest-intake.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "The central orchestrator class that provides input normalization",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 52,
+      "end_line": 63,
+      "claim": "URL classification identifies specific domains for archiver support",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 18,
+      "end_line": 35,
+      "claim": "Dynamic archiver integration with runtime dependency resolution",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 160,
+      "end_line": 173,
+      "claim": "ThreadPoolExecutor used for parallel URL processing",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 16,
+      "end_line": 16,
+      "claim": "Maximum parallelism limited to 6 workers",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 218,
+      "end_line": 218,
+      "claim": "Status management with ok, error, and partial states",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 38,
+      "end_line": 49,
+      "claim": "Deduplication utility removes duplicates while preserving order",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 141,
+      "end_line": 149,
+      "claim": "Main normalize method signature with configuration parameters",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 220,
+      "end_line": 247,
+      "claim": "Response structure contains status, summary, artifacts, and next actions",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 95,
+      "end_line": 105,
+      "claim": "Unsupported URLs marked for websearch delegation",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 111,
+      "end_line": 116,
+      "claim": "Archiver client called for URL extraction",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 136,
+      "end_line": 136,
+      "claim": "File processing delegated to archiver.extract_files",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/invest_intake/pyproject.toml",
+      "start_line": 6,
+      "end_line": 8,
+      "claim": "Typer dependency for CLI functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 250,
+      "end_line": 251,
+      "claim": "Module-level factory function for client instantiation",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/invest_intake/client.py",
+      "start_line": 82,
+      "end_line": 82,
+      "claim": "Archiver-supported URL kinds defined as constant",
+      "section": "Architecture"
+    }
+  ]
+}

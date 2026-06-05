@@ -1,0 +1,149 @@
+{
+  "component": "attio",
+  "source_file": "/tmp/centaur-src/service_analyses/attio.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/business/attio/cli.py",
+      "start_line": 15,
+      "end_line": 16,
+      "claim": "Typer-based CLI application with rich console output",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/business/attio/client.py",
+      "start_line": 10,
+      "end_line": 15,
+      "claim": "AttioClient class with optional API key override",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/attio/client.py",
+      "start_line": 27,
+      "end_line": 35,
+      "claim": "HTTP client initialization with base URL and authentication headers",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/attio/cli.py",
+      "start_line": 23,
+      "end_line": 37,
+      "claim": "Value extraction system for complex Attio value objects",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/attio/cli.py",
+      "start_line": 40,
+      "end_line": 47,
+      "claim": "whoami command for workspace information",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/attio/cli.py",
+      "start_line": 101,
+      "end_line": 139,
+      "claim": "people command with filtering and JSON output options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/attio/client.py",
+      "start_line": 98,
+      "end_line": 140,
+      "claim": "query_records method with comprehensive filtering documentation",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/attio/client.py",
+      "start_line": 37,
+      "end_line": 47,
+      "claim": "Error handling with status code checking and JSON parsing",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/business/attio/cli.py",
+      "start_line": 236,
+      "end_line": 254,
+      "claim": "create command with JSON input validation",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/business/attio/client.py",
+      "start_line": 22,
+      "end_line": 26,
+      "claim": "centaur_sdk secret management integration",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/business/attio/cli.py",
+      "start_line": 6,
+      "end_line": 9,
+      "claim": "typer and rich imports for CLI framework and formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/business/attio/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies with version constraints",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/business/attio/pyproject.toml",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "CLI script entry point configuration",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/attio/client.py",
+      "start_line": 83,
+      "end_line": 86,
+      "claim": "list_objects API endpoint",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/attio/client.py",
+      "start_line": 147,
+      "end_line": 162,
+      "claim": "create_record method with value format documentation",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/attio/client.py",
+      "start_line": 339,
+      "end_line": 355,
+      "claim": "list_tasks method with filtering parameters",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/business/attio/cli.py",
+      "start_line": 59,
+      "end_line": 70,
+      "claim": "Rich table formatting with columns and styling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/business/attio/cli.py",
+      "start_line": 19,
+      "end_line": 21,
+      "claim": "Client factory function for dependency injection",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/business/attio/client.py",
+      "start_line": 17,
+      "end_line": 20,
+      "claim": "Lazy HTTP client initialization pattern",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/business/attio/pyproject.toml",
+      "start_line": 22,
+      "end_line": 23,
+      "claim": "Centaur tool configuration with secrets management",
+      "section": "External Dependencies"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "component": "tokenomist",
+  "source_file": "/tmp/centaur-src/service_analyses/tokenomist.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 9,
+      "end_line": 14,
+      "claim": "TokenomistClient class provides access to token unlock schedules, vesting, emissions, and allocations",
+      "section": "Overview"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 16,
+      "end_line": 22,
+      "claim": "Client initialization with API key resolution and timeout configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 30,
+      "end_line": 44,
+      "claim": "_request method handles HTTP requests with authentication headers and error handling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 46,
+      "end_line": 59,
+      "claim": "list_tokens method retrieves available tokens with limit parameter",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 61,
+      "end_line": 70,
+      "claim": "get_allocations method fetches token allocation breakdown",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 72,
+      "end_line": 81,
+      "claim": "get_unlock_events method gets scheduled unlock events with timestamps",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 83,
+      "end_line": 92,
+      "claim": "get_daily_emissions method retrieves daily emission data",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 94,
+      "end_line": 103,
+      "claim": "get_fundraising method accesses fundraising rounds and investor data",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 20,
+      "end_line": 20,
+      "claim": "Base URL points to api.unlocks.app service",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 4,
+      "end_line": 4,
+      "claim": "httpx library used for HTTP client functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 6,
+      "end_line": 6,
+      "claim": "centaur_sdk.secret used for API key resolution",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 17,
+      "end_line": 19,
+      "claim": "API key resolved from TOKENOMIST_API_KEY environment variable with validation",
+      "section": "Configuration"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 111,
+      "end_line": 115,
+      "claim": "Context manager support for proper resource cleanup",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include httpx, typer, rich, and python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/tokenomist/client.py",
+      "start_line": 118,
+      "end_line": 119,
+      "claim": "Factory function _client() provides convenient client instantiation",
+      "section": "API Surface"
+    }
+  ]
+}

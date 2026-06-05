@@ -1,0 +1,149 @@
+{
+  "component": "investmemos",
+  "source_file": "/tmp/centaur-src/service_analyses/investmemos.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 75,
+      "end_line": 82,
+      "claim": "The InvestmemosClient class is the main client providing search and retrieval functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 54,
+      "end_line": 61,
+      "claim": "Query processing pipeline implements tokenization and normalization",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 19,
+      "end_line": 32,
+      "claim": "Company type normalization standardizes classifications with aliases",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 280,
+      "end_line": 314,
+      "claim": "Document aggregation system groups search results by document ID",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 424,
+      "end_line": 477,
+      "claim": "MIQ context builder combines opportunities with questions for relevant excerpts",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 316,
+      "end_line": 422,
+      "claim": "Content reading system retrieves full memo content with size management",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 142,
+      "end_line": 246,
+      "claim": "Multi-strategy search includes FTS ranking and lexical matching with fallback",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/investmemos/pyproject.toml",
+      "start_line": 6,
+      "end_line": 8,
+      "claim": "Component depends on asyncpg for PostgreSQL connectivity",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 12,
+      "end_line": 12,
+      "claim": "asyncpg is imported and used for database operations",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 88,
+      "end_line": 89,
+      "claim": "Database connections are established using asyncpg.connect",
+      "section": "Dependencies"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 129,
+      "end_line": 140,
+      "claim": "list_memos method provides document listing with optional filtering",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 248,
+      "end_line": 314,
+      "claim": "search_memos method performs full-text search with document aggregation",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 402,
+      "end_line": 422,
+      "claim": "read_memo method retrieves full content by ID or name",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 78,
+      "end_line": 81,
+      "claim": "Client supports environment-based configuration via DATABASE_URL and source/kind settings",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 139,
+      "end_line": 140,
+      "claim": "All public methods return structured dictionaries with consistent error handling",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 94,
+      "end_line": 110,
+      "claim": "raw_records table stores document metadata with external_id, data, and fetched_at fields",
+      "section": "Database Schema Integration"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 158,
+      "end_line": 183,
+      "claim": "embeddings table stores searchable chunks with content_tsv for full-text search",
+      "section": "Database Schema Integration"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 173,
+      "end_line": 176,
+      "claim": "Schema supports multi-tenant operation through source and kind partitioning",
+      "section": "Database Schema Integration"
+    },
+    {
+      "file_path": "tools/research/investmemos/pyproject.toml",
+      "start_line": 1,
+      "end_line": 4,
+      "claim": "Component is named investmemos and described as Postgres-backed investment memo search and retrieval",
+      "section": "Overview"
+    },
+    {
+      "file_path": "tools/research/investmemos/client.py",
+      "start_line": 1,
+      "end_line": 1,
+      "claim": "Component provides investment memo retrieval client backed by Postgres embeddings",
+      "section": "Overview"
+    }
+  ]
+}

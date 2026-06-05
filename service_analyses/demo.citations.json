@@ -1,0 +1,86 @@
+{
+  "component": "demo",
+  "source_file": "/tmp/centaur-src/service_analyses/demo.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 11,
+  "citations": [
+    {
+      "file_path": "tools/infra/demo/pyproject.toml",
+      "start_line": 1,
+      "end_line": 10,
+      "claim": "The component is configured as a Python package named 'demo' with version 0.1.0 and has no external dependencies",
+      "section": "Overview"
+    },
+    {
+      "file_path": "tools/infra/demo/pyproject.toml",
+      "start_line": 4,
+      "end_line": 4,
+      "claim": "Component description confirms it is a 'Demo tool for testing CD hot-reload'",
+      "section": "Overview"
+    },
+    {
+      "file_path": "tools/infra/demo/client.py",
+      "start_line": 1,
+      "end_line": 1,
+      "claim": "Module docstring confirms this is a 'Demo tool for testing CD hot-reload'",
+      "section": "Overview"
+    },
+    {
+      "file_path": "tools/infra/demo/client.py",
+      "start_line": 3,
+      "end_line": 3,
+      "claim": "The only external dependency is Python's built-in datetime module",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/demo/client.py",
+      "start_line": 6,
+      "end_line": 13,
+      "claim": "DemoClient class implements ping and echo methods as the core functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/demo/client.py",
+      "start_line": 7,
+      "end_line": 9,
+      "claim": "The ping method returns a dictionary with pong status, server time, and version 4",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/demo/client.py",
+      "start_line": 11,
+      "end_line": 13,
+      "claim": "The echo method takes a message parameter and returns it wrapped in a dictionary",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/infra/demo/client.py",
+      "start_line": 16,
+      "end_line": 17,
+      "claim": "The _client function serves as a factory for creating DemoClient instances",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/demo/client.py",
+      "start_line": 9,
+      "end_line": 9,
+      "claim": "Version number is hardcoded as 4 in the ping response for tracking deployment updates",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/infra/demo/pyproject.toml",
+      "start_line": 5,
+      "end_line": 5,
+      "claim": "The component has zero external dependencies as specified by empty dependencies list",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/infra/demo/pyproject.toml",
+      "start_line": 8,
+      "end_line": 10,
+      "claim": "Centaur configuration specifies client.py as the module with empty hosts and secrets arrays",
+      "section": "API Surface"
+    }
+  ]
+}

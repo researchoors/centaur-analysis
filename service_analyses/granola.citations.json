@@ -1,0 +1,128 @@
+{
+  "component": "granola",
+  "source_file": "/tmp/centaur-src/service_analyses/granola.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 17,
+  "citations": [
+    {
+      "file_path": "tools/productivity/granola/client.py",
+      "start_line": 15,
+      "end_line": 24,
+      "claim": "The GranolaClient class manages authentication and HTTP requests to the Granola Enterprise API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/granola/cli.py",
+      "start_line": 15,
+      "end_line": 16,
+      "claim": "The CLI is built using Typer and provides command-line interface functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/granola/client.py",
+      "start_line": 25,
+      "end_line": 32,
+      "claim": "The client uses HTTPX for HTTP operations with proper authentication headers",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/granola/cli.py",
+      "start_line": 30,
+      "end_line": 35,
+      "claim": "The list command provides options for limiting results, showing full titles, and filtering by date",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/granola/cli.py",
+      "start_line": 65,
+      "end_line": 70,
+      "claim": "The get command retrieves specific notes by ID with options for raw output and transcript inclusion",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/granola/cli.py",
+      "start_line": 131,
+      "end_line": 136,
+      "claim": "The search command allows searching notes by title with result limiting",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/granola/cli.py",
+      "start_line": 111,
+      "end_line": 115,
+      "claim": "The transcript command fetches and displays meeting transcripts",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/granola/cli.py",
+      "start_line": 19,
+      "end_line": 27,
+      "claim": "Date formatting utility converts ISO 8601 timestamps to human-readable format",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/granola/cli.py",
+      "start_line": 10,
+      "end_line": 13,
+      "claim": "Rich library is used for enhanced terminal output including console, markdown, and panels",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/granola/client.py",
+      "start_line": 18,
+      "end_line": 24,
+      "claim": "Authentication is handled through centaur-sdk secret management system",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/granola/client.py",
+      "start_line": 12,
+      "end_line": 12,
+      "claim": "The component integrates with Granola Enterprise API at public-api.granola.ai",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/productivity/granola/pyproject.toml",
+      "start_line": 6,
+      "end_line": 10,
+      "claim": "External dependencies include httpx for HTTP client, typer for CLI, and rich for terminal formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/granola/client.py",
+      "start_line": 75,
+      "end_line": 97,
+      "claim": "The list_all_notes method implements pagination to fetch multiple pages of results",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/productivity/granola/client.py",
+      "start_line": 104,
+      "end_line": 112,
+      "claim": "Search functionality performs client-side filtering after fetching notes from the API",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/productivity/granola/cli.py",
+      "start_line": 37,
+      "end_line": 40,
+      "claim": "CLI commands create GranolaClient instances for API communication",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/productivity/granola/cli.py",
+      "start_line": 46,
+      "end_line": 62,
+      "claim": "Rich tables are used to format and display note listings",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/productivity/granola/cli.py",
+      "start_line": 87,
+      "end_line": 101,
+      "claim": "The CLI provides both raw markdown and rich formatted output options",
+      "section": "API Surface"
+    }
+  ]
+}

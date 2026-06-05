@@ -1,0 +1,114 @@
+{
+  "component": "airtable",
+  "source_file": "/tmp/centaur-src/service_analyses/airtable.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/productivity/airtable/client.py",
+      "start_line": 114,
+      "end_line": 133,
+      "claim": "The AirtableClient class encapsulates all Airtable API interactions with comprehensive authentication management",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/airtable/cli.py",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "CLI application built with Typer framework and Rich console for formatted output",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/airtable/client.py",
+      "start_line": 30,
+      "end_line": 57,
+      "claim": "Data transformation functions including _simplify_cell and _compact_record for cleaning Airtable data",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/airtable/client.py",
+      "start_line": 223,
+      "end_line": 249,
+      "claim": "URL parser extracts base, table, view, page, and record IDs from Airtable URLs",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/airtable/client.py",
+      "start_line": 255,
+      "end_line": 475,
+      "claim": "Comprehensive preflight_access method provides authentication and permission diagnostics",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/airtable/cli.py",
+      "start_line": 21,
+      "end_line": 47,
+      "claim": "Four main CLI commands: bases, schema, records, and from_url for different Airtable operations",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/airtable/client.py",
+      "start_line": 12,
+      "end_line": 13,
+      "claim": "Uses Airtable REST API endpoints at api.airtable.com/v0 and meta endpoints",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/productivity/airtable/client.py",
+      "start_line": 10,
+      "end_line": 10,
+      "claim": "Integration with centaur SDK for secret management and 1Password integration",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/productivity/airtable/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include httpx, typer, rich, and python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/airtable/client.py",
+      "start_line": 126,
+      "end_line": 129,
+      "claim": "HTTP transport layer built on httpx with configurable timeouts and headers",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/airtable/client.py",
+      "start_line": 163,
+      "end_line": 177,
+      "claim": "Comprehensive error handling with detailed HTTP status code classification",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/productivity/airtable/client.py",
+      "start_line": 530,
+      "end_line": 576,
+      "claim": "list_records method supports pagination, filtering, and field selection with data compaction",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/airtable/client.py",
+      "start_line": 632,
+      "end_line": 657,
+      "claim": "snapshot_from_url creates tabular snapshots with consistent column ordering",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/productivity/airtable/pyproject.toml",
+      "start_line": 22,
+      "end_line": 24,
+      "claim": "Tool configuration specifies AIRTABLE_API_KEY as HTTP secret for api.airtable.com",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/productivity/airtable/test_client.py",
+      "start_line": 26,
+      "end_line": 31,
+      "claim": "HTTP mocking capabilities for testing without network dependencies",
+      "section": "Key Components"
+    }
+  ]
+}

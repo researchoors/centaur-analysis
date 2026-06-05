@@ -1,0 +1,142 @@
+{
+  "component": "nansen",
+  "source_file": "/tmp/centaur-src/service_analyses/nansen.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 19,
+  "citations": [
+    {
+      "file_path": "tools/crypto/nansen/cli.py",
+      "start_line": 10,
+      "end_line": 11,
+      "claim": "Typer-based command-line interface with rich console styling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/nansen/client.py",
+      "start_line": 44,
+      "end_line": 51,
+      "claim": "NansenClient class encapsulates all HTTP communication with Nansen API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/nansen/client.py",
+      "start_line": 8,
+      "end_line": 41,
+      "claim": "Supports 41 different blockchain networks including Ethereum, Solana, Bitcoin",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/nansen/cli.py",
+      "start_line": 50,
+      "end_line": 58,
+      "claim": "Labels command retrieves Nansen wallet labels with multiple output formats",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/nansen/cli.py",
+      "start_line": 108,
+      "end_line": 118,
+      "claim": "Balance command fetches current token balances for addresses or entities",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/nansen/cli.py",
+      "start_line": 176,
+      "end_line": 185,
+      "claim": "Smart Money commands provide institutional trader behavior insights",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/nansen/cli.py",
+      "start_line": 20,
+      "end_line": 48,
+      "claim": "Output formatting system with number formatting and table generation utilities",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/nansen/client.py",
+      "start_line": 65,
+      "end_line": 93,
+      "claim": "HTTP request handling with authentication and error management",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/nansen/client.py",
+      "start_line": 59,
+      "end_line": 63,
+      "claim": "API key resolution from instance variable or secret store",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/nansen/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies: httpx for networking, typer for CLI, rich for formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/nansen/client.py",
+      "start_line": 4,
+      "end_line": 4,
+      "claim": "httpx used exclusively for HTTP client functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/nansen/cli.py",
+      "start_line": 5,
+      "end_line": 6,
+      "claim": "typer and rich imported for CLI framework and terminal formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/nansen/cli.py",
+      "start_line": 8,
+      "end_line": 8,
+      "claim": "centaur_sdk integration for secret management and table utilities",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "tools/crypto/nansen/client.py",
+      "start_line": 6,
+      "end_line": 6,
+      "claim": "Uses centaur_sdk secret function for API key retrieval",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "tools/crypto/nansen/client.py",
+      "start_line": 49,
+      "end_line": 49,
+      "claim": "Nansen API base URL at api.nansen.ai",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/nansen/pyproject.toml",
+      "start_line": 23,
+      "end_line": 23,
+      "claim": "NANSEN_API_KEY secret configuration for HTTP authentication",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/nansen/cli.py",
+      "start_line": 56,
+      "end_line": 57,
+      "claim": "Multiple output formats: JSON, markdown, and rich tables",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/nansen/cli.py",
+      "start_line": 53,
+      "end_line": 55,
+      "claim": "Chain support with ethereum as default, configurable via --chain option",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/nansen/pyproject.toml",
+      "start_line": 13,
+      "end_line": 14,
+      "claim": "CLI entry point configured as 'nansen' command",
+      "section": "API Surface"
+    }
+  ]
+}

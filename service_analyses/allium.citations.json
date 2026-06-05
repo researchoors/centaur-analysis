@@ -1,0 +1,114 @@
+{
+  "component": "allium",
+  "source_file": "/tmp/centaur-src/service_analyses/allium.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/crypto/allium/pyproject.toml",
+      "start_line": 1,
+      "end_line": 14,
+      "claim": "The component is defined as a Python CLI package with entry point configuration",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/allium/cli.py",
+      "start_line": 17,
+      "end_line": 18,
+      "claim": "Main CLI application built on Typer framework with help text",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/allium/client.py",
+      "start_line": 65,
+      "end_line": 74,
+      "claim": "AlliumClient class manages HTTP connections to both REST and MCP endpoints",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/allium/cli.py",
+      "start_line": 78,
+      "end_line": 102,
+      "claim": "Direct SQL execution command using MCP endpoint",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/allium/client.py",
+      "start_line": 204,
+      "end_line": 218,
+      "claim": "Direct SQL execution via MCP endpoint with row limiting",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/allium/cli.py",
+      "start_line": 45,
+      "end_line": 75,
+      "claim": "Multi-format output system supporting table, JSON, CSV, and markdown",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/allium/client.py",
+      "start_line": 312,
+      "end_line": 352,
+      "claim": "Async query execution with polling and timeout handling",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/crypto/allium/cli.py",
+      "start_line": 585,
+      "end_line": 641,
+      "claim": "Hyperliquid-specific trading data command with filtering options",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/allium/client.py",
+      "start_line": 358,
+      "end_line": 521,
+      "claim": "Pre-built SQL query templates for stablecoin analysis",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/allium/client.py",
+      "start_line": 15,
+      "end_line": 45,
+      "claim": "SSE response parsing for MCP protocol communication",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/allium/cli.py",
+      "start_line": 185,
+      "end_line": 201,
+      "claim": "Predefined table mappings for Hyperliquid and prediction market data freshness checks",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/allium/client.py",
+      "start_line": 75,
+      "end_line": 82,
+      "claim": "API key management using centaur_sdk secret function",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/allium/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies include httpx, typer, rich, and python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/allium/cli.py",
+      "start_line": 13,
+      "end_line": 15,
+      "claim": "Integration with centaur_sdk for Table formatting and client imports",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "tools/crypto/allium/pyproject.toml",
+      "start_line": 22,
+      "end_line": 23,
+      "claim": "Centaur configuration specifies MCP module and API key secrets management",
+      "section": "Architecture"
+    }
+  ]
+}

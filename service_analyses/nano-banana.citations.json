@@ -1,0 +1,135 @@
+{
+  "component": "nano-banana",
+  "source_file": "/tmp/centaur-src/service_analyses/nano-banana.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 18,
+  "citations": [
+    {
+      "file_path": "tools/media/nano-banana/client.py",
+      "start_line": 20,
+      "end_line": 24,
+      "claim": "The NanoBananaClient class serves as the core client for Google Gemini image generation",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/nano-banana/client.py",
+      "start_line": 12,
+      "end_line": 17,
+      "claim": "Static configuration defines available Gemini models with human-readable aliases",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/nano-banana/cli.py",
+      "start_line": 14,
+      "end_line": 14,
+      "claim": "CLI interface built with Typer framework",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/media/nano-banana/cli.py",
+      "start_line": 24,
+      "end_line": 46,
+      "claim": "Generate command provides image generation from text prompts with configuration options",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/nano-banana/cli.py",
+      "start_line": 71,
+      "end_line": 90,
+      "claim": "Edit command allows modifying existing images based on text instructions",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/nano-banana/cli.py",
+      "start_line": 122,
+      "end_line": 139,
+      "claim": "Models command displays available models in formatted table using Rich library",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/nano-banana/client.py",
+      "start_line": 60,
+      "end_line": 80,
+      "claim": "Generate method supports configurable model, aspect ratio, and image size parameters",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/nano-banana/client.py",
+      "start_line": 107,
+      "end_line": 127,
+      "claim": "Edit method processes existing images with text-based modification prompts",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/media/nano-banana/client.py",
+      "start_line": 6,
+      "end_line": 8,
+      "claim": "Integration with Google Generative AI SDK and PIL for image processing",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/nano-banana/client.py",
+      "start_line": 10,
+      "end_line": 10,
+      "claim": "Uses centaur_sdk for secure API key management",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/nano-banana/cli.py",
+      "start_line": 5,
+      "end_line": 8,
+      "claim": "CLI dependencies include typer for argument parsing and rich for terminal formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/nano-banana/client.py",
+      "start_line": 39,
+      "end_line": 42,
+      "claim": "API key retrieval through centaur_sdk secret management with environment variable fallback",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/media/nano-banana/client.py",
+      "start_line": 94,
+      "end_line": 98,
+      "claim": "Google Generative AI API integration for content generation",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/media/nano-banana/pyproject.toml",
+      "start_line": 6,
+      "end_line": 13,
+      "claim": "Complete dependency list with version constraints",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/media/nano-banana/pyproject.toml",
+      "start_line": 22,
+      "end_line": 24,
+      "claim": "Centaur framework secret configuration for Google API key",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/media/nano-banana/client.py",
+      "start_line": 100,
+      "end_line": 105,
+      "claim": "Image data extraction and PIL Image object creation from API response",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/media/nano-banana/client.py",
+      "start_line": 133,
+      "end_line": 144,
+      "claim": "Image loading and MIME type detection for editing operations",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/media/nano-banana/cli.py",
+      "start_line": 56,
+      "end_line": 68,
+      "claim": "CLI status display and error handling with Rich console output",
+      "section": "Data Flows"
+    }
+  ]
+}

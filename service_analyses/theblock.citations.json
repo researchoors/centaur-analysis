@@ -1,0 +1,114 @@
+{
+  "component": "theblock",
+  "source_file": "/tmp/centaur-src/service_analyses/theblock.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/crypto/theblock/client.py",
+      "start_line": 8,
+      "end_line": 16,
+      "claim": "TheBlockClient class is the core client responsible for fetching and parsing The Block's RSS feed",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/theblock/client.py",
+      "start_line": 11,
+      "end_line": 12,
+      "claim": "RSS feed URL and User-Agent configuration for bot detection avoidance",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/theblock/client.py",
+      "start_line": 17,
+      "end_line": 54,
+      "claim": "Dual-fetch strategy using both curl subprocess calls and direct HTTP requests via feedparser",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/crypto/theblock/client.py",
+      "start_line": 55,
+      "end_line": 68,
+      "claim": "Article data structure with title, link, published, summary, and author fields",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/theblock/client.py",
+      "start_line": 70,
+      "end_line": 84,
+      "claim": "Public API methods news() and search() for fetching and filtering articles",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/crypto/theblock/cli.py",
+      "start_line": 12,
+      "end_line": 12,
+      "claim": "Typer-based CLI application with name and help text configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/theblock/cli.py",
+      "start_line": 39,
+      "end_line": 77,
+      "claim": "News command implementation with multiple output formats including Rich tables, markdown, and JSON",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/theblock/cli.py",
+      "start_line": 79,
+      "end_line": 118,
+      "claim": "Search command implementation with keyword filtering in title and summary",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/theblock/cli.py",
+      "start_line": 22,
+      "end_line": 27,
+      "claim": "Markdown table output formatter for documentation-friendly output",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/theblock/cli.py",
+      "start_line": 30,
+      "end_line": 36,
+      "claim": "Text truncation utility for display formatting",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/crypto/theblock/pyproject.toml",
+      "start_line": 6,
+      "end_line": 11,
+      "claim": "External dependencies: feedparser for RSS parsing, typer for CLI, rich for terminal output, python-dotenv for configuration",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/theblock/pyproject.toml",
+      "start_line": 20,
+      "end_line": 20,
+      "claim": "External system integration with www.theblock.co host",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/crypto/theblock/cli.py",
+      "start_line": 5,
+      "end_line": 8,
+      "claim": "Import statements showing dependency on typer, rich, and python-dotenv",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/theblock/client.py",
+      "start_line": 3,
+      "end_line": 5,
+      "claim": "Import statements showing dependency on subprocess and feedparser",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/crypto/theblock/cli.py",
+      "start_line": 75,
+      "end_line": 84,
+      "claim": "Search functionality filters articles by query matching in title and summary fields",
+      "section": "Data Flows"
+    }
+  ]
+}

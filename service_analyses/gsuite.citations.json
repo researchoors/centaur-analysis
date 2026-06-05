@@ -1,0 +1,114 @@
+{
+  "component": "gsuite",
+  "source_file": "/tmp/centaur-src/service_analyses/gsuite.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/productivity/gsuite/cli.py",
+      "start_line": 9,
+      "end_line": 27,
+      "claim": "The CLI provides 7 sub-applications for different Google services",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/cli.py",
+      "start_line": 30,
+      "end_line": 38,
+      "claim": "Authentication is handled transparently by iron-proxy's oauth_token transform",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/client.py",
+      "start_line": 26,
+      "end_line": 61,
+      "claim": "Custom httplib2 configuration routes requests through iron-proxy with SOCKS proxy support",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/client.py",
+      "start_line": 63,
+      "end_line": 75,
+      "claim": "Uses AnonymousCredentials pattern where iron-proxy injects OAuth tokens",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/client.py",
+      "start_line": 77,
+      "end_line": 90,
+      "claim": "Service factory pattern with centralized service creation functions",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/analytics_properties.py",
+      "start_line": 9,
+      "end_line": 17,
+      "claim": "Static property mappings for known websites like paradigm.xyz",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/analytics_properties.py",
+      "start_line": 63,
+      "end_line": 124,
+      "claim": "Dynamic property discovery using Google Analytics Admin API",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/pyproject.toml",
+      "start_line": 6,
+      "end_line": 19,
+      "claim": "Dependencies include google-api-python-client, analytics libraries, typer, rich, and pysocks",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/pyproject.toml",
+      "start_line": 48,
+      "end_line": 57,
+      "claim": "OAuth configuration with refresh token grant and multiple Google service hosts",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/cli.py",
+      "start_line": 560,
+      "end_line": 589,
+      "claim": "Slack integration via subprocess calls for channel member email resolution",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/client.py",
+      "start_line": 15,
+      "end_line": 16,
+      "claim": "Integrates with centaur_sdk for attachment management and configuration",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/client.py",
+      "start_line": 20,
+      "end_line": 24,
+      "claim": "Optional import of shared HTTP client from api.integrations.gsuite",
+      "section": "Component Interactions"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/cli.py",
+      "start_line": 95,
+      "end_line": 139,
+      "claim": "Gmail search command with rich table output and error handling",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/client.py",
+      "start_line": 774,
+      "end_line": 840,
+      "claim": "File upload function supports multiple input sources including base64 and Centaur attachments",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/productivity/gsuite/client.py",
+      "start_line": 12,
+      "end_line": 14,
+      "claim": "PySocks is critical for httplib2 proxy support - without it proxy is silently ignored",
+      "section": "External Dependencies"
+    }
+  ]
+}

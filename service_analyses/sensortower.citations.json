@@ -1,0 +1,149 @@
+{
+  "component": "sensortower",
+  "source_file": "/tmp/centaur-src/service_analyses/sensortower.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 20,
+  "citations": [
+    {
+      "file_path": "tools/research/sensortower/client.py",
+      "start_line": 10,
+      "end_line": 21,
+      "claim": "SensorTowerClient class is the core API client with configurable timeout and base URL",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/sensortower/client.py",
+      "start_line": 29,
+      "end_line": 39,
+      "claim": "Authentication management supports multiple environment variable patterns with fallback",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/sensortower/client.py",
+      "start_line": 86,
+      "end_line": 123,
+      "claim": "get_sales_estimates method provides download and revenue data for both platforms",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/sensortower/client.py",
+      "start_line": 125,
+      "end_line": 173,
+      "claim": "get_top_charts method handles app rankings with category and chart type mapping",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/sensortower/client.py",
+      "start_line": 199,
+      "end_line": 219,
+      "claim": "search_apps method provides app search functionality across platforms",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/sensortower/cli.py",
+      "start_line": 15,
+      "end_line": 16,
+      "claim": "CLI is built using typer framework with rich console output",
+      "section": "Architecture"
+    },
+    {
+      "file_path": "tools/research/sensortower/cli.py",
+      "start_line": 54,
+      "end_line": 73,
+      "claim": "Downloads command provides app download estimates with multiple output formats",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/sensortower/cli.py",
+      "start_line": 220,
+      "end_line": 233,
+      "claim": "Top charts command supports category, country, and chart type filtering",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/sensortower/cli.py",
+      "start_line": 25,
+      "end_line": 38,
+      "claim": "Data formatting utilities provide K/M/B suffixes and currency formatting",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/sensortower/cli.py",
+      "start_line": 378,
+      "end_line": 386,
+      "claim": "App lookup command provides direct App Store/Play Store ID lookup functionality",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/sensortower/client.py",
+      "start_line": 41,
+      "end_line": 67,
+      "claim": "Request method handles HTTP communication with comprehensive error handling",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/sensortower/client.py",
+      "start_line": 77,
+      "end_line": 84,
+      "claim": "Platform abstraction normalizes iOS/Android platform names",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/sensortower/pyproject.toml",
+      "start_line": 6,
+      "end_line": 10,
+      "claim": "External dependencies include httpx for HTTP, typer for CLI, and rich for formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/sensortower/client.py",
+      "start_line": 7,
+      "end_line": 7,
+      "claim": "Integration with centaur SDK for secret management",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/sensortower/cli.py",
+      "start_line": 13,
+      "end_line": 13,
+      "claim": "Usage of centaur SDK Table utility for rich console output",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/sensortower/pyproject.toml",
+      "start_line": 17,
+      "end_line": 19,
+      "claim": "Centaur configuration specifies client.py as main module and secret requirements",
+      "section": "Configuration Requirements"
+    },
+    {
+      "file_path": "tools/research/sensortower/client.py",
+      "start_line": 33,
+      "end_line": 38,
+      "claim": "Error handling for missing authentication tokens with helpful user guidance",
+      "section": "Data Flows"
+    },
+    {
+      "file_path": "tools/research/sensortower/cli.py",
+      "start_line": 388,
+      "end_line": 404,
+      "claim": "iTunes API integration for iOS app ID lookup functionality",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/sensortower/cli.py",
+      "start_line": 452,
+      "end_line": 473,
+      "claim": "Raw API command provides direct endpoint access for advanced usage",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/sensortower/client.py",
+      "start_line": 241,
+      "end_line": 245,
+      "claim": "Context manager support for proper resource cleanup",
+      "section": "API Surface"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "component": "openfec",
+  "source_file": "/tmp/centaur-src/service_analyses/openfec.md",
+  "source_repo": "",
+  "source_commit": "",
+  "citation_count": 15,
+  "citations": [
+    {
+      "file_path": "tools/research/openfec/client.py",
+      "start_line": 8,
+      "end_line": 11,
+      "claim": "OpenFECClient is the core HTTP client class with base URL configuration",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/openfec/client.py",
+      "start_line": 28,
+      "end_line": 32,
+      "claim": "API key authentication is managed through the Centaur SDK secret system with fallback",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/openfec/client.py",
+      "start_line": 34,
+      "end_line": 50,
+      "claim": "HTTP requests include comprehensive error handling converting exceptions to RuntimeError",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/openfec/cli.py",
+      "start_line": 13,
+      "end_line": 13,
+      "claim": "CLI is built with Typer framework providing rich command-line interface",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/openfec/cli.py",
+      "start_line": 40,
+      "end_line": 51,
+      "claim": "CLI commands support multiple filtering options and output formats",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/openfec/cli.py",
+      "start_line": 96,
+      "end_line": 114,
+      "claim": "Rich terminal output uses styled tables with colored columns",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/openfec/cli.py",
+      "start_line": 32,
+      "end_line": 37,
+      "claim": "Markdown table output is supported for documentation purposes",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/openfec/client.py",
+      "start_line": 52,
+      "end_line": 85,
+      "claim": "Candidate search API provides filtering by name, state, party, office, and cycle",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/openfec/client.py",
+      "start_line": 126,
+      "end_line": 167,
+      "claim": "Contributions API supports filtering by committee, contributor, amount ranges, and date ranges",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/openfec/client.py",
+      "start_line": 213,
+      "end_line": 217,
+      "claim": "Client implements context manager protocol for resource cleanup",
+      "section": "API Surface"
+    },
+    {
+      "file_path": "tools/research/openfec/pyproject.toml",
+      "start_line": 6,
+      "end_line": 10,
+      "claim": "Dependencies include httpx for HTTP client, typer for CLI, and rich for output formatting",
+      "section": "External Dependencies"
+    },
+    {
+      "file_path": "tools/research/openfec/pyproject.toml",
+      "start_line": 19,
+      "end_line": 19,
+      "claim": "API key secret is configured for api.open.fec.gov domain matching",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/research/openfec/client.py",
+      "start_line": 11,
+      "end_line": 11,
+      "claim": "Base URL points to OpenFEC API version 1 endpoint",
+      "section": "External Systems"
+    },
+    {
+      "file_path": "tools/research/openfec/cli.py",
+      "start_line": 65,
+      "end_line": 67,
+      "claim": "Error handling displays user-friendly messages in red terminal output",
+      "section": "Key Components"
+    },
+    {
+      "file_path": "tools/research/openfec/cli.py",
+      "start_line": 23,
+      "end_line": 29,
+      "claim": "Text truncation utility handles long names in table output",
+      "section": "Key Components"
+    }
+  ]
+}
