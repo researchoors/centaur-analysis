@@ -5,183 +5,145 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Centaur — Codebase Analysis</title>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 <style>
   :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --border: #30363d;
-    --text: #e6edf3;
-    --muted: #8b949e;
-    --accent: #58a6ff;
-    --accent-dim: #1f6feb33;
-    --green: #3fb950;
-    --orange: #d2991d;
-    --red: #f85149;
-    --purple: #a371f7;
+    --bg: #0d1117; --surface: #161b22; --border: #30363d;
+    --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
+    --accent-dim: #1f6feb33; --green: #3fb950; --orange: #d2991d;
+    --red: #f85149; --purple: #a371f7; --teal: #39d353;
     --radius: 8px;
-    --font: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --font: 'SF Mono', 'Fira Code', monospace;
     --body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--body);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .container{max-width:1200px;margin:0 auto;padding:0 24px}
+  .wide{max-width:100%;padding:0 16px}
 
-  /* Header */
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 48px 0 32px;
-    margin-bottom: 40px;
-  }
-  header h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.02em; color: #fff; }
-  header .subtitle { color: var(--muted); font-size: 1.05rem; margin-top: 8px; }
-  .badge-row { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
-  .badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 4px 12px; border-radius: 20px;
-    font-size: 0.8rem; font-weight: 600; border: 1px solid var(--border);
-  }
+  header{border-bottom:1px solid var(--border);padding:48px 0 32px;margin-bottom:40px}
+  header h1{font-size:2.5rem;font-weight:700;letter-spacing:-0.02em;color:#fff}
+  header .subtitle{color:var(--muted);font-size:1.05rem;margin-top:8px}
+  .badge-row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;border:1px solid var(--border)}
 
-  /* Stats row */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-    margin-bottom: 40px;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-  }
-  .stat-card .num { font-size: 2rem; font-weight: 700; color: #fff; font-family: var(--font); }
-  .stat-card .label { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+  nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 0;margin-bottom:32px}
+  nav .tabs{display:flex;gap:4px;overflow-x:auto}
+  nav button{padding:8px 20px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:0.85rem;font-weight:600;white-space:nowrap;transition:all 0.15s}
+  nav button:hover{border-color:var(--accent);color:var(--text)}
+  nav button.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
 
-  /* Sections */
-  section { margin-bottom: 48px; }
-  h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  h3 { font-size: 1.15rem; font-weight: 600; color: #fff; margin-bottom: 12px; }
+  .tab-content{display:none}
+  .tab-content.active{display:block}
 
-  /* Diagram wrapper */
-  .diagram-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-    overflow-x: auto;
-    margin-bottom: 24px;
-  }
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:40px}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+  .stat-card .num{font-size:2rem;font-weight:700;color:#fff;font-family:var(--font)}
+  .stat-card .label{color:var(--muted);font-size:0.85rem;margin-top:4px}
 
-  /* Component grid */
-  .component-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 12px;
-  }
-  .comp-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    transition: border-color 0.15s;
-  }
-  .comp-card:hover { border-color: var(--accent); }
-  .comp-card .name { font-weight: 600; font-family: var(--font); font-size: 0.95rem; color: #fff; }
-  .comp-card .kind {
-    display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 12px;
-    margin-top: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
-  }
-  .kind-cli { background: #1f6feb22; color: var(--accent); }
-  .kind-library { background: #3fb95022; color: var(--green); }
-  .kind-service { background: #a371f722; color: var(--purple); }
-  .kind-frontend { background: #d2991d22; color: var(--orange); }
+  section{margin-bottom:48px}
+  h2{font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:20px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  h3{font-size:1.15rem;font-weight:600;color:#fff;margin:24px 0 12px}
+  h4{font-size:1rem;font-weight:600;color:var(--accent);margin:20px 0 8px}
 
-  /* Filters */
-  .filters {
-    display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
-  }
-  .filter-btn {
-    padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border);
-    background: transparent; color: var(--muted); cursor: pointer;
-    font-size: 0.8rem; font-weight: 600; transition: all 0.15s;
-  }
-  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
-  .filter-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .diagram-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;overflow-x:auto;margin-bottom:16px}
 
-  /* Search */
-  .search-wrap { margin-bottom: 16px; }
-  .search-input {
-    width: 100%; padding: 10px 16px; border-radius: var(--radius);
-    background: var(--surface); border: 1px solid var(--border);
-    color: var(--text); font-size: 0.95rem; font-family: var(--body);
-  }
-  .search-input:focus { outline: none; border-color: var(--accent); }
-  .search-input::placeholder { color: var(--muted); }
+  .flow-procedure{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px}
+  .flow-procedure h3{margin-top:0}
+  .flow-procedure ol{margin:16px 0 0 20px}
+  .flow-procedure li{margin-bottom:8px;color:var(--text);font-size:0.9rem;line-height:1.7}
+  .flow-procedure li strong{color:var(--accent)}
 
-  /* Tech stack table */
-  .tech-table { width: 100%; border-collapse: collapse; }
-  .tech-table th { text-align: left; color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; border-bottom: 1px solid var(--border); }
-  .tech-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-  .tech-table tr:last-child td { border-bottom: none; }
+  .principles{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+  .principle{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;border-left:3px solid var(--accent)}
+  .principle .num{font-size:0.7rem;color:var(--accent);font-weight:700;font-family:var(--font)}
+  .principle .title{font-weight:700;color:#fff;margin:4px 0 8px;font-size:1rem}
+  .principle .desc{color:var(--muted);font-size:0.85rem}
 
-  /* Principles */
-  .principles { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
-  .principle {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 20px;
-    border-left: 3px solid var(--accent);
-  }
-  .principle .num { font-size: 0.7rem; color: var(--accent); font-weight: 700; font-family: var(--font); }
-  .principle .title { font-weight: 700; color: #fff; margin: 4px 0 8px; font-size: 1rem; }
-  .principle .desc { color: var(--muted); font-size: 0.85rem; }
+  .tech-table{width:100%;border-collapse:collapse}
+  .tech-table th{text-align:left;color:var(--muted);font-weight:600;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.05em;padding:8px 12px;border-bottom:1px solid var(--border)}
+  .tech-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.9rem}
+  .tech-table tr:last-child td{border-bottom:none}
 
-  /* Footer */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 32px 0;
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.8rem;
-  }
+  .component-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .comp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:border-color 0.15s;cursor:pointer}
+  .comp-card:hover{border-color:var(--accent)}
+  .comp-card .name{font-weight:600;font-family:var(--font);font-size:0.95rem;color:#fff}
+  .comp-card .desc{color:var(--muted);font-size:0.78rem;margin-top:4px;line-height:1.4}
+  .kind{display:inline-block;font-size:0.7rem;padding:2px 8px;border-radius:12px;margin-top:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+  .kind-cli{background:#1f6feb22;color:var(--accent)}
+  .kind-library{background:#3fb95022;color:var(--green)}
+  .kind-service{background:#a371f722;color:var(--purple)}
+  .kind-frontend{background:#d2991d22;color:var(--orange)}
+  .kind-external{background:#f8514922;color:var(--red)}
 
-  .empty-state { text-align: center; padding: 40px; color: var(--muted); }
+  .search-wrap{margin-bottom:16px}
+  .search-input{width:100%;padding:10px 16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:0.95rem;font-family:var(--body)}
+  .search-input:focus{outline:none;border-color:var(--accent)}
+  .search-input::placeholder{color:var(--muted)}
 
-  @media (max-width: 640px) {
-    header h1 { font-size: 1.8rem; }
-    .stats { grid-template-columns: 1fr 1fr; }
-  }
+  .filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .filter-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:0.8rem;font-weight:600;transition:all 0.15s}
+  .filter-btn:hover{border-color:var(--accent);color:var(--text)}
+  .filter-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+
+  .empty-state{text-align:center;padding:40px;color:var(--muted);display:none}
+
+  /* Graph panel */
+  #graph-container{position:relative;width:100%;height:80vh;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+  #graph-container svg{width:100%;height:100%}
+  .graph-legend{position:absolute;top:16px;left:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;font-size:0.75rem;z-index:10}
+  .graph-legend .item{display:flex;align-items:center;gap:8px;margin:4px 0}
+  .graph-legend .dot{width:10px;height:10px;border-radius:50%}
+  .graph-tooltip{position:absolute;background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:12px 16px;font-size:0.8rem;pointer-events:none;z-index:20;max-width:360px;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+  .graph-tooltip .tt-name{font-weight:700;font-family:var(--font);color:#fff;margin-bottom:4px}
+  .graph-tooltip .tt-desc{color:var(--muted);line-height:1.4}
+  .graph-tooltip .tt-meta{color:var(--muted);font-size:0.7rem;margin-top:6px}
+  .graph-controls{position:absolute;bottom:16px;right:16px;display:flex;gap:8px;z-index:10}
+  .graph-controls button{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-size:0.75rem;font-weight:600}
+  .graph-controls button:hover{border-color:var(--accent);color:var(--text)}
+
+  .domain-label{font-size:0.85rem;font-weight:700;fill:var(--muted);text-anchor:middle}
+
+  footer{border-top:1px solid var(--border);padding:32px 0;text-align:center;color:var(--muted);font-size:0.8rem}
+
+  @media(max-width:640px){header h1{font-size:1.8rem}.stats{grid-template-columns:1fr 1fr}#graph-container{height:60vh}}
 </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Centaur</h1>
-      <p class="subtitle">AI-first platform orchestrating intelligent agents across 72+ specialized tools — codebase analysis powered by Flashlight</p>
-      <div class="badge-row">
-        <span class="badge">📦 80 components</span>
-        <span class="badge">🛠️ 72 tools</span>
-        <span class="badge">🔗 1,357 citations</span>
-        <span class="badge">🐍 Python + TypeScript</span>
-        <span class="badge">☸️ Kubernetes</span>
-      </div>
-    </header>
+<div class="container">
+  <header>
+    <h1>Centaur</h1>
+    <p class="subtitle">AI-first platform orchestrating intelligent agents across 72+ specialized tools — codebase analysis powered by Flashlight</p>
+    <div class="badge-row">
+      <span class="badge">📦 80 components</span>
+      <span class="badge">🛠️ 72 tools</span>
+      <span class="badge">🔗 285 dependency edges</span>
+      <span class="badge">🐍 Python + TypeScript</span>
+      <span class="badge">☸️ Kubernetes</span>
+    </div>
+  </header>
 
-    <!-- Stats -->
+  <nav>
+    <div class="container tabs">
+      <button class="active" data-tab="overview">Overview</button>
+      <button data-tab="flows">System Flows</button>
+      <button data-tab="graph">Component Graph</button>
+      <button data-tab="catalog">Catalog</button>
+      <button data-tab="stack">Stack</button>
+    </div>
+  </nav>
+
+  <!-- ==================== OVERVIEW ==================== -->
+  <div class="tab-content active" id="tab-overview">
     <div class="stats">
       <div class="stat-card"><div class="num">80</div><div class="label">Total Components</div></div>
       <div class="stat-card"><div class="num">58</div><div class="label">Libraries</div></div>
       <div class="stat-card"><div class="num">20</div><div class="label">CLI Tools</div></div>
       <div class="stat-card"><div class="num">2</div><div class="label">Services + Frontends</div></div>
-      <div class="stat-card"><div class="num">1,357</div><div class="label">Code Citations</div></div>
+      <div class="stat-card"><div class="num">285</div><div class="label">Dependency Edges</div></div>
     </div>
 
-    <!-- Architecture overview -->
     <section>
       <h2>System Architecture</h2>
       <div class="diagram-wrap">
@@ -192,19 +154,16 @@ flowchart TD
         API["🔌 REST API"]
         Web["🌐 Web Docs"]
     end
-
     subgraph Platform["Centaur Platform"]
         API_SVC["centaur-api<br/>FastAPI + PostgreSQL<br/>Orchestration Hub"]
         SLACKBOT["slackbot<br/>Hono + TypeScript<br/>Event Gateway"]
         SDK["centaur-sdk<br/>Secret Mgmt<br/>Tool Runtime"]
     end
-
     subgraph Infra["Infrastructure"]
         K8S["Kubernetes<br/>Sandbox Pods"]
         PG[("PostgreSQL<br/>pgVector + ParadeDB")]
         Proxy["Iron-Proxy<br/>Secret Injection"]
     end
-
     subgraph Tools["Tool Ecosystem (72)"]
         Crypto["🔗 Crypto/DeFi<br/>20 tools"]
         Research["🔍 Research<br/>22 tools"]
@@ -214,7 +173,6 @@ flowchart TD
         Media["🎬 Media<br/>4 tools"]
         Comms["💬 Comms<br/>2 tools"]
     end
-
     Slack --> SLACKBOT
     API --> API_SVC
     SLACKBOT --> API_SVC
@@ -223,13 +181,10 @@ flowchart TD
     SDK --> Tools
     K8S --> Tools
     Tools --> Proxy
-    Proxy --> Crypto
-    Proxy --> Research
         </div>
       </div>
     </section>
 
-    <!-- Design Principles -->
     <section>
       <h2>Architecture Principles</h2>
       <div class="principles">
@@ -241,217 +196,418 @@ flowchart TD
       </div>
     </section>
 
-    <!-- Sequence Diagram -->
-    <section>
-      <h2>Agent Execution Flow</h2>
-      <div class="diagram-wrap">
-        <div class="mermaid">
-sequenceDiagram
-    participant Client
-    participant API
-    participant Postgres
-    participant K8s
-    participant Sandbox
-    
-    Client->>API: Execute Agent Request
-    API->>Postgres: Store execution metadata
-    API->>K8s: Create sandbox pod
-    K8s->>Sandbox: Start container with tools
-    Sandbox->>API: Stream execution events
-    API->>Postgres: Update checkpoints
-    API->>Client: Stream results
-    Sandbox->>API: Execution complete
-    API->>Postgres: Store final results
-    API->>K8s: Cleanup sandbox
-        </div>
-      </div>
-    </section>
-
-    <!-- Security Flow -->
-    <section>
-      <h2>Tool Execution Security</h2>
-      <div class="diagram-wrap">
-        <div class="mermaid">
-sequenceDiagram
-    participant Agent
-    participant ToolServer
-    participant IronProxy
-    participant ExternalAPI
-    
-    Agent->>ToolServer: Tool invocation
-    ToolServer->>IronProxy: Request with secret placeholders
-    IronProxy->>ExternalAPI: Authenticated request
-    ExternalAPI->>IronProxy: Response
-    IronProxy->>ToolServer: Filtered response
-    ToolServer->>Agent: Tool result
-        </div>
-      </div>
-    </section>
-
-    <!-- Tech Stack -->
-    <section>
-      <h2>Technology Stack</h2>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
-        <table class="tech-table">
-          <thead><tr><th>Layer</th><th>Technology</th><th>Details</th></tr></thead>
-          <tbody>
-            <tr><td>API Framework</td><td>FastAPI</td><td>Async Python, OpenAPI auto-gen, SSE streaming</td></tr>
-            <tr><td>Slack Integration</td><td>Hono + TypeScript</td><td>Bun runtime, real-time message streaming</td></tr>
-            <tr><td>Database</td><td>PostgreSQL</td><td>pgVector embeddings, ParadeDB full-text search, asyncpg pooling</td></tr>
-            <tr><td>Orchestration</td><td>Kubernetes</td><td>Container sandbox lifecycle, pod security policies</td></tr>
-            <tr><td>Secret Management</td><td>Iron-Proxy</td><td>Sidecar proxy, secret injection, request filtering</td></tr>
-            <tr><td>Observability</td><td>OpenTelemetry + Grafana</td><td>Distributed tracing, VictoriaMetrics, custom dashboards</td></tr>
-            <tr><td>AI Models</td><td>Claude + GPT + Gemini</td><td>Reasoning, code generation, image/video creation</td></tr>
-            <tr><td>Tool CLI</td><td>Typer + Rich</td><td>Consistent CLI patterns, structured output</td></tr>
-            <tr><td>Documentation</td><td>React 19 + Vocs</td><td>MDX-based docs, interactive API reference</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Component Catalog -->
-    <section>
-      <h2>Component Catalog</h2>
-      <div class="search-wrap">
-        <input type="text" class="search-input" id="search" placeholder="Search components... (e.g. 'crypto', 'alchemy', 'api')" autocomplete="off">
-      </div>
-      <div class="filters" id="filters">
-        <button class="filter-btn active" data-kind="all">All (80)</button>
-        <button class="filter-btn" data-kind="library">Libraries (58)</button>
-        <button class="filter-btn" data-kind="cli">CLI Tools (20)</button>
-        <button class="filter-btn" data-kind="service">Service (1)</button>
-        <button class="filter-btn" data-kind="frontend">Frontend (1)</button>
-      </div>
-      <div class="component-grid" id="components"></div>
-      <div class="empty-state" id="empty" style="display:none;">No components match your filter.</div>
-    </section>
-
-    <!-- Domain Breakdown -->
     <section>
       <h2>Tool Domains</h2>
       <div class="component-grid">
-        <div class="comp-card">
-          <div class="name">🔗 Crypto & DeFi</div>
-          <div style="color:var(--muted);font-size:0.8rem;margin-top:6px;">20 tools — Alchemy, CoinGecko, DefiLlama, Etherscan, Messari, Nansen, Polymarket, Snapshot, Token Terminal, and more</div>
-        </div>
-        <div class="comp-card">
-          <div class="name">🔍 Research & Intelligence</div>
-          <div style="color:var(--muted);font-size:0.8rem;margin-top:6px;">22 tools — Websearch, Crunchbase, Congress.gov, YouTube, SensorTower, SimilarWeb, ListenNotes, and more</div>
-        </div>
-        <div class="comp-card">
-          <div class="name">📊 Infrastructure & Monitoring</div>
-          <div style="color:var(--muted);font-size:0.8rem;margin-top:6px;">11 tools — Grafana, Sentry, CloudWatch, PostHog, VictoriaMetrics, Profslice, and more</div>
-        </div>
-        <div class="comp-card">
-          <div class="name">📋 Productivity</div>
-          <div style="color:var(--muted);font-size:0.8rem;margin-top:6px;">10 tools — Linear, Notion, Google Workspace, Airtable, Figma, Slack, and more</div>
-        </div>
-        <div class="comp-card">
-          <div class="name">💼 Business & CRM</div>
-          <div style="color:var(--muted);font-size:0.8rem;margin-top:6px;">3 tools — Ashby (ATS), Attio (CRM), Pylon (Support)</div>
-        </div>
-        <div class="comp-card">
-          <div class="name">🎬 Media & Content</div>
-          <div style="color:var(--muted);font-size:0.8rem;margin-top:6px;">4 tools — Nano Banana (Gemini images), Veo3 (video), Transcriber (Whisper)</div>
-        </div>
-        <div class="comp-card">
-          <div class="name">💬 Communication</div>
-          <div style="color:var(--muted);font-size:0.8rem;margin-top:6px;">2 tools — Telegram, Twitter/X</div>
-        </div>
+        <div class="comp-card"><div class="name">🔗 Crypto & DeFi</div><div class="desc">20 tools — Alchemy, CoinGecko, DefiLlama, Etherscan, Messari, Nansen, Polymarket, Snapshot, Token Terminal, and more</div></div>
+        <div class="comp-card"><div class="name">🔍 Research & Intelligence</div><div class="desc">22 tools — Websearch, Crunchbase, Congress.gov, YouTube, SensorTower, SimilarWeb, ListenNotes, and more</div></div>
+        <div class="comp-card"><div class="name">📊 Infrastructure & Monitoring</div><div class="desc">11 tools — Grafana, Sentry, CloudWatch, PostHog, VictoriaMetrics, Profslice, and more</div></div>
+        <div class="comp-card"><div class="name">📋 Productivity</div><div class="desc">10 tools — Linear, Notion, Google Workspace, Airtable, Figma, Slack, and more</div></div>
+        <div class="comp-card"><div class="name">💼 Business & CRM</div><div class="desc">3 tools — Ashby (ATS), Attio (CRM), Pylon (Support)</div></div>
+        <div class="comp-card"><div class="name">🎬 Media & Content</div><div class="desc">4 tools — Nano Banana (Gemini images), Veo3 (video), Transcriber (Whisper)</div></div>
+        <div class="comp-card"><div class="name">💬 Communication</div><div class="desc">2 tools — Telegram, Twitter/X</div></div>
       </div>
     </section>
-
-    <footer>
-      Generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent);">Flashlight</a> — analysis of <a href="https://github.com/paradigmxyz/centaur" style="color:var(--accent);">paradigmxyz/centaur</a>
-    </footer>
   </div>
 
-<script>
-// Mermaid init
-mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+  <!-- ==================== SYSTEM FLOWS ==================== -->
+  <div class="tab-content" id="tab-flows">
+    <h2>Enumerated System Flows</h2>
+    <p style="color:var(--muted);margin-bottom:24px;">Seven core procedures that define how Centaur routes requests, isolates secrets, recovers from failure, and delivers results.</p>
 
-// Components data
+    <!-- Flow 1: Agent Execution -->
+    <div class="flow-procedure">
+      <h3>Flow 1: Agent Execution (Primary Request Path)</h3>
+      <div class="diagram-wrap"><div class="mermaid">
+sequenceDiagram
+    participant C as Client (Slack/API)
+    participant API as centaur-api
+    participant DB as PostgreSQL
+    participant K8s as Kubernetes
+    participant SB as Sandbox Pod
+    C->>API: 1. POST /agent/execute
+    API->>DB: 2. INSERT session (queued)
+    API->>K8s: 3. Create pod (Job)
+    K8s->>SB: 4. Start container + tools
+    SB->>API: 5. POST /agent/ready
+    API->>DB: 6. UPDATE running + checkpoint
+    API-->>C: 7. SSE stream opened
+    loop Reasoning Loop
+        SB->>API: 8. SSE: thinking/tool_call
+        API->>DB: 9. UPSERT checkpoint
+        API-->>C: 10. Forward event
+    end
+    SB->>API: 11. SSE: done
+    API->>DB: 12. UPDATE complete
+    API-->>C: 13. SSE: complete, close
+    API->>K8s: 14. DELETE pod
+      </div></div>
+      <ol>
+        <li><strong>Client sends</strong> <code>POST /agent/execute</code> with message, optional workflow context, and tool constraints.</li>
+        <li><strong>centaur-api writes</strong> an <code>agent_session</code> row to PostgreSQL (status: <code>queued</code>), allocating a session UUID.</li>
+        <li><strong>API creates</strong> a Kubernetes Job with the agent sandbox image, mounting tool volumes and injecting secrets via Iron-Proxy sidecar.</li>
+        <li><strong>K8s schedules</strong> the pod; the container starts, loads tool manifests, and connects back to the API via WebSocket.</li>
+        <li><strong>Sandbox sends</strong> a <code>/agent/ready</code> handshake confirming tool availability and resource allocation.</li>
+        <li><strong>API marks</strong> the session <code>running</code>, writes the initial checkpoint, and opens an SSE stream back to the client.</li>
+        <li><strong>Client receives</strong> <code>event: started</code> — the stream is now live.</li>
+        <li><strong>Agent loop executes:</strong> LLM call → tool selection → tool execution → observation. Each step emits an SSE event.</li>
+        <li><strong>After each step,</strong> the API upserts a checkpoint row so the session can resume from failure.</li>
+        <li><strong>Every SSE event</strong> is forwarded to the client in real-time (Slack message streaming or API response stream).</li>
+        <li><strong>On completion,</strong> the sandbox emits <code>event: done</code> with the final output.</li>
+        <li><strong>API writes</strong> final results to PostgreSQL (session complete, output stored).</li>
+        <li><strong>API sends</strong> <code>event: complete</code> and closes the SSE stream.</li>
+        <li><strong>API deletes</strong> the Kubernetes pod — no agent state leaks between sessions.</li>
+      </ol>
+    </div>
+
+    <!-- Flow 2: Slack Integration -->
+    <div class="flow-procedure">
+      <h3>Flow 2: Slack Integration (User Interaction Path)</h3>
+      <div class="diagram-wrap"><div class="mermaid">
+sequenceDiagram
+    participant U as Slack User
+    participant SW as Slack Webhook
+    participant SB as slackbot (Hono)
+    participant API as centaur-api
+    U->>SW: 1. @centaur message
+    SW->>SB: 2. POST /events (signed)
+    SB->>SB: 3. Verify + deduplicate
+    SB->>SB: 4. Normalize → agent request
+    SB->>API: 5. POST /agent/execute
+    SB->>SW: 6. chat.postMessage ("thinking…")
+    SB->>SB: 7. Consume SSE, throttle
+    SB->>SW: 8. chat.update (streaming)
+    SB->>SW: 9. chat.update (final + attachments)
+    SB->>SB: 10. Background poll
+    SB->>U: 11. DM or thread reply
+      </div></div>
+      <ol>
+        <li><strong>User sends</strong> <code>@centaur &lt;message&gt;</code> in a Slack channel where the bot is installed.</li>
+        <li><strong>Slack POSTs</strong> a signed event to the registered webhook URL (<code>/api/slack/events</code>).</li>
+        <li><strong>slackbot verifies</strong> the HMAC signature against <code>SLACK_SIGNING_SECRET</code> and checks <code>event_id</code> for duplicates.</li>
+        <li><strong>The Slack event is normalized:</strong> channel context, thread parent, user identity, and message text are extracted into a standard agent request envelope.</li>
+        <li><strong>slackbot forwards</strong> to <code>centaur-api</code> via <code>POST /agent/execute</code>, receiving a stream endpoint in response.</li>
+        <li><strong>An initial Slack message</strong> is posted showing "thinking…" with the agent session ID as metadata.</li>
+        <li><strong>The Slackbot consumes</strong> the SSE stream, buffering text updates and respecting Slack's rate limits (1 update/sec).</li>
+        <li><strong>Incremental text</strong> is pushed via <code>chat.update</code> — the user sees the agent's response build in real-time.</li>
+        <li><strong>On stream completion,</strong> a final <code>chat.update</code> posts the complete response with attachments.</li>
+        <li><strong>A background poll</strong> monitors session status for late-arriving results or error states.</li>
+        <li><strong>If follow-up needed,</strong> the Slackbot DMs the user or posts in-thread.</li>
+      </ol>
+    </div>
+
+    <!-- Flow 3: Workflow Orchestration -->
+    <div class="flow-procedure">
+      <h3>Flow 3: Workflow Orchestration (Checkpoint-Replay)</h3>
+      <div class="diagram-wrap"><div class="mermaid">
+sequenceDiagram
+    participant T as Trigger
+    participant API as centaur-api
+    participant DB as PostgreSQL
+    participant WP as Workflow Pod
+    participant Ext as External APIs
+    T->>API: 1. Trigger event
+    API->>DB: 2. INSERT workflow_run
+    API->>K8s: 3. Spawn pod
+    WP->>DB: 4. LOAD last checkpoint
+    loop Steps
+        WP->>Ext: 5. Execute step
+        Ext-->>WP: Result
+        WP->>DB: 6. SAVE checkpoint
+    end
+    Note over WP: 7. Suspend capability
+    Note over WP: 8. Resume from checkpoint
+    WP->>DB: 9. Mark complete
+      </div></div>
+      <ol>
+        <li><strong>A trigger fires</strong> — Slack message matching a workflow pattern, webhook from an external system, or cron schedule.</li>
+        <li><strong>API inserts</strong> a <code>workflow_run</code> row (status: <code>pending</code>) with the workflow definition and trigger context.</li>
+        <li><strong>API spawns</strong> a Kubernetes pod with the workflow engine and serialized workflow DAG.</li>
+        <li><strong>On startup,</strong> the workflow engine queries PostgreSQL for the last checkpoint — if resuming, it picks up mid-graph.</li>
+        <li><strong>Each step executes:</strong> the pod calls the designated tool or external API, waits for the result.</li>
+        <li><strong>After each step,</strong> a checkpoint is saved: <code>(step_id, input_state, output_state, timestamp)</code> — this is the recovery boundary.</li>
+        <li><strong>Suspend:</strong> for long-running workflows (hours), the pod can be terminated and recreated later. State persists in PostgreSQL.</li>
+        <li><strong>Resume:</strong> a new pod loads the latest checkpoint and continues from the next uncompleted step.</li>
+        <li><strong>On completion,</strong> the pod marks the <code>workflow_run</code> as <code>complete</code> or <code>failed</code>.</li>
+      </ol>
+    </div>
+
+    <!-- Flow 4: Tool Security -->
+    <div class="flow-procedure">
+      <h3>Flow 4: Tool Execution Security (Secret Isolation)</h3>
+      <div class="diagram-wrap"><div class="mermaid">
+sequenceDiagram
+    participant A as Agent (sandbox)
+    participant TS as Tool Server
+    participant IP as Iron-Proxy (sidecar)
+    participant Ext as External API
+    A->>TS: 1. Tool invocation
+    TS->>TS: 2. Build request
+    TS->>TS: 3. Inject placeholder
+    TS->>IP: 4. Forward with placeholders
+    IP->>IP: 5. Resolve → real secrets
+    IP->>IP: 6. Inject credentials
+    IP->>Ext: 7. Authenticated request
+    Ext-->>IP: 8. Response
+    IP->>IP: 9. Filter sensitive headers
+    IP-->>TS: 10. Sanitized response
+    TS-->>A: 11. Tool result (JSON)
+      </div></div>
+      <ol>
+        <li><strong>The agent calls</strong> a tool: tool name + serialized arguments.</li>
+        <li><strong>The tool server</strong> resolves the handler from the registry and builds the outgoing HTTP request.</li>
+        <li><strong>Instead of real credentials,</strong> the request body contains placeholders: <code>${SECRET:ALCHEMY_API_KEY}</code>.</li>
+        <li><strong>The tool server forwards</strong> this placeholder-laden request to the Iron-Proxy sidecar (localhost, same pod).</li>
+        <li><strong>Iron-Proxy resolves</strong> each placeholder against its secret store (injected at pod startup from Vault or K8s secrets).</li>
+        <li><strong>Real credentials</strong> are substituted: headers get <code>Authorization: Bearer sk-live-...</code>, query params get API keys.</li>
+        <li><strong>Iron-Proxy makes</strong> the actual outbound HTTP call to the external API.</li>
+        <li><strong>The external API</strong> returns a response — potentially including rate-limit headers, auth tokens in headers, etc.</li>
+        <li><strong>Iron-Proxy strips</strong> sensitive response headers (cookies, auth tokens, internal routing info) before passing back.</li>
+        <li><strong>The sanitized response</strong> is returned to the tool server.</li>
+        <li><strong>The tool server parses</strong> the response into the tool's output schema and returns it — the agent never sees a real secret.</li>
+      </ol>
+    </div>
+
+    <!-- Flow 5: Tool Development -->
+    <div class="flow-procedure">
+      <h3>Flow 5: Tool Development Lifecycle</h3>
+      <div class="diagram-wrap"><div class="mermaid">
+flowchart LR
+    A[1. Create<br/>poetry init] --> B[2. Implement<br/>Typer CLI + centaur-sdk]
+    B --> C[3. Test<br/>pytest + mock backends]
+    C --> D[4. Register<br/>auto-discovered by tool manager]
+    D --> E[5. Deploy<br/>container build + hot-reload]
+    E --> F[6. Monitor<br/>OpenTelemetry + Sentry + Grafana]
+    F -.->|iterate| B
+      </div></div>
+      <ol>
+        <li><strong>Create:</strong> Scaffold a new Python package under <code>tools/&lt;category&gt;/&lt;tool-name&gt;/</code> with <code>pyproject.toml</code> and <code>centaur-sdk</code> dependency.</li>
+        <li><strong>Implement:</strong> Write the tool as a Typer CLI application with Rich output. Use <code>centaur-sdk.secret()</code> for credentials — never hardcode secrets.</li>
+        <li><strong>Test:</strong> Unit tests with <code>pytest</code> using mock secret backends and fixture-based external API stubs.</li>
+        <li><strong>Register:</strong> Push to the monorepo; the tool manager auto-discovers via <code>tools/*/pyproject.toml</code> glob and registers it.</li>
+        <li><strong>Deploy:</strong> CI builds a container image; hot-reload in development, rolling update in production.</li>
+        <li><strong>Monitor:</strong> OpenTelemetry spans trace tool execution; errors surface in Sentry; usage metrics flow to Grafana.</li>
+      </ol>
+    </div>
+
+    <!-- Flow 6: Checkpoint-Replay -->
+    <div class="flow-procedure">
+      <h3>Flow 6: Checkpoint-Replay Recovery</h3>
+      <div class="diagram-wrap"><div class="mermaid">
+stateDiagram-v2
+    [*] --> Running
+    Running --> Checkpointed: Save step N
+    Checkpointed --> Running: Continue step N+1
+    Running --> Crashed: Pod dies / OOM / node eviction
+    Crashed --> Recovering: New pod spawns
+    Recovering --> Running: Load checkpoint, resume
+    Running --> Complete: All steps done
+    Complete --> [*]
+      </div></div>
+      <ol>
+        <li><strong>Agent or workflow executes</strong> normally — each step produces a checkpoint.</li>
+        <li><strong>A checkpoint is</strong> a PostgreSQL row: <code>(session_id, step_number, full_state_blob, created_at)</code>. State includes LLM conversation, tool call stack, and context.</li>
+        <li><strong>If the pod crashes</strong> (OOM killed, node eviction, network partition), the session row remains in <code>running</code> status.</li>
+        <li><strong>The orchestrator detects</strong> the dead pod and spawns a replacement pod with the same session ID.</li>
+        <li><strong>On startup,</strong> the new pod loads the latest checkpoint: full conversation history, last completed step, pending tool calls.</li>
+        <li><strong>Execution resumes</strong> from step N+1 — the agent re-plays the last LLM call if needed, or picks up the next tool.</li>
+        <li><strong>The session continues</strong> until completion or another failure (cycle repeats).</li>
+        <li><strong>When all steps complete,</strong> final state is written and session marked <code>complete</code>.</li>
+      </ol>
+    </div>
+
+    <!-- Flow 7: Observability -->
+    <div class="flow-procedure">
+      <h3>Flow 7: Observability Pipeline</h3>
+      <div class="diagram-wrap"><div class="mermaid">
+flowchart LR
+    A[Agent Pod] -->|OTLP| B[Otel Collector]
+    C[centaur-api] -->|OTLP| B
+    D[slackbot] -->|OTLP| B
+    B --> E[VictoriaMetrics]
+    B --> F[Grafana]
+    C -->|JSON logs| G[VictoriaLogs]
+    A -->|JSON logs| G
+    C -->|errors| H[Sentry]
+    A -->|errors| H
+    E --> F
+    G --> F
+      </div></div>
+      <ol>
+        <li><strong>Every service</strong> (API, Slackbot, agent pods) is instrumented with OpenTelemetry SDKs — spans at service boundaries, tool calls, DB queries, and external APIs.</li>
+        <li><strong>Spans are exported</strong> via OTLP to a central OpenTelemetry Collector.</li>
+        <li><strong>The collector batches,</strong> filters, and routes: traces to VictoriaMetrics, logs to VictoriaLogs.</li>
+        <li><strong>Services emit</strong> structured JSON logs with PII redaction applied at the logging framework level.</li>
+        <li><strong>Error events</strong> are routed to Sentry with full stack traces and session context.</li>
+        <li><strong>Grafana dashboards</strong> consume VictoriaMetrics for request latency, tool execution counts, error rates, and sandbox resource usage.</li>
+        <li><strong>Custom business metrics</strong> (agent success rate, tool popularity, session duration) are emitted as DogStatsD counters.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ==================== COMPONENT GRAPH ==================== -->
+  <div class="tab-content" id="tab-graph">
+    <h2>Interactive Component Graph</h2>
+    <p style="color:var(--muted);margin-bottom:16px;">Drag, zoom, and click nodes to explore dependencies. <span style="color:var(--green)">● Internal</span> Centaur components vs <span style="color:var(--red)">● External</span> dependencies. Node size = dependency count.</p>
+    <div id="graph-container">
+      <div class="graph-legend">
+        <div class="item"><span class="dot" style="background:var(--green)"></span> Internal (Centaur)</div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span> External dependencies</div>
+        <div class="item" style="margin-top:4px">■ lib &nbsp; ◆ cli &nbsp; ▲ service &nbsp; ▼ frontend</div>
+      </div>
+      <div class="graph-controls">
+        <button onclick="zoomIn()">+ Zoom</button>
+        <button onclick="zoomOut()">− Zoom</button>
+        <button onclick="resetGraph()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CATALOG ==================== -->
+  <div class="tab-content" id="tab-catalog">
+    <h2>Component Catalog</h2>
+    <div class="search-wrap"><input type="text" class="search-input" id="search" placeholder="Search 80 components..." autocomplete="off"></div>
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-kind="all">All (80)</button>
+      <button class="filter-btn" data-kind="library">Libraries (58)</button>
+      <button class="filter-btn" data-kind="cli">CLI Tools (20)</button>
+      <button class="filter-btn" data-kind="service">Service (1)</button>
+      <button class="filter-btn" data-kind="frontend">Frontend (1)</button>
+    </div>
+    <div class="component-grid" id="components"></div>
+    <div class="empty-state" id="empty">No components match your filter.</div>
+  </div>
+
+  <!-- ==================== STACK ==================== -->
+  <div class="tab-content" id="tab-stack">
+    <h2>Technology Stack</h2>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <table class="tech-table">
+        <thead><tr><th>Layer</th><th>Technology</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td>API Framework</td><td>FastAPI</td><td>Async Python, OpenAPI auto-gen, SSE streaming</td></tr>
+          <tr><td>Slack Integration</td><td>Hono + TypeScript</td><td>Bun runtime, real-time message streaming</td></tr>
+          <tr><td>Database</td><td>PostgreSQL</td><td>pgVector embeddings, ParadeDB full-text search, asyncpg pooling</td></tr>
+          <tr><td>Orchestration</td><td>Kubernetes</td><td>Container sandbox lifecycle, pod security policies</td></tr>
+          <tr><td>Secret Management</td><td>Iron-Proxy</td><td>Sidecar proxy, secret injection, request filtering</td></tr>
+          <tr><td>Observability</td><td>OpenTelemetry + Grafana</td><td>Distributed tracing, VictoriaMetrics, custom dashboards</td></tr>
+          <tr><td>AI Models</td><td>Claude + GPT + Gemini</td><td>Reasoning, code generation, image/video creation</td></tr>
+          <tr><td>Tool CLI</td><td>Typer + Rich</td><td>Consistent CLI patterns, structured output</td></tr>
+          <tr><td>Documentation</td><td>React 19 + Vocs</td><td>MDX-based docs, interactive API reference</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 style="margin-top:48px">External Dependencies (by usage)</h2>
+    <div class="component-grid">
+      <div class="comp-card"><div class="name">typer <span style="font-weight:400;color:var(--muted)">61x</span></div><div class="desc">CLI framework — every tool uses it for argument parsing and command structure</div></div>
+      <div class="comp-card"><div class="name">rich <span style="font-weight:400;color:var(--muted)">60x</span></div><div class="desc">Terminal formatting — tables, colors, progress bars across almost all tools</div></div>
+      <div class="comp-card"><div class="name">httpx <span style="font-weight:400;color:var(--muted)">56x</span></div><div class="desc">Async HTTP client — the standard transport for all external API calls</div></div>
+      <div class="comp-card"><div class="name">python-dotenv <span style="font-weight:400;color:var(--muted)">37x</span></div><div class="desc">Environment variable loading — every tool with API keys uses it</div></div>
+    </div>
+  </div>
+
+  <footer>
+    Generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent);">Flashlight</a> — analysis of <a href="https://github.com/paradigmxyz/centaur" style="color:var(--accent);">paradigmxyz/centaur</a> — <a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent);">source repo</a>
+  </footer>
+</div>
+
+<script>
+// ===== Mermaid =====
+mermaid.initialize({startOnLoad:true,theme:'dark',securityLevel:'loose'});
+
+// ===== Tabs =====
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'graph') initGraph();
+  });
+});
+
+// ===== Catalog =====
 const components = [
-  {"name":"@centaur/api-client","kind":"library"},
-  {"name":"@centaur/harness-events","kind":"library"},
-  {"name":"airtable","kind":"cli"},
-  {"name":"alchemy","kind":"library"},
-  {"name":"allium","kind":"cli"},
-  {"name":"archiver","kind":"library"},
-  {"name":"arkham","kind":"library"},
-  {"name":"ashby","kind":"library"},
-  {"name":"attio","kind":"cli"},
-  {"name":"centaur","kind":"library"},
-  {"name":"centaur-api","kind":"library"},
-  {"name":"centaur-composio-tool","kind":"library"},
-  {"name":"centaur-docs","kind":"service"},
-  {"name":"centaur-sdk","kind":"library"},
-  {"name":"chart","kind":"library"},
-  {"name":"cloudwatch","kind":"library"},
-  {"name":"coindesk","kind":"library"},
-  {"name":"coingecko","kind":"cli"},
-  {"name":"coinmetrics","kind":"cli"},
-  {"name":"company_context","kind":"library"},
-  {"name":"congress","kind":"library"},
-  {"name":"crunchbase","kind":"library"},
-  {"name":"databento","kind":"cli"},
-  {"name":"debank","kind":"library"},
-  {"name":"defillama","kind":"cli"},
-  {"name":"demo","kind":"library"},
-  {"name":"docsend","kind":"library"},
-  {"name":"dune","kind":"cli"},
-  {"name":"eng","kind":"library"},
-  {"name":"eodhd","kind":"cli"},
-  {"name":"etherscan","kind":"library"},
-  {"name":"fedreg","kind":"library"},
-  {"name":"figma","kind":"library"},
-  {"name":"googlenews","kind":"library"},
-  {"name":"grafana","kind":"frontend"},
-  {"name":"granola","kind":"library"},
-  {"name":"gsuite","kind":"cli"},
-  {"name":"harmonic","kind":"library"},
-  {"name":"invest-intake","kind":"library"},
-  {"name":"investmemos","kind":"library"},
-  {"name":"kalshi","kind":"cli"},
-  {"name":"karma","kind":"library"},
-  {"name":"laminar","kind":"library"},
-  {"name":"legistorm","kind":"library"},
-  {"name":"linear","kind":"cli"},
-  {"name":"listennotes","kind":"library"},
-  {"name":"messari","kind":"cli"},
-  {"name":"mpp","kind":"library"},
-  {"name":"nano-banana","kind":"library"},
-  {"name":"nansen","kind":"cli"},
-  {"name":"newsapi","kind":"library"},
-  {"name":"notion","kind":"cli"},
-  {"name":"openfec","kind":"library"},
-  {"name":"opentable","kind":"library"},
-  {"name":"plural","kind":"library"},
-  {"name":"polymarket","kind":"cli"},
-  {"name":"posthog","kind":"cli"},
-  {"name":"profslice","kind":"library"},
-  {"name":"pylon","kind":"library"},
-  {"name":"reth","kind":"library"},
-  {"name":"reth-log-analyzer","kind":"library"},
-  {"name":"sensortower","kind":"library"},
-  {"name":"sentry","kind":"library"},
-  {"name":"similarweb","kind":"cli"},
-  {"name":"slack","kind":"cli"},
-  {"name":"slackbot","kind":"library"},
-  {"name":"snapshot","kind":"library"},
-  {"name":"standard-metrics","kind":"library"},
-  {"name":"tally","kind":"library"},
-  {"name":"telegram","kind":"library"},
-  {"name":"theblock","kind":"library"},
-  {"name":"token-terminal","kind":"library"},
-  {"name":"tokenomist","kind":"library"},
-  {"name":"transcriber","kind":"library"},
-  {"name":"twitter","kind":"library"},
-  {"name":"veo3","kind":"library"},
-  {"name":"vlogs","kind":"cli"},
-  {"name":"vmetrics","kind":"library"},
-  {"name":"websearch","kind":"library"},
-  {"name":"youtube","kind":"library"}
+{"name":"@centaur/api-client","kind":"library","desc":""},
+{"name":"@centaur/harness-events","kind":"library","desc":""},
+{"name":"airtable","kind":"cli","desc":"Airtable API client for bases, schemas, views, and records"},
+{"name":"alchemy","kind":"library","desc":"Blockchain data, token balances, transfers, and prices"},
+{"name":"allium","kind":"cli","desc":"On-chain analytics — SQL queries, schema search, stablecoin analysis"},
+{"name":"archiver","kind":"library","desc":"Document extraction via Reducto for investment materials"},
+{"name":"arkham","kind":"library","desc":"Blockchain analytics and wallet tracking"},
+{"name":"ashby","kind":"library","desc":"ATS — query candidates, jobs, applications, interviews"},
+{"name":"attio","kind":"cli","desc":"CRM — objects, records, lists, notes, tasks"},
+{"name":"centaur","kind":"library","desc":""},
+{"name":"centaur-api","kind":"library","desc":"Central orchestration hub and control plane"},
+{"name":"centaur-composio-tool","kind":"library","desc":"Execute tools from 1000+ services via Composio"},
+{"name":"centaur-docs","kind":"service","desc":"Developer-facing documentation and API reference"},
+{"name":"centaur-sdk","kind":"library","desc":"Lightweight SDK for building Centaur-compatible tools"},
+{"name":"chart","kind":"library","desc":"Chart generation — render_chart returns base64 PNGs for Slack"},
+{"name":"cloudwatch","kind":"library","desc":"AWS CloudWatch — Logs Insights queries, metrics, alarms"},
+{"name":"coindesk","kind":"library","desc":"Crypto news CLI"},
+{"name":"coingecko","kind":"cli","desc":"Pro API — prices, markets, trending coins, exchanges"},
+{"name":"coinmetrics","kind":"cli","desc":"Asset metrics, market data, timeseries, exchanges"},
+{"name":"company_context","kind":"library","desc":"Search indexed company history across Slack, Drive, Calendar, Linear"},
+{"name":"congress","kind":"library","desc":"Congress.gov API CLI"},
+{"name":"crunchbase","kind":"library","desc":"Enterprise API — company and funding data"},
+{"name":"databento","kind":"cli","desc":"Historical API — stock market OHLCV data"},
+{"name":"debank","kind":"library","desc":"DeFi wallet data, token balances, protocol positions"},
+{"name":"defillama","kind":"cli","desc":"DeFi analytics — TVL, stablecoins, DEX volumes, bridges, fees"},
+{"name":"demo","kind":"library","desc":"Demo tool for testing CD hot-reload"},
+{"name":"docsend","kind":"library","desc":"Document downloader — cloud browser + Playwright"},
+{"name":"dune","kind":"cli","desc":"Dune Analytics — execute queries, fetch results"},
+{"name":"eng","kind":"library","desc":"Engineering persona — code review, debugging, repo work"},
+{"name":"eodhd","kind":"cli","desc":"Financial API — real-time quotes and historical EOD prices"},
+{"name":"etherscan","kind":"library","desc":"Ethereum block explorer — transactions, contracts, tokens"},
+{"name":"fedreg","kind":"library","desc":"Federal Register CLI for regulatory data"},
+{"name":"figma","kind":"library","desc":"Design system extraction and analysis"},
+{"name":"googlenews","kind":"library","desc":"Google News RSS CLI for news search and headlines"},
+{"name":"grafana","kind":"frontend","desc":"Observability — dashboards, VictoriaMetrics, VictoriaLogs, alerts"},
+{"name":"granola","kind":"library","desc":"Meeting notes CLI"},
+{"name":"gsuite","kind":"cli","desc":"Gmail, Calendar, Drive, Docs, Sheets, Slides, Analytics"},
+{"name":"harmonic","kind":"library","desc":"Startup discovery and company/people enrichment"},
+{"name":"invest-intake","kind":"library","desc":"Normalize mixed raw invest inputs into a clean context pack"},
+{"name":"investmemos","kind":"library","desc":"Postgres-backed investment memo search and retrieval"},
+{"name":"kalshi","kind":"cli","desc":"Prediction market data — markets, events, trades, price history"},
+{"name":"karma","kind":"library","desc":"DAO delegate reputation, contributor scores, governance analytics"},
+{"name":"laminar","kind":"library","desc":"Trace investigation for Centaur agent executions"},
+{"name":"legistorm","kind":"library","desc":"Congressional data CLI"},
+{"name":"linear","kind":"cli","desc":"Issue tracking — issues, projects, cycles, teams"},
+{"name":"listennotes","kind":"library","desc":"Podcast data CLI"},
+{"name":"messari","kind":"cli","desc":"Crypto asset data — prices, metrics, profiles, markets, news"},
+{"name":"mpp","kind":"library","desc":"Market data via Machine Payments Protocol — token prices, on-chain data"},
+{"name":"nano-banana","kind":"library","desc":"Google Gemini image generation"},
+{"name":"nansen","kind":"cli","desc":"Blockchain analytics — wallet labels, Smart Money, token data"},
+{"name":"newsapi","kind":"library","desc":"News API CLI for news search and headlines"},
+{"name":"notion","kind":"cli","desc":"Pages, databases, blocks, comments"},
+{"name":"openfec","kind":"library","desc":"Federal election data CLI"},
+{"name":"opentable","kind":"library","desc":"Searching restaurant reservations"},
+{"name":"plural","kind":"library","desc":"Open States API — state legislation, legislators, committees"},
+{"name":"polymarket","kind":"cli","desc":"Prediction market data — markets, events, prices, orderbooks"},
+{"name":"posthog","kind":"cli","desc":"Product analytics — HogQL queries, pageviews, breakdowns"},
+{"name":"profslice","kind":"library","desc":"Firefox Profiler data extraction for LLM analysis"},
+{"name":"pylon","kind":"library","desc":"Support issues, accounts, contacts"},
+{"name":"reth","kind":"library","desc":"Reth CLI — execution timings, performance metrics"},
+{"name":"reth-log-analyzer","kind":"library","desc":"Parse reth logs and generate performance graphs"},
+{"name":"sensortower","kind":"library","desc":"Mobile app analytics"},
+{"name":"sentry","kind":"library","desc":"Issues — list/search, event details, stacktraces (read-only)"},
+{"name":"similarweb","kind":"cli","desc":"Web traffic and market intelligence"},
+{"name":"slack","kind":"cli","desc":"Search Slack messages, channels, threads, users"},
+{"name":"slackbot","kind":"library","desc":"Bridge between Slack workspace events and Centaur platform"},
+{"name":"snapshot","kind":"library","desc":"Off-chain governance voting, proposals, and spaces"},
+{"name":"standard-metrics","kind":"library","desc":"Portfolio company data and analytics"},
+{"name":"tally","kind":"library","desc":"On-chain governance proposals, voting, and delegates"},
+{"name":"telegram","kind":"library","desc":"Send messages, search chats, gather context"},
+{"name":"theblock","kind":"library","desc":"Crypto news CLI"},
+{"name":"token-terminal","kind":"library","desc":"Protocol revenue, fees, financial statements, and metrics"},
+{"name":"tokenomist","kind":"library","desc":"Token unlock schedules, vesting, emissions, and allocations"},
+{"name":"transcriber","kind":"library","desc":"Local-first voice transcription using Whisper"},
+{"name":"twitter","kind":"library","desc":"User profiles, followers, tweets, and search"},
+{"name":"veo3","kind":"library","desc":"Google Veo 3 video generation"},
+{"name":"vlogs","kind":"cli","desc":"VictoriaLogs — LogsQL queries, field names, log streams"},
+{"name":"vmetrics","kind":"library","desc":"VictoriaMetrics — PromQL/MetricsQL queries for agent self-validation"},
+{"name":"websearch","kind":"library","desc":"Web search and deep research via Parallel; optional Claude synthesis"},
+{"name":"youtube","kind":"library","desc":"YouTube CLI for video data"},
 ];
 
 function renderComponents(filter, query) {
@@ -460,37 +616,244 @@ function renderComponents(filter, query) {
   const q = query.toLowerCase().trim();
   const filtered = components.filter(c => {
     if (filter !== 'all' && c.kind !== filter) return false;
-    if (q && !c.name.toLowerCase().includes(q)) return false;
+    if (q && !c.name.toLowerCase().includes(q) && !c.desc.toLowerCase().includes(q)) return false;
     return true;
   });
-
   grid.innerHTML = filtered.map(c =>
-    `<div class="comp-card">
+    `<div class="comp-card" onclick="zoomToNode('${c.name}')">
       <div class="name">${c.name}</div>
+      ${c.desc ? `<div class="desc">${c.desc}</div>` : ''}
       <span class="kind kind-${c.kind}">${c.kind}</span>
     </div>`
   ).join('');
-
   empty.style.display = filtered.length ? 'none' : 'block';
 }
 
-// Filters
 let activeKind = 'all';
 document.getElementById('filters').addEventListener('click', e => {
   if (!e.target.classList.contains('filter-btn')) return;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#filters .filter-btn').forEach(b => b.classList.remove('active'));
   e.target.classList.add('active');
   activeKind = e.target.dataset.kind;
   renderComponents(activeKind, document.getElementById('search').value);
 });
-
-// Search
-document.getElementById('search').addEventListener('input', e => {
-  renderComponents(activeKind, e.target.value);
-});
-
-// Initial render
+document.getElementById('search').addEventListener('input', e => renderComponents(activeKind, e.target.value));
 renderComponents('all', '');
+
+// ===== D3 Force Graph =====
+let graphInitialized = false;
+let simulation, svg, g, zoom;
+
+const graphData = {"nodes": [{"id": "centaur-sdk", "name": "centaur-sdk", "kind": "library", "description": "Lightweight SDK for building Centaur-compatible tools", "group": "internal", "domain": "centaur"}, {"id": "centaur-api", "name": "centaur-api", "kind": "library", "description": "Centaur API server", "group": "internal", "domain": "centaur"}, {"id": "ashby", "name": "ashby", "kind": "library", "description": "Ashby ATS CLI for AI agents \u2014 query candidates, jobs, applications, interviews", "group": "internal", "domain": "centaur"}, {"id": "attio", "name": "attio", "kind": "cli", "description": "Attio CRM \u2014 objects, records, lists, notes, tasks", "group": "internal", "domain": "centaur"}, {"id": "pylon", "name": "pylon", "kind": "library", "description": "Pylon CLI for AI agents - support issues, accounts, contacts", "group": "internal", "domain": "centaur"}, {"id": "telegram", "name": "telegram", "kind": "library", "description": "Telegram CLI for AI agents - send messages, search chats, gather context", "group": "internal", "domain": "centaur"}, {"id": "twitter", "name": "twitter", "kind": "library", "description": "Twitter CLI for user profiles, followers, tweets, and search", "group": "internal", "domain": "centaur"}, {"id": "alchemy", "name": "alchemy", "kind": "library", "description": "Alchemy CLI for blockchain data, token balances, transfers, and prices", "group": "internal", "domain": "centaur"}, {"id": "allium", "name": "allium", "kind": "cli", "description": "Allium on-chain analytics \u2014 SQL queries, schema search, stablecoin analysis", "group": "internal", "domain": "centaur"}, {"id": "arkham", "name": "arkham", "kind": "library", "description": "Arkham Intelligence CLI for blockchain analytics and wallet tracking", "group": "internal", "domain": "centaur"}, {"id": "coindesk", "name": "coindesk", "kind": "library", "description": "CoinDesk CLI for crypto news", "group": "internal", "domain": "centaur"}, {"id": "coingecko", "name": "coingecko", "kind": "cli", "description": "CoinGecko Pro API \u2014 prices, markets, trending coins, exchanges", "group": "internal", "domain": "centaur"}, {"id": "coinmetrics", "name": "coinmetrics", "kind": "cli", "description": "Coin Metrics API \u2014 asset metrics, market data, timeseries, exchanges", "group": "internal", "domain": "centaur"}, {"id": "databento", "name": "databento", "kind": "cli", "description": "Databento Historical API \u2014 stock market OHLCV data", "group": "internal", "domain": "centaur"}, {"id": "debank", "name": "debank", "kind": "library", "description": "DeBank CLI for DeFi wallet data, token balances, and protocol positions", "group": "internal", "domain": "centaur"}, {"id": "defillama", "name": "defillama", "kind": "cli", "description": "DefiLlama DeFi analytics \u2014 TVL, stablecoins, DEX volumes, bridges, fees", "group": "internal", "domain": "centaur"}, {"id": "dune", "name": "dune", "kind": "cli", "description": "Dune Analytics \u2014 execute queries, fetch results, check status", "group": "internal", "domain": "centaur"}, {"id": "eodhd", "name": "eodhd", "kind": "cli", "description": "EODHD Financial API \u2014 real-time quotes and historical EOD prices", "group": "internal", "domain": "centaur"}, {"id": "etherscan", "name": "etherscan", "kind": "library", "description": "Etherscan \u2014 Ethereum block explorer, transactions, contracts, and tokens", "group": "internal", "domain": "centaur"}, {"id": "kalshi", "name": "kalshi", "kind": "cli", "description": "Kalshi prediction market data \u2014 markets, events, trades, price history", "group": "internal", "domain": "centaur"}, {"id": "karma", "name": "karma", "kind": "library", "description": "Karma \u2014 DAO delegate reputation, contributor scores, and governance analytics", "group": "internal", "domain": "centaur"}, {"id": "messari", "name": "messari", "kind": "cli", "description": "Messari crypto asset data \u2014 prices, metrics, profiles, markets, news", "group": "internal", "domain": "centaur"}, {"id": "mpp", "name": "mpp", "kind": "library", "description": "Market data via MPP (Machine Payments Protocol) \u2014 token prices, web search, on-chain data, trending tokens, wallet balances, and Dune SQL queries. Paid per-query with Tempo stablecoins.", "group": "internal", "domain": "centaur"}, {"id": "nansen", "name": "nansen", "kind": "cli", "description": "Nansen blockchain analytics \u2014 wallet labels, Smart Money, token data", "group": "internal", "domain": "centaur"}, {"id": "polymarket", "name": "polymarket", "kind": "cli", "description": "Polymarket prediction market data \u2014 markets, events, prices, orderbooks", "group": "internal", "domain": "centaur"}, {"id": "snapshot", "name": "snapshot", "kind": "library", "description": "Snapshot \u2014 off-chain governance voting, proposals, and spaces", "group": "internal", "domain": "centaur"}, {"id": "standard-metrics", "name": "standard-metrics", "kind": "library", "description": "Standard Metrics CLI for portfolio company data and analytics", "group": "internal", "domain": "centaur"}, {"id": "tally", "name": "tally", "kind": "library", "description": "Tally \u2014 on-chain governance proposals, voting, and delegates", "group": "internal", "domain": "centaur"}, {"id": "theblock", "name": "theblock", "kind": "library", "description": "The Block CLI for crypto news", "group": "internal", "domain": "centaur"}, {"id": "token-terminal", "name": "token-terminal", "kind": "library", "description": "Token Terminal \u2014 protocol revenue, fees, financial statements, and metrics", "group": "internal", "domain": "centaur"}, {"id": "tokenomist", "name": "tokenomist", "kind": "library", "description": "Tokenomist \u2014 token unlock schedules, vesting, emissions, and allocations", "group": "internal", "domain": "centaur"}, {"id": "chart", "name": "chart", "kind": "library", "description": "Chart generation for Centaur. Single render_chart method returns base64 PNG images ready for Slack upload.", "group": "internal", "domain": "centaur"}, {"id": "cloudwatch", "name": "cloudwatch", "kind": "library", "description": "AWS CloudWatch \u2014 Logs Insights queries, log events, metrics, and alarms (read-only)", "group": "internal", "domain": "centaur"}, {"id": "demo", "name": "demo", "kind": "library", "description": "Demo tool for testing CD hot-reload", "group": "internal", "domain": "centaur"}, {"id": "grafana", "name": "grafana", "kind": "frontend", "description": "Grafana observability \u2014 dashboards, VictoriaMetrics, VictoriaLogs, alerts, annotations", "group": "internal", "domain": "centaur"}, {"id": "laminar", "name": "laminar", "kind": "library", "description": "Laminar trace investigation for Centaur agent executions", "group": "internal", "domain": "centaur"}, {"id": "posthog", "name": "posthog", "kind": "cli", "description": "PostHog product analytics \u2014 HogQL queries, pageviews, breakdowns", "group": "internal", "domain": "centaur"}, {"id": "profslice", "name": "profslice", "kind": "library", "description": "Firefox Profiler data extraction for LLM analysis", "group": "internal", "domain": "centaur"}, {"id": "reth", "name": "reth", "kind": "library", "description": "Reth CLI for AI agents - execution timings, performance metrics", "group": "internal", "domain": "centaur"}, {"id": "reth-log-analyzer", "name": "reth-log-analyzer", "kind": "library", "description": "Parse reth logs and generate performance graphs", "group": "internal", "domain": "centaur"}, {"id": "sentry", "name": "sentry", "kind": "library", "description": "Sentry issues \u2014 list/search issues, issue details, events, stacktraces, and tag values (read-only)", "group": "internal", "domain": "centaur"}, {"id": "vlogs", "name": "vlogs", "kind": "cli", "description": "VictoriaLogs \u2014 LogsQL queries, field names, field values, and log streams", "group": "internal", "domain": "centaur"}, {"id": "vmetrics", "name": "vmetrics", "kind": "library", "description": "VictoriaMetrics \u2014 PromQL/MetricsQL queries for agent self-validation", "group": "internal", "domain": "centaur"}, {"id": "nano-banana", "name": "nano-banana", "kind": "library", "description": "Nano Banana CLI for Google Gemini image generation", "group": "internal", "domain": "centaur"}, {"id": "transcriber", "name": "transcriber", "kind": "library", "description": "Local-first voice transcription CLI using Whisper", "group": "internal", "domain": "centaur"}, {"id": "veo3", "name": "veo3", "kind": "library", "description": "Veo 3 CLI for Google", "group": "internal", "domain": "centaur"}, {"id": "eng", "name": "eng", "kind": "library", "description": "Engineering persona \u2014 code review, debugging, repo work", "group": "internal", "domain": "centaur"}, {"id": "airtable", "name": "airtable", "kind": "cli", "description": "Airtable API client for bases, schemas, views, and records", "group": "internal", "domain": "centaur"}, {"id": "company_context", "name": "company_context", "kind": "library", "description": "Search indexed company history across multiple sources. Current sources: Slack, Google Drive, Google Calendar, Linear.", "group": "internal", "domain": "centaur"}, {"id": "centaur-composio-tool", "name": "centaur-composio-tool", "kind": "library", "description": "Execute tools from 1000+ services via Composio (GitHub, Gmail, Slack, Notion, etc.)", "group": "internal", "domain": "centaur"}, {"id": "figma", "name": "figma", "kind": "library", "description": "Figma design system extraction and analysis", "group": "internal", "domain": "centaur"}, {"id": "granola", "name": "granola", "kind": "library", "description": "Granola meeting notes CLI for AI agents", "group": "internal", "domain": "centaur"}, {"id": "gsuite", "name": "gsuite", "kind": "cli", "description": "Gmail, Calendar, Drive, Docs, Sheets, Slides, Analytics", "group": "internal", "domain": "centaur"}, {"id": "linear", "name": "linear", "kind": "cli", "description": "Linear issue tracking \u2014 issues, projects, cycles, teams", "group": "internal", "domain": "centaur"}, {"id": "notion", "name": "notion", "kind": "cli", "description": "Notion pages, databases, blocks, comments", "group": "internal", "domain": "centaur"}, {"id": "opentable", "name": "opentable", "kind": "library", "description": "OpenTable CLI for searching restaurant reservations", "group": "internal", "domain": "centaur"}, {"id": "slack", "name": "slack", "kind": "cli", "description": "Search Slack messages, channels, threads, users", "group": "internal", "domain": "centaur"}, {"id": "archiver", "name": "archiver", "kind": "library", "description": "Document extraction via Reducto for investment materials", "group": "internal", "domain": "centaur"}, {"id": "congress", "name": "congress", "kind": "library", "description": "Congress.gov API CLI", "group": "internal", "domain": "centaur"}, {"id": "crunchbase", "name": "crunchbase", "kind": "library", "description": "Crunchbase Enterprise API CLI for company and funding data", "group": "internal", "domain": "centaur"}, {"id": "docsend", "name": "docsend", "kind": "library", "description": "DocSend document downloader \u2014 cloud browser + Playwright", "group": "internal", "domain": "centaur"}, {"id": "fedreg", "name": "fedreg", "kind": "library", "description": "Federal Register CLI for regulatory data", "group": "internal", "domain": "centaur"}, {"id": "googlenews", "name": "googlenews", "kind": "library", "description": "Google News RSS CLI for news search and headlines", "group": "internal", "domain": "centaur"}, {"id": "harmonic", "name": "harmonic", "kind": "library", "description": "Harmonic.AI API CLI for startup discovery and company/people enrichment", "group": "internal", "domain": "centaur"}, {"id": "invest-intake", "name": "invest-intake", "kind": "library", "description": "Normalize mixed raw invest inputs into a clean context pack", "group": "internal", "domain": "centaur"}, {"id": "investmemos", "name": "investmemos", "kind": "library", "description": "Postgres-backed investment memo search and retrieval", "group": "internal", "domain": "centaur"}, {"id": "legistorm", "name": "legistorm", "kind": "library", "description": "LegiStorm CLI for congressional data", "group": "internal", "domain": "centaur"}, {"id": "listennotes", "name": "listennotes", "kind": "library", "description": "Listen Notes CLI for podcast data", "group": "internal", "domain": "centaur"}, {"id": "newsapi", "name": "newsapi", "kind": "library", "description": "NewsAPI CLI for news search and headlines", "group": "internal", "domain": "centaur"}, {"id": "openfec", "name": "openfec", "kind": "library", "description": "OpenFEC CLI for federal election data", "group": "internal", "domain": "centaur"}, {"id": "plural", "name": "plural", "kind": "library", "description": "Plural (Open States) API \u2014 state legislation, legislators, committees, and events", "group": "internal", "domain": "centaur"}, {"id": "sensortower", "name": "sensortower", "kind": "library", "description": "SensorTower CLI for mobile app analytics", "group": "internal", "domain": "centaur"}, {"id": "similarweb", "name": "similarweb", "kind": "cli", "description": "SimilarWeb web traffic and market intelligence", "group": "internal", "domain": "centaur"}, {"id": "websearch", "name": "websearch", "kind": "library", "description": "Web search and deep research via Parallel (free MCP or paid REST); optional Claude synthesis", "group": "internal", "domain": "centaur"}, {"id": "youtube", "name": "youtube", "kind": "library", "description": "YouTube CLI for video data", "group": "internal", "domain": "centaur"}, {"id": "centaur-docs", "name": "centaur-docs", "kind": "service", "description": "Developer-facing documentation and API reference", "group": "internal", "domain": "centaur"}, {"id": "centaur", "name": "centaur", "kind": "library", "description": "Root package", "group": "internal", "domain": "centaur"}, {"id": "@centaur/api-client", "name": "@centaur/api-client", "kind": "library", "description": "TypeScript API client for Centaur", "group": "internal", "domain": "centaur"}, {"id": "@centaur/harness-events", "name": "@centaur/harness-events", "kind": "library", "description": "TypeScript event harness", "group": "internal", "domain": "centaur"}, {"id": "slackbot", "name": "slackbot", "kind": "library", "description": "Slack integration bridge with real-time streaming", "group": "internal", "domain": "centaur"}, {"id": "typer", "name": "typer", "kind": "external", "description": "CLI framework \u2014 argument parsing for every tool", "group": "external", "domain": "external", "usage_count": 61}, {"id": "rich", "name": "rich", "kind": "external", "description": "Terminal formatting \u2014 tables, progress bars, colors", "group": "external", "domain": "external", "usage_count": 60}, {"id": "httpx", "name": "httpx", "kind": "external", "description": "Async HTTP client \u2014 standard transport for API calls", "group": "external", "domain": "external", "usage_count": 56}, {"id": "python-dotenv", "name": "python-dotenv", "kind": "external", "description": "Environment variable loading", "group": "external", "domain": "external", "usage_count": 37}, {"id": "asyncpg", "name": "asyncpg", "kind": "external", "description": "Async PostgreSQL driver", "group": "external", "domain": "external", "usage_count": 3}, {"id": "pydantic", "name": "pydantic", "kind": "external", "description": "Data validation and serialization", "group": "external", "domain": "external", "usage_count": 3}, {"id": "feedparser", "name": "feedparser", "kind": "external", "description": "RSS feed parser", "group": "external", "domain": "external", "usage_count": 3}, {"id": "anthropic", "name": "anthropic", "kind": "external", "description": "Anthropic Claude SDK", "group": "external", "domain": "external", "usage_count": 2}, {"id": "pydantic-settings", "name": "pydantic-settings", "kind": "external", "description": "Settings management", "group": "external", "domain": "external", "usage_count": 2}, {"id": "structlog", "name": "structlog", "kind": "external", "description": "Structured logging", "group": "external", "domain": "external", "usage_count": 2}, {"id": "tenacity", "name": "tenacity", "kind": "external", "description": "Retry/circuit-breaker library", "group": "external", "domain": "external", "usage_count": 2}, {"id": "matplotlib", "name": "matplotlib", "kind": "external", "description": "Chart generation", "group": "external", "domain": "external", "usage_count": 2}, {"id": "pandas", "name": "pandas", "kind": "external", "description": "Data analysis library", "group": "external", "domain": "external", "usage_count": 2}, {"id": "google-genai", "name": "google-genai", "kind": "external", "description": "Google Generative AI SDK", "group": "external", "domain": "external", "usage_count": 2}, {"id": "slack-sdk", "name": "slack-sdk", "kind": "external", "description": "Slack API SDK", "group": "external", "domain": "external", "usage_count": 2}, {"id": "browser-use-sdk", "name": "browser-use-sdk", "kind": "external", "description": "Browser automation SDK", "group": "external", "domain": "external", "usage_count": 2}, {"id": "pillow", "name": "pillow", "kind": "external", "description": "Image processing", "group": "external", "domain": "external", "usage_count": 2}, {"id": "playwright", "name": "playwright", "kind": "external", "description": "Browser automation", "group": "external", "domain": "external", "usage_count": 2}, {"id": "pgvector", "name": "pgvector", "kind": "external", "description": "Vector similarity search", "group": "external", "domain": "external", "usage_count": 1}, {"id": "openai", "name": "openai", "kind": "external", "description": "OpenAI SDK", "group": "external", "domain": "external", "usage_count": 1}, {"id": "fastapi", "name": "fastapi", "kind": "external", "description": "Web framework", "group": "external", "domain": "external", "usage_count": 1}, {"id": "uvicorn", "name": "uvicorn", "kind": "external", "description": "ASGI server", "group": "external", "domain": "external", "usage_count": 1}], "edges": [{"source": "centaur-sdk", "target": "rich", "type": "external"}, {"source": "centaur-api", "target": "centaur-sdk", "type": "internal"}, {"source": "centaur-api", "target": "asyncpg", "type": "external"}, {"source": "centaur-api", "target": "anthropic", "type": "external"}, {"source": "centaur-api", "target": "pgvector", "type": "external"}, {"source": "centaur-api", "target": "httpx", "type": "external"}, {"source": "centaur-api", "target": "openai", "type": "external"}, {"source": "centaur-api", "target": "pydantic", "type": "external"}, {"source": "centaur-api", "target": "pydantic-settings", "type": "external"}, {"source": "centaur-api", "target": "structlog", "type": "external"}, {"source": "centaur-api", "target": "tenacity", "type": "external"}, {"source": "centaur-api", "target": "fastapi", "type": "external"}, {"source": "centaur-api", "target": "uvicorn", "type": "external"}, {"source": "ashby", "target": "httpx", "type": "external"}, {"source": "ashby", "target": "typer", "type": "external"}, {"source": "ashby", "target": "rich", "type": "external"}, {"source": "attio", "target": "httpx", "type": "external"}, {"source": "attio", "target": "typer", "type": "external"}, {"source": "attio", "target": "rich", "type": "external"}, {"source": "attio", "target": "python-dotenv", "type": "external"}, {"source": "pylon", "target": "httpx", "type": "external"}, {"source": "pylon", "target": "typer", "type": "external"}, {"source": "pylon", "target": "rich", "type": "external"}, {"source": "telegram", "target": "typer", "type": "external"}, {"source": "telegram", "target": "rich", "type": "external"}, {"source": "twitter", "target": "typer", "type": "external"}, {"source": "twitter", "target": "rich", "type": "external"}, {"source": "twitter", "target": "httpx", "type": "external"}, {"source": "twitter", "target": "tenacity", "type": "external"}, {"source": "twitter", "target": "pydantic", "type": "external"}, {"source": "twitter", "target": "pydantic-settings", "type": "external"}, {"source": "alchemy", "target": "httpx", "type": "external"}, {"source": "alchemy", "target": "typer", "type": "external"}, {"source": "alchemy", "target": "rich", "type": "external"}, {"source": "allium", "target": "httpx", "type": "external"}, {"source": "allium", "target": "typer", "type": "external"}, {"source": "allium", "target": "rich", "type": "external"}, {"source": "allium", "target": "python-dotenv", "type": "external"}, {"source": "arkham", "target": "httpx", "type": "external"}, {"source": "arkham", "target": "typer", "type": "external"}, {"source": "arkham", "target": "rich", "type": "external"}, {"source": "coindesk", "target": "feedparser", "type": "external"}, {"source": "coindesk", "target": "httpx", "type": "external"}, {"source": "coindesk", "target": "typer", "type": "external"}, {"source": "coindesk", "target": "rich", "type": "external"}, {"source": "coingecko", "target": "httpx", "type": "external"}, {"source": "coingecko", "target": "typer", "type": "external"}, {"source": "coingecko", "target": "rich", "type": "external"}, {"source": "coingecko", "target": "python-dotenv", "type": "external"}, {"source": "coinmetrics", "target": "httpx", "type": "external"}, {"source": "coinmetrics", "target": "typer", "type": "external"}, {"source": "coinmetrics", "target": "rich", "type": "external"}, {"source": "coinmetrics", "target": "python-dotenv", "type": "external"}, {"source": "databento", "target": "httpx", "type": "external"}, {"source": "databento", "target": "typer", "type": "external"}, {"source": "databento", "target": "rich", "type": "external"}, {"source": "databento", "target": "python-dotenv", "type": "external"}, {"source": "debank", "target": "httpx", "type": "external"}, {"source": "debank", "target": "typer", "type": "external"}, {"source": "debank", "target": "rich", "type": "external"}, {"source": "defillama", "target": "httpx", "type": "external"}, {"source": "defillama", "target": "typer", "type": "external"}, {"source": "defillama", "target": "rich", "type": "external"}, {"source": "defillama", "target": "python-dotenv", "type": "external"}, {"source": "dune", "target": "httpx", "type": "external"}, {"source": "dune", "target": "typer", "type": "external"}, {"source": "dune", "target": "rich", "type": "external"}, {"source": "dune", "target": "python-dotenv", "type": "external"}, {"source": "eodhd", "target": "httpx", "type": "external"}, {"source": "eodhd", "target": "typer", "type": "external"}, {"source": "eodhd", "target": "rich", "type": "external"}, {"source": "eodhd", "target": "python-dotenv", "type": "external"}, {"source": "etherscan", "target": "httpx", "type": "external"}, {"source": "etherscan", "target": "typer", "type": "external"}, {"source": "etherscan", "target": "rich", "type": "external"}, {"source": "etherscan", "target": "python-dotenv", "type": "external"}, {"source": "kalshi", "target": "httpx", "type": "external"}, {"source": "kalshi", "target": "typer", "type": "external"}, {"source": "kalshi", "target": "rich", "type": "external"}, {"source": "kalshi", "target": "python-dotenv", "type": "external"}, {"source": "karma", "target": "httpx", "type": "external"}, {"source": "karma", "target": "typer", "type": "external"}, {"source": "karma", "target": "rich", "type": "external"}, {"source": "karma", "target": "python-dotenv", "type": "external"}, {"source": "messari", "target": "httpx", "type": "external"}, {"source": "messari", "target": "typer", "type": "external"}, {"source": "messari", "target": "rich", "type": "external"}, {"source": "messari", "target": "python-dotenv", "type": "external"}, {"source": "mpp", "target": "httpx", "type": "external"}, {"source": "nansen", "target": "httpx", "type": "external"}, {"source": "nansen", "target": "typer", "type": "external"}, {"source": "nansen", "target": "rich", "type": "external"}, {"source": "nansen", "target": "python-dotenv", "type": "external"}, {"source": "polymarket", "target": "httpx", "type": "external"}, {"source": "polymarket", "target": "typer", "type": "external"}, {"source": "polymarket", "target": "rich", "type": "external"}, {"source": "polymarket", "target": "python-dotenv", "type": "external"}, {"source": "snapshot", "target": "httpx", "type": "external"}, {"source": "snapshot", "target": "typer", "type": "external"}, {"source": "snapshot", "target": "rich", "type": "external"}, {"source": "snapshot", "target": "python-dotenv", "type": "external"}, {"source": "standard-metrics", "target": "httpx", "type": "external"}, {"source": "standard-metrics", "target": "typer", "type": "external"}, {"source": "standard-metrics", "target": "rich", "type": "external"}, {"source": "tally", "target": "httpx", "type": "external"}, {"source": "tally", "target": "typer", "type": "external"}, {"source": "tally", "target": "rich", "type": "external"}, {"source": "tally", "target": "python-dotenv", "type": "external"}, {"source": "theblock", "target": "feedparser", "type": "external"}, {"source": "theblock", "target": "typer", "type": "external"}, {"source": "theblock", "target": "rich", "type": "external"}, {"source": "theblock", "target": "python-dotenv", "type": "external"}, {"source": "token-terminal", "target": "httpx", "type": "external"}, {"source": "token-terminal", "target": "typer", "type": "external"}, {"source": "token-terminal", "target": "rich", "type": "external"}, {"source": "token-terminal", "target": "python-dotenv", "type": "external"}, {"source": "tokenomist", "target": "httpx", "type": "external"}, {"source": "tokenomist", "target": "typer", "type": "external"}, {"source": "tokenomist", "target": "rich", "type": "external"}, {"source": "tokenomist", "target": "python-dotenv", "type": "external"}, {"source": "chart", "target": "matplotlib", "type": "external"}, {"source": "chart", "target": "pandas", "type": "external"}, {"source": "cloudwatch", "target": "httpx", "type": "external"}, {"source": "grafana", "target": "httpx", "type": "external"}, {"source": "grafana", "target": "typer", "type": "external"}, {"source": "grafana", "target": "rich", "type": "external"}, {"source": "grafana", "target": "python-dotenv", "type": "external"}, {"source": "laminar", "target": "httpx", "type": "external"}, {"source": "posthog", "target": "httpx", "type": "external"}, {"source": "posthog", "target": "typer", "type": "external"}, {"source": "posthog", "target": "rich", "type": "external"}, {"source": "posthog", "target": "python-dotenv", "type": "external"}, {"source": "profslice", "target": "httpx", "type": "external"}, {"source": "profslice", "target": "typer", "type": "external"}, {"source": "profslice", "target": "rich", "type": "external"}, {"source": "profslice", "target": "python-dotenv", "type": "external"}, {"source": "reth", "target": "httpx", "type": "external"}, {"source": "reth", "target": "typer", "type": "external"}, {"source": "reth", "target": "rich", "type": "external"}, {"source": "reth-log-analyzer", "target": "typer", "type": "external"}, {"source": "reth-log-analyzer", "target": "rich", "type": "external"}, {"source": "reth-log-analyzer", "target": "pandas", "type": "external"}, {"source": "reth-log-analyzer", "target": "matplotlib", "type": "external"}, {"source": "sentry", "target": "httpx", "type": "external"}, {"source": "vlogs", "target": "httpx", "type": "external"}, {"source": "vlogs", "target": "typer", "type": "external"}, {"source": "vlogs", "target": "rich", "type": "external"}, {"source": "vlogs", "target": "python-dotenv", "type": "external"}, {"source": "vmetrics", "target": "httpx", "type": "external"}, {"source": "nano-banana", "target": "google-genai", "type": "external"}, {"source": "nano-banana", "target": "typer", "type": "external"}, {"source": "nano-banana", "target": "rich", "type": "external"}, {"source": "nano-banana", "target": "httpx", "type": "external"}, {"source": "nano-banana", "target": "pillow", "type": "external"}, {"source": "nano-banana", "target": "python-dotenv", "type": "external"}, {"source": "transcriber", "target": "typer", "type": "external"}, {"source": "transcriber", "target": "rich", "type": "external"}, {"source": "veo3", "target": "google-genai", "type": "external"}, {"source": "veo3", "target": "typer", "type": "external"}, {"source": "veo3", "target": "rich", "type": "external"}, {"source": "veo3", "target": "python-dotenv", "type": "external"}, {"source": "airtable", "target": "httpx", "type": "external"}, {"source": "airtable", "target": "typer", "type": "external"}, {"source": "airtable", "target": "rich", "type": "external"}, {"source": "airtable", "target": "python-dotenv", "type": "external"}, {"source": "company_context", "target": "asyncpg", "type": "external"}, {"source": "company_context", "target": "slack-sdk", "type": "external"}, {"source": "centaur-composio-tool", "target": "httpx", "type": "external"}, {"source": "figma", "target": "typer", "type": "external"}, {"source": "figma", "target": "rich", "type": "external"}, {"source": "figma", "target": "python-dotenv", "type": "external"}, {"source": "granola", "target": "httpx", "type": "external"}, {"source": "granola", "target": "typer", "type": "external"}, {"source": "granola", "target": "rich", "type": "external"}, {"source": "gsuite", "target": "httpx", "type": "external"}, {"source": "gsuite", "target": "typer", "type": "external"}, {"source": "gsuite", "target": "rich", "type": "external"}, {"source": "gsuite", "target": "python-dotenv", "type": "external"}, {"source": "linear", "target": "httpx", "type": "external"}, {"source": "linear", "target": "typer", "type": "external"}, {"source": "linear", "target": "rich", "type": "external"}, {"source": "linear", "target": "python-dotenv", "type": "external"}, {"source": "notion", "target": "httpx", "type": "external"}, {"source": "notion", "target": "typer", "type": "external"}, {"source": "notion", "target": "rich", "type": "external"}, {"source": "notion", "target": "python-dotenv", "type": "external"}, {"source": "opentable", "target": "typer", "type": "external"}, {"source": "opentable", "target": "rich", "type": "external"}, {"source": "opentable", "target": "browser-use-sdk", "type": "external"}, {"source": "opentable", "target": "python-dotenv", "type": "external"}, {"source": "slack", "target": "slack-sdk", "type": "external"}, {"source": "slack", "target": "typer", "type": "external"}, {"source": "slack", "target": "python-dotenv", "type": "external"}, {"source": "slack", "target": "rich", "type": "external"}, {"source": "slack", "target": "structlog", "type": "external"}, {"source": "archiver", "target": "typer", "type": "external"}, {"source": "archiver", "target": "browser-use-sdk", "type": "external"}, {"source": "archiver", "target": "httpx", "type": "external"}, {"source": "archiver", "target": "pillow", "type": "external"}, {"source": "archiver", "target": "playwright", "type": "external"}, {"source": "archiver", "target": "python-dotenv", "type": "external"}, {"source": "congress", "target": "httpx", "type": "external"}, {"source": "congress", "target": "typer", "type": "external"}, {"source": "congress", "target": "rich", "type": "external"}, {"source": "crunchbase", "target": "httpx", "type": "external"}, {"source": "crunchbase", "target": "typer", "type": "external"}, {"source": "crunchbase", "target": "rich", "type": "external"}, {"source": "docsend", "target": "browser-use-sdk", "type": "external"}, {"source": "docsend", "target": "httpx", "type": "external"}, {"source": "docsend", "target": "pillow", "type": "external"}, {"source": "docsend", "target": "playwright", "type": "external"}, {"source": "fedreg", "target": "httpx", "type": "external"}, {"source": "fedreg", "target": "typer", "type": "external"}, {"source": "fedreg", "target": "rich", "type": "external"}, {"source": "googlenews", "target": "feedparser", "type": "external"}, {"source": "googlenews", "target": "typer", "type": "external"}, {"source": "googlenews", "target": "rich", "type": "external"}, {"source": "harmonic", "target": "httpx", "type": "external"}, {"source": "harmonic", "target": "typer", "type": "external"}, {"source": "harmonic", "target": "rich", "type": "external"}, {"source": "invest-intake", "target": "typer", "type": "external"}, {"source": "investmemos", "target": "asyncpg", "type": "external"}, {"source": "legistorm", "target": "httpx", "type": "external"}, {"source": "legistorm", "target": "typer", "type": "external"}, {"source": "legistorm", "target": "rich", "type": "external"}, {"source": "listennotes", "target": "httpx", "type": "external"}, {"source": "listennotes", "target": "typer", "type": "external"}, {"source": "listennotes", "target": "rich", "type": "external"}, {"source": "newsapi", "target": "httpx", "type": "external"}, {"source": "newsapi", "target": "typer", "type": "external"}, {"source": "newsapi", "target": "rich", "type": "external"}, {"source": "openfec", "target": "httpx", "type": "external"}, {"source": "openfec", "target": "typer", "type": "external"}, {"source": "openfec", "target": "rich", "type": "external"}, {"source": "plural", "target": "httpx", "type": "external"}, {"source": "plural", "target": "typer", "type": "external"}, {"source": "plural", "target": "rich", "type": "external"}, {"source": "sensortower", "target": "httpx", "type": "external"}, {"source": "sensortower", "target": "typer", "type": "external"}, {"source": "sensortower", "target": "rich", "type": "external"}, {"source": "similarweb", "target": "httpx", "type": "external"}, {"source": "similarweb", "target": "typer", "type": "external"}, {"source": "similarweb", "target": "rich", "type": "external"}, {"source": "similarweb", "target": "python-dotenv", "type": "external"}, {"source": "websearch", "target": "anthropic", "type": "external"}, {"source": "websearch", "target": "httpx", "type": "external"}, {"source": "websearch", "target": "pydantic", "type": "external"}, {"source": "websearch", "target": "python-dotenv", "type": "external"}, {"source": "websearch", "target": "rich", "type": "external"}, {"source": "websearch", "target": "typer", "type": "external"}, {"source": "youtube", "target": "httpx", "type": "external"}, {"source": "youtube", "target": "typer", "type": "external"}, {"source": "youtube", "target": "rich", "type": "external"}, {"source": "youtube", "target": "python-dotenv", "type": "external"}, {"source": "@centaur/api-client", "target": "@centaur/harness-events", "type": "internal"}, {"source": "@centaur/api-client", "target": "httpx", "type": "external"}, {"source": "slackbot", "target": "httpx", "type": "external"}]};
+
+function initGraph() {
+  if (graphInitialized) return;
+  graphInitialized = true;
+
+  const container = document.getElementById('graph-container');
+  const W = container.clientWidth;
+  const H = container.clientHeight;
+
+  // Count dependencies per node for sizing
+  const depCount = {};
+  graphData.edges.forEach(e => {
+    depCount[e.source] = (depCount[e.source] || 0) + 1;
+    depCount[e.target] = (depCount[e.target] || 0) + 1;
+  });
+
+  // Node radius
+  graphData.nodes.forEach(n => {
+    n.degree = depCount[n.id] || 0;
+    n.r = n.group === 'internal' ? Math.max(5, Math.min(18, 4 + n.degree * 1.2)) :
+                                   Math.max(4, Math.min(14, 3 + n.degree * 0.8));
+  });
+
+  // Shape function
+  function shapePath(kind, r) {
+    if (kind === 'cli') {
+      // Diamond
+      const s = r * 1.3;
+      return `M0,${-s} L${s},0 L0,${s} L${-s},0 Z`;
+    }
+    if (kind === 'service') {
+      // Triangle
+      const s = r * 1.4;
+      return `M0,${-s} L${s},${s*0.6} L${-s},${s*0.6} Z`;
+    }
+    if (kind === 'frontend') {
+      // Inverted triangle
+      const s = r * 1.4;
+      return `M0,${s} L${s},${-s*0.6} L${-s},${-s*0.6} Z`;
+    }
+    // Default: circle for library and external
+    return null;
+  }
+
+  // Build lookup
+  const nodeMap = {};
+  graphData.nodes.forEach(n => { nodeMap[n.id] = n; });
+
+  // Filter to top 50 nodes by degree for cleaner graph
+  const topInternal = graphData.nodes.filter(n => n.group === 'internal').sort((a,b) => b.degree - a.degree);
+  const topExternal = graphData.nodes.filter(n => n.group === 'external').sort((a,b) => b.degree - a.degree);
+  const visNodes = [...topInternal, ...topExternal];
+  const visIds = new Set(visNodes.map(n => n.id));
+  const visEdges = graphData.edges.filter(e => visIds.has(e.source) && visIds.has(e.target));
+
+  const tooltip = d3.select('#graph-container').append('div').attr('class', 'graph-tooltip').style('opacity', 0);
+
+  svg = d3.select('#graph-container').append('svg')
+    .attr('viewBox', [0, 0, W, H]);
+
+  // Domain boundaries
+  const defs = svg.append('defs');
+  defs.append('filter').attr('id', 'glow').append('feGaussianBlur').attr('stdDeviation', 3).attr('result', 'blur');
+  defs.append('filter').attr('id', 'shadow').append('feDropShadow').attr('dx', 0).attr('dy', 0).attr('stdDeviation', 4).attr('flood-color', '#3fb950').attr('flood-opacity', 0.3);
+
+  // Centaur domain boundary (dashed rect)
+  const boundary = svg.append('rect')
+    .attr('fill', 'none')
+    .attr('stroke', '#3fb95044')
+    .attr('stroke-dasharray', '6,4')
+    .attr('stroke-width', 2)
+    .attr('rx', 12);
+
+  // Domain label
+  const domainLabel = svg.append('text')
+    .attr('class', 'domain-label')
+    .text('Centaur Platform (80 components)');
+
+  const extLabel = svg.append('text')
+    .attr('class', 'domain-label')
+    .attr('fill', '#f8514988')
+    .text('External Dependencies');
+
+  zoom = d3.zoom().scaleExtent([0.15, 4]).on('zoom', (event) => {
+    g.attr('transform', event.transform);
+  });
+  svg.call(zoom);
+
+  g = svg.append('g');
+
+  // Edges
+  const link = g.append('g').selectAll('line').data(visEdges).join('line')
+    .attr('stroke', d => d.type === 'internal' ? '#3fb95044' : '#f8514922')
+    .attr('stroke-width', d => d.type === 'internal' ? 1.5 : 0.5);
+
+  // Nodes
+  const node = g.append('g').selectAll('g').data(visNodes).join('g')
+    .attr('cursor', 'pointer')
+    .call(d3.drag()
+      .on('start', (event, d) => { if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+      .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
+      .on('end', (event, d) => { if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
+
+  // Shapes
+  node.each(function(d) {
+    const el = d3.select(this);
+    const path = shapePath(d.kind, d.r);
+    if (path) {
+      el.append('path').attr('d', path)
+        .attr('fill', d.group === 'internal' ? '#3fb950' : '#f85149')
+        .attr('fill-opacity', d.group === 'internal' ? 0.85 : 0.6)
+        .attr('stroke', d.group === 'internal' ? '#3fb950' : '#f85149')
+        .attr('stroke-width', 1);
+    } else {
+      el.append('circle').attr('r', d.r)
+        .attr('fill', d.group === 'internal' ? '#3fb950' : '#f85149')
+        .attr('fill-opacity', d.group === 'internal' ? 0.85 : 0.6)
+        .attr('stroke', d.group === 'internal' ? '#3fb950' : '#f85149')
+        .attr('stroke-width', 1);
+    }
+  });
+
+  // Labels (only for high-degree or important nodes)
+  const labelNodes = visNodes.filter(n => n.degree >= 4 || ['centaur-api', 'centaur-sdk', 'slackbot', 'typer', 'rich', 'httpx'].includes(n.id));
+  const labels = g.append('g').selectAll('text').data(labelNodes).join('text')
+    .text(d => d.name)
+    .attr('font-size', d => Math.max(7, Math.min(11, d.r * 0.9)))
+    .attr('fill', '#8b949e')
+    .attr('text-anchor', 'middle')
+    .attr('dy', d => d.r + 10)
+    .attr('font-family', 'SF Mono, monospace')
+    .style('pointer-events', 'none');
+
+  // Tooltip
+  node.on('mouseover', (event, d) => {
+    tooltip.style('opacity', 1)
+      .html(`<div class="tt-name">${d.name} <span class="kind kind-${d.kind}" style="margin-left:6px">${d.kind}</span></div>
+             <div class="tt-desc">${d.description || 'No description'}</div>
+             <div class="tt-meta">Dependencies: ${d.degree} | Domain: ${d.group === 'internal' ? 'Centaur' : 'External'}</div>`);
+  }).on('mousemove', (event) => {
+    const [mx, my] = d3.pointer(event, container);
+    tooltip.style('left', (mx + 16) + 'px').style('top', (my - 16) + 'px');
+  }).on('mouseout', () => { tooltip.style('opacity', 0); });
+
+  // Click to highlight
+  node.on('click', (event, d) => {
+    event.stopPropagation();
+    // Highlight connected
+    const connected = new Set();
+    visEdges.forEach(e => { if (e.source === d.id || e.target === d.id) { connected.add(e.source); connected.add(e.target); } });
+
+    node.selectAll('*').attr('opacity', n => connected.has(n.id) || n.id === d.id ? 1 : 0.15);
+    link.attr('opacity', e => (e.source === d.id || e.target === d.id) ? 1 : 0.05);
+    labels.attr('opacity', n => connected.has(n.id) || n.id === d.id ? 1 : 0.1);
+  });
+
+  svg.on('click', () => {
+    node.selectAll('*').attr('opacity', 1);
+    link.attr('opacity', d => d.type === 'internal' ? 0.6 : 0.3);
+    labels.attr('opacity', 1);
+  });
+
+  // Force simulation
+  simulation = d3.forceSimulation(visNodes)
+    .force('link', d3.forceLink(visEdges).id(d => d.id).distance(d => d.type === 'internal' ? 80 : 120).strength(d => d.type === 'internal' ? 0.3 : 0.1))
+    .force('charge', d3.forceManyBody().strength(d => d.group === 'internal' ? -120 : -60))
+    .force('center', d3.forceCenter(W/2, H/2))
+    .force('collision', d3.forceCollide().radius(d => d.r + 4))
+    .force('x', d3.forceX(d => d.group === 'internal' ? W * 0.4 : W * 0.7).strength(0.02))
+    .on('tick', () => {
+      link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+      node.attr('transform', d => `translate(${d.x},${d.y})`);
+      labels.attr('x', d => d.x).attr('y', d => d.y);
+
+      // Update boundary
+      const internals = visNodes.filter(n => n.group === 'internal');
+      const xs = internals.map(n => n.x), ys = internals.map(n => n.y);
+      const pad = 40;
+      const minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad;
+      const minY = Math.min(...ys) - pad, maxY = Math.max(...ys) + pad;
+      boundary.attr('x', minX).attr('y', minY).attr('width', maxX - minX).attr('height', maxY - minY);
+      domainLabel.attr('x', (minX + maxX) / 2).attr('y', minY - 12);
+
+      const exts = visNodes.filter(n => n.group === 'external');
+      if (exts.length) {
+        const ex = exts.map(n => n.x), ey = exts.map(n => n.y);
+        extLabel.attr('x', (Math.min(...ex) + Math.max(...ex)) / 2).attr('y', Math.min(...ey) - 12);
+      }
+    });
+
+  // Center internal nodes on left, external on right
+  simulation.force('x', d3.forceX(d => d.group === 'internal' ? W * 0.35 : W * 0.72).strength(0.03));
+}
+
+function zoomIn() { svg.transition().duration(300).call(zoom.scaleBy, 1.5); }
+function zoomOut() { svg.transition().duration(300).call(zoom.scaleBy, 0.7); }
+function resetGraph() { svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity); }
+function zoomToNode(name) {
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-tab="graph"]').classList.add('active');
+  document.getElementById('tab-graph').classList.add('active');
+  initGraph();
+  const target = graphData.nodes.find(n => n.name === name);
+  if (target && simulation) {
+    simulation.nodes().forEach(n => { if (n.id === target.id) { n.fx = n.x; n.fy = n.y; } });
+  }
+}
 </script>
 </body>
 </html>
