@@ -5,60 +5,65 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Centaur — Service Architecture</title>
 <style>
-:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--acc:#58a6ff;--gn:#3fb950;--rd:#f85149;--pr:#a371f7;--or:#d2991d;--tn:#39d353;--pk:#db61a2;--cy:#56d4dd}
+:root{--bg:#0d1117;--sf:#161b22;--br:#30363d;--tx:#e6edf3;--mu:#8b949e;--gn:#3fb950;--rd:#f85149;--pr:#a371f7;--or:#d2991d}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-#bar{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10}
-#bar h1{font-size:1rem;font-weight:700;color:#fff}
-#bar .btn{padding:4px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:0.7rem;font-weight:600;white-space:nowrap;transition:all 0.15s}
-#bar .btn:hover{border-color:var(--acc);color:var(--text)}
-#bar .btn.go{background:var(--gn);border-color:var(--gn);color:#000}
-#bar .btn.go:hover{background:#2da040}
-#bar span.s{font-size:0.68rem;color:var(--muted)}
-#bar a{font-size:0.68rem;color:var(--muted);text-decoration:none;margin-left:auto}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+#bar{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--sf);border-bottom:1px solid var(--br);flex-shrink:0;z-index:10;flex-wrap:wrap}
+#bar h1{font-size:0.95rem;font-weight:700;color:#fff}
+#bar .btn{padding:4px 10px;border-radius:10px;border:1px solid var(--br);background:transparent;color:var(--mu);cursor:pointer;font-size:0.68rem;font-weight:600;white-space:nowrap}
+#bar .btn:hover{border-color:#58a6ff;color:var(--tx)}
+#bar a{font-size:0.65rem;color:var(--mu);text-decoration:none;margin-left:auto}
+#sim-bar{display:flex;align-items:center;gap:8px;padding:6px 12px;background:#1a2e1a;border-bottom:1px solid var(--gn);flex-shrink:0;z-index:9;display:none}
+#sim-bar .step-num{font-family:'SF Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--gn);min-width:80px}
+#sim-bar .step-label{font-size:0.72rem;color:var(--tx);flex:1}
+#sim-bar .btn.sim{background:var(--gn);border-color:var(--gn);color:#000;font-weight:700}
+#sim-bar .btn.sim:disabled{opacity:0.4;cursor:default}
 #viz{flex:1;position:relative;overflow:hidden;min-height:400px}
 #viz svg{position:absolute;top:0;left:0;width:100%;height:100%}
-#tip{position:absolute;background:var(--surface);border:1px solid var(--acc);border-radius:8px;padding:10px 14px;font-size:0.7rem;pointer-events:none;z-index:20;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0}
+#tip{position:absolute;background:var(--sf);border:1px solid #58a6ff;border-radius:8px;padding:10px 14px;font-size:0.7rem;pointer-events:none;z-index:20;max-width:300px;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0}
 #tip .tn{font-weight:700;font-family:'SF Mono',monospace;color:#fff}
-#tip .td{color:var(--muted);line-height:1.45;font-size:0.65rem;margin:3px 0}
-#tip .tf{font-size:0.58rem;color:var(--acc);margin-top:4px}
-#pnl{position:absolute;bottom:12px;right:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-size:0.7rem;max-width:360px;max-height:60vh;overflow-y:auto;display:none;z-index:15}
-#pnl .pn{font-weight:700;font-family:'SF Mono',monospace;color:#fff;font-size:0.85rem}
-#pnl .pg{display:inline-block;font-size:0.55rem;padding:1px 6px;border-radius:8px;font-weight:600;text-transform:uppercase;margin-left:6px;vertical-align:middle}
-#pnl .pd{color:var(--muted);line-height:1.45;font-size:0.66rem;margin-top:4px}
-#pnl h4{font-size:0.65rem;font-weight:700;color:var(--text);margin:8px 0 3px;text-transform:uppercase;letter-spacing:0.05em}
-#pnl .fl{font-size:0.6rem;color:var(--muted);line-height:1.6}
-#pnl .fl span{color:var(--acc);font-weight:600}
-#pnl button.x{position:absolute;top:4px;right:6px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem}
-#pnl .pe{color:var(--muted);font-size:0.58rem;margin-top:4px;font-family:'SF Mono',monospace}
+#tip .td{color:var(--mu);line-height:1.45;font-size:0.65rem;margin:3px 0}
+#tip .tf{font-size:0.58rem;color:#58a6ff;margin-top:4px}
 
-/* Sim step indicator */
-#step-indicator{position:absolute;top:60px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--gn);border-radius:20px;padding:6px 18px;font-size:0.72rem;font-weight:600;color:var(--gn);z-index:15;display:none;font-family:'SF Mono',monospace}
+#pnl{position:absolute;bottom:12px;right:12px;background:var(--sf);border:1px solid var(--br);border-radius:8px;padding:14px 18px 14px 18px;font-size:0.7rem;max-width:380px;max-height:55vh;overflow-y:auto;display:none;z-index:15}
+#pnl .pn{font-weight:700;font-family:'SF Mono',monospace;color:#fff;font-size:0.82rem}
+#pnl .pg{display:inline-block;font-size:0.52rem;padding:1px 6px;border-radius:8px;font-weight:600;text-transform:uppercase;margin-left:6px;vertical-align:middle}
+#pnl .pd{color:var(--mu);line-height:1.45;font-size:0.64rem;margin-top:4px}
+#pnl h4{font-size:0.62rem;font-weight:700;color:var(--tx);margin:8px 0 2px;text-transform:uppercase;letter-spacing:0.05em}
+#pnl .fl{font-size:0.58rem;color:var(--mu);line-height:1.6}
+#pnl .fl s{color:#58a6ff;font-weight:600;text-decoration:none}
+#pnl button.x{position:absolute;top:4px;right:6px;background:none;border:none;color:var(--mu);cursor:pointer;font-size:1rem}
+#pnl .pe{color:var(--mu);font-size:0.56rem;margin-top:2px;font-family:'SF Mono',monospace;white-space:pre-wrap}
 
-@keyframes pulse{0%,100%{opacity:0.6}50%{opacity:1}}
-.pulse{animation:pulse 0.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
+.pulse circle{animation:pulse 0.6s ease-in-out infinite}
 </style>
 </head>
 <body>
 <div id="bar">
   <h1>Centaur · Service Architecture</h1>
-  <span class="s">Drag · Zoom · Click for flows</span>
-  <button class="btn go" id="btn-sim">▶ Simulate Agent Execution</button>
-  <button class="btn" id="btn-reset">Reset</button>
+  <button class="btn" id="btn-sim-start">▶ Simulate Agent</button>
+  <button class="btn" id="btn-reset">Reset View</button>
   <a href="https://github.com/researchoors/centaur-analysis">source →</a>
 </div>
+<div id="sim-bar">
+  <span class="step-num" id="step-num">Step 0/13</span>
+  <span class="step-label" id="step-label">Ready</span>
+  <button class="btn sim" id="btn-prev" disabled>◀ Prev</button>
+  <button class="btn sim" id="btn-next">Next ▶</button>
+  <button class="btn" id="btn-sim-stop" style="color:var(--rd);border-color:var(--rd)">✕ Stop</button>
+</div>
 <div id="viz">
-  <div id="step-indicator"></div>
   <div id="tip"></div>
   <div id="pnl"><button class="x" id="px">×</button><div class="pn"></div><div class="pd"></div><h4>Participates In</h4><div class="fl"></div><h4>Connections</h4><div class="pe"></div></div>
 </div>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
 (function(){
-if(typeof d3==='undefined'){document.getElementById('viz').innerHTML='<div style="padding:40px;text-align:center;color:var(--muted)">Failed to load D3. Try refreshing.</div>';return;}
+if(typeof d3==='undefined'){document.getElementById('viz').innerHTML='<div style="padding:40px;text-align:center;color:var(--mu)">D3 failed to load. Refresh.</div>';return;}
 
-const colors={entry:'#8b949e',platform:'#a371f7',infra:'#f0883e',tools:'#3fb950',external:'#f85149'};
-const flowNames={
+const C={'entry':'#8b949e','platform':'#a371f7','infra':'#f0883e','k8s':'#d2991d','tools':'#3fb950','external':'#f85149'};
+const FN={
   'Agent Execution':'Flow 1: Full agent lifecycle — request → sandbox → tool → response',
   'Slack Integration':'Flow 2: Slack message → slackbot → API → streaming response',
   'Workflow Orchestration':'Flow 3: Trigger → K8s pod → step execution → checkpoint',
@@ -69,107 +74,127 @@ const flowNames={
 };
 
 const nodes = [
-  {id:"Slack",g:"entry",d:"Primary user interface. Users trigger agents via @centaur messages in Slack channels.",fl:["Slack Integration"]},
-  {id:"REST API",g:"entry",d:"HTTP API endpoint. Programmatic agent execution with SSE streaming responses.",fl:["Agent Execution"]},
-  {id:"Web Docs",g:"entry",d:"Developer documentation site. React 19 + Vocs framework.",fl:[]},
-  {id:"centaur-api",g:"platform",d:"Central orchestration hub. FastAPI server managing agent sessions, spawning K8s sandbox pods, routing tool invocations, and streaming SSE events to clients.",fl:["Agent Execution","Slack Integration","Workflow Orchestration","Observability"]},
-  {id:"slackbot",g:"platform",d:"Slack event gateway. Hono + TypeScript service. Receives Slack webhooks, verifies signatures, normalizes events into agent requests, streams responses back via chat.update.",fl:["Slack Integration","Observability"]},
-  {id:"centaur-docs",g:"platform",d:"Developer docs — React 19 + Vocs, MDX-based interactive API reference.",fl:[]},
-  {id:"PostgreSQL",g:"infra",d:"Primary data store. pgVector for embedding search, ParadeDB for BM25 full-text, asyncpg connection pooling. Persists agent sessions, workflow checkpoints, tool configs, document indexes.",fl:["Agent Execution","Workflow Orchestration","Checkpoint-Replay"]},
-  {id:"Kubernetes",g:"infra",d:"Container orchestrator. centaur-api creates K8s Jobs for each agent session. Manages pod lifecycle — scheduling, security policies, resource limits, TTL-based cleanup after execution.",fl:["Agent Execution","Workflow Orchestration","Checkpoint-Replay"]},
-  {id:"Sandbox Pod",g:"infra",d:"Ephemeral execution environment. One isolated K8s pod per agent session. Runs the LLM agent loop with tool manifest. Connects to Tool Server for tool execution. Destroyed when session completes.",fl:["Agent Execution","Checkpoint-Replay"]},
-  {id:"Tool Server",g:"infra",d:"Hosts and executes 73 CLI tools. Receives tool invocations from agent sandboxes, resolves tool handlers from registry, injects ${SECRET:KEY} credential placeholders, and forwards requests to Iron-Proxy.",fl:["Agent Execution","Tool Security","Tool Development"]},
-  {id:"Iron-Proxy",g:"infra",d:"Secret injection sidecar. Runs alongside Tool Server in each pod. Resolves ${SECRET:KEY} placeholders → real credentials from Vault/K8s secrets. Makes authenticated outbound HTTP calls. Strips sensitive response headers before returning.",fl:["Tool Security"]},
-  {id:"centaur-sdk",g:"infra",d:"Tool development SDK. Provides secret() function for credential placeholders, ToolContext for thread-safe execution state, attachment handling, Rich CLI utilities.",fl:["Tool Development"]},
-  {id:"Crypto & DeFi",g:"tools",d:"23 CLIs targeting blockchain and market data APIs. Alchemy, Etherscan, CoinGecko, CoinMetrics, DefiLlama, Messari, Nansen, Polymarket, Kalshi, DeBank, Dune, Allium, Token Terminal, Tokenomist, Snapshot, Tally, Karma, MPP, Arkham, Databento, EODHD, Reth, Chart.",c:23,fl:["Tool Security"]},
-  {id:"Research",g:"tools",d:"18 CLIs for web and business intelligence. Websearch, Crunchbase, Harmonic, SensorTower, SimilarWeb, Congress.gov, FedReg, OpenFEC, LegiStorm, Plural, ListenNotes, YouTube, CoinDesk, TheBlock, GoogleNews, NewsAPI, Archiver, DocSend.",c:18,fl:["Tool Security"]},
-  {id:"Productivity",g:"tools",d:"10 CLIs for SaaS and workspace tools. Linear, Notion, Airtable, Google Workspace (Gmail/Calendar/Drive/Docs/Sheets/Analytics), Slack search, Figma, Granola, OpenTable, CompanyContext, Composio.",c:10,fl:["Tool Security"]},
-  {id:"Infra & Monitoring",g:"tools",d:"8 CLIs for observability. Grafana, Sentry, AWS CloudWatch, PostHog, VictoriaMetrics, VictoriaLogs, Profslice, Laminar.",c:8,fl:["Tool Security","Observability"]},
-  {id:"Business",g:"tools",d:"3 CLIs for CRM/ATS. Ashby (candidate & job tracking), Attio (CRM objects & records), Pylon (support issues).",c:3,fl:["Tool Security"]},
-  {id:"Media",g:"tools",d:"3 CLIs for content generation. NanoBanana (Google Gemini images), Veo3 (video generation), Transcriber (Whisper speech-to-text).",c:3,fl:["Tool Security"]},
-  {id:"Communication",g:"tools",d:"2 CLIs for messaging. Telegram Bot API (send messages, search chats), Twitter/X API (profiles, tweets, search).",c:2,fl:["Tool Security"]},
-  {id:"Special",g:"tools",d:"6 CLIs. InvestMemos (memo search), InvestIntake (normalization), StandardMetrics (portfolio data), Eng (code review), Demo (hot-reload testing), MPP.",c:6,fl:["Tool Security"]},
-  {id:"Blockchain RPCs",g:"external",d:"Alchemy, Etherscan, Nansen, Allium, Arkham APIs. Accessed through Iron-Proxy with injected credentials.",c:5,fl:[]},
-  {id:"Market Data",g:"external",d:"CoinGecko, CoinMetrics, Messari, Databento, EODHD, CoinDesk, TheBlock. Real-time and historical financial data.",c:7,fl:[]},
-  {id:"DeFi & Gov",g:"external",d:"DefiLlama, DeBank, Dune, Token Terminal, Snapshot, Tally, Karma, Polymarket, Kalshi, Tokenomist. DeFi analytics and DAO governance.",c:10,fl:[]},
-  {id:"SaaS APIs",g:"external",d:"Linear, Notion, Airtable, Figma, Granola, OpenTable, Ashby, Attio, Pylon. Productivity and business tool APIs.",c:9,fl:[]},
-  {id:"Google APIs",g:"external",d:"Gmail, Calendar, Drive, Docs, Sheets, Analytics, Gemini, Veo3. Google Workspace and AI services.",c:8,fl:[]},
-  {id:"Observability",g:"external",d:"Grafana, Sentry, AWS CloudWatch, PostHog, VictoriaMetrics, VictoriaLogs, Laminar. Monitoring and telemetry endpoints.",c:7,fl:[]},
-  {id:"Content & Intel",g:"external",d:"Crunchbase, Harmonic, SensorTower, SimilarWeb, Congress.gov, FedReg, OpenFEC, LegiStorm, Plural, ListenNotes, YouTube, Websearch, NewsAPI. Research and intelligence data sources.",c:13,fl:[]},
-  {id:"Messaging",g:"external",d:"Slack Web API, Telegram Bot API, Twitter/X API. Communication platform endpoints.",c:3,fl:[]},
-  {id:"Composio Hub",g:"external",d:"1000+ service integration hub — GitHub, Gmail, Slack, Notion, and more through a single connector.",c:1,fl:[]},
+  // Entry points (outside K8s)
+  {id:"Slack",g:"entry",d:"Primary user interface. Users trigger agents via @centaur messages.",fl:["Slack Integration"]},
+  {id:"REST API",g:"entry",d:"HTTP endpoint for programmatic agent execution with SSE streaming.",fl:["Agent Execution"]},
+  {id:"Web Docs",g:"entry",d:"React 19 + Vocs documentation site.",fl:[]},
+
+  // Kubernetes plane — everything runs here
+  {id:"centaur-api",g:"k8s",d:"Central orchestrator. FastAPI server that manages agent sessions, spawns sandbox pods via K8s API, routes tool invocations, streams SSE events. Runs as a K8s Deployment.",fl:["Agent Execution","Slack Integration","Workflow Orchestration","Observability"]},
+  {id:"slackbot",g:"k8s",d:"Slack gateway. Hono + TypeScript service running as a K8s Deployment. Receives webhooks, verifies signatures, normalizes events, streams responses via chat.update.",fl:["Slack Integration","Observability"]},
+  {id:"PostgreSQL",g:"k8s",d:"Stateful data store. pgVector embeddings, ParadeDB full-text search, asyncpg pooling. Persists sessions, checkpoints, tool configs. Runs as a K8s StatefulSet.",fl:["Agent Execution","Workflow Orchestration","Checkpoint-Replay"]},
+  {id:"Sandbox Pod",g:"k8s",d:"Ephemeral execution environment. One isolated pod per agent session created by centaur-api. Contains LLM agent loop + tool manifest. Connects to Tool Server. Destroyed after session.",fl:["Agent Execution","Checkpoint-Replay"],ephemeral:true},
+  {id:"Tool Server",g:"k8s",d:"Hosts 73 CLI tools. K8s Deployment. Receives invocations from sandboxes, resolves tool handlers, injects ${SECRET:KEY}, forwards to Iron-Proxy.",fl:["Agent Execution","Tool Security","Tool Development"]},
+  {id:"Iron-Proxy",g:"k8s",d:"Secret injection sidecar. Runs in same pod as Tool Server. Resolves ${SECRET:KEY} → real creds from Vault/K8s secrets. Makes authenticated outbound calls, strips sensitive headers.",fl:["Tool Security"]},
+  {id:"centaur-sdk",g:"k8s",d:"Tool SDK. secret() placeholder fn, ToolContext, attachment handling, Rich CLI.",fl:["Tool Development"]},
+
+  // Tools hosted on Tool Server
+  {id:"Crypto & DeFi",g:"tools",d:"23 CLIs: Alchemy, Etherscan, CoinGecko, CoinMetrics, DefiLlama, Messari, Nansen, Polymarket, Kalshi, DeBank, Dune, Allium, Token Terminal, Tokenomist, Snapshot, Tally, Karma, MPP, Arkham, Databento, EODHD, Reth, Chart",c:23,fl:["Tool Security"]},
+  {id:"Research & Intel",g:"tools",d:"18 CLIs: Websearch, Crunchbase, Harmonic, SensorTower, SimilarWeb, Congress.gov, FedReg, OpenFEC, LegiStorm, Plural, ListenNotes, YouTube, CoinDesk, TheBlock, GoogleNews, NewsAPI, Archiver, DocSend",c:18,fl:["Tool Security"]},
+  {id:"Productivity",g:"tools",d:"10 CLIs: Linear, Notion, Airtable, Google Workspace, Slack search, Figma, Granola, OpenTable, CompanyContext, Composio",c:10,fl:["Tool Security"]},
+  {id:"Infra & Monitoring",g:"tools",d:"8 CLIs: Grafana, Sentry, AWS CloudWatch, PostHog, VictoriaMetrics, VictoriaLogs, Profslice, Laminar",c:8,fl:["Tool Security","Observability"]},
+  {id:"Business",g:"tools",d:"3 CLIs: Ashby (ATS), Attio (CRM), Pylon (Support)",c:3,fl:["Tool Security"]},
+  {id:"Media",g:"tools",d:"3 CLIs: NanoBanana (Gemini), Veo3 (video), Transcriber (Whisper)",c:3,fl:["Tool Security"]},
+  {id:"Communication",g:"tools",d:"2 CLIs: Telegram, Twitter/X",c:2,fl:["Tool Security"]},
+  {id:"Special",g:"tools",d:"6 CLIs: InvestMemos, InvestIntake, StandardMetrics, Eng, Demo, MPP",c:6,fl:["Tool Security"]},
+
+  // External APIs
+  {id:"Blockchain RPCs",g:"external",d:"Alchemy, Etherscan, Nansen, Allium, Arkham",c:5},
+  {id:"Market Data",g:"external",d:"CoinGecko, CoinMetrics, Messari, Databento, EODHD, CoinDesk, TheBlock",c:7},
+  {id:"DeFi & Governance",g:"external",d:"DefiLlama, DeBank, Dune, Token Terminal, Snapshot, Tally, Karma, Polymarket, Kalshi, Tokenomist",c:10},
+  {id:"SaaS APIs",g:"external",d:"Linear, Notion, Airtable, Figma, Granola, OpenTable, Ashby, Attio, Pylon",c:9},
+  {id:"Google APIs",g:"external",d:"Gmail, Calendar, Drive, Docs, Sheets, Analytics, Gemini, Veo3",c:8},
+  {id:"Observability APIs",g:"external",d:"Grafana, Sentry, AWS CloudWatch, PostHog, VictoriaMetrics, VictoriaLogs, Laminar",c:7},
+  {id:"Content & Intel",g:"external",d:"Crunchbase, Harmonic, SensorTower, SimilarWeb, Congress.gov, FedReg, OpenFEC, LegiStorm, Plural, ListenNotes, YouTube, Websearch, NewsAPI",c:13},
+  {id:"Messaging",g:"external",d:"Slack Web API, Telegram Bot API, Twitter/X API",c:3},
+  {id:"Composio Hub",g:"external",d:"1000+ service connector — GitHub, Gmail, Slack, Notion…",c:1},
 ];
 
 const edges = [
-  ["Slack","slackbot"],["REST API","centaur-api"],["Web Docs","centaur-docs"],
+  ["Slack","slackbot"],["REST API","centaur-api"],
   ["slackbot","centaur-api"],
-  ["centaur-api","PostgreSQL"],["centaur-api","Kubernetes"],["centaur-api","Sandbox Pod"],
-  ["Kubernetes","Sandbox Pod"],
-  ["Sandbox Pod","Tool Server"],
-  ["centaur-sdk","Tool Server"],
-  ["Tool Server","Crypto & DeFi"],["Tool Server","Research"],["Tool Server","Productivity"],
+  ["centaur-api","PostgreSQL"],["centaur-api","Sandbox Pod"],
+  ["Sandbox Pod","Tool Server"],["centaur-sdk","Tool Server"],
+  ["Tool Server","Crypto & DeFi"],["Tool Server","Research & Intel"],["Tool Server","Productivity"],
   ["Tool Server","Infra & Monitoring"],["Tool Server","Business"],["Tool Server","Media"],
   ["Tool Server","Communication"],["Tool Server","Special"],
   ["Tool Server","Iron-Proxy"],
-  ["Iron-Proxy","Blockchain RPCs"],["Iron-Proxy","Market Data"],["Iron-Proxy","DeFi & Gov"],
-  ["Iron-Proxy","SaaS APIs"],["Iron-Proxy","Google APIs"],["Iron-Proxy","Observability"],
+  ["Iron-Proxy","Blockchain RPCs"],["Iron-Proxy","Market Data"],["Iron-Proxy","DeFi & Governance"],
+  ["Iron-Proxy","SaaS APIs"],["Iron-Proxy","Google APIs"],["Iron-Proxy","Observability APIs"],
   ["Iron-Proxy","Content & Intel"],["Iron-Proxy","Messaging"],["Iron-Proxy","Composio Hub"],
 ];
 
 const nmap={};
-nodes.forEach(n=>{n.r=n.g==='platform'?24:n.g==='infra'?22:n.g==='entry'?16:12+(n.c||1)*0.45;nmap[n.id]=n;});
+nodes.forEach(n=>{
+  n.r=n.g==='k8s'?22:n.g==='entry'?16:12+(n.c||1)*0.4;
+  nmap[n.id]=n;
+});
 const emap=edges.map(([s,t])=>({source:nmap[s],target:nmap[t]}));
-function c(g){return colors[g]||'#8b949e'}
+function c(g){return C[g]||'#8b949e';}
 
-const viz=document.getElementById('viz'),tip=document.getElementById('tip'),pnl=document.getElementById('pnl'),stepEl=document.getElementById('step-indicator');
+// D3
+const viz=document.getElementById('viz'),tip=document.getElementById('tip'),pnl=document.getElementById('pnl');
+const simBar=document.getElementById('sim-bar');
 const W=viz.clientWidth,H=viz.clientHeight;
 const svg=d3.select('#viz').append('svg').attr('viewBox',[0,0,W,H]);
 const g=svg.append('g');
 const zoom=d3.zoom().scaleExtent([0.1,5]).on('zoom',e=>g.attr('transform',e.transform));
 svg.call(zoom);
 
+// Force — K8s plane is the center, entry above, tools below, external right
 const sim=d3.forceSimulation(nodes)
-  .force('link',d3.forceLink(emap).id(d=>d.id).distance(120).strength(0.35))
-  .force('charge',d3.forceManyBody().strength(-400))
+  .force('link',d3.forceLink(emap).id(d=>d.id).distance(110).strength(0.3))
+  .force('charge',d3.forceManyBody().strength(-420))
   .force('center',d3.forceCenter(W/2,H/2))
   .force('collision',d3.forceCollide().radius(d=>d.r+12))
-  .force('x',d3.forceX(d=>{if(d.g==='entry')return W*0.5;if(d.g==='platform')return W*0.36;if(d.g==='infra')return W*0.4;if(d.g==='tools')return W*0.20;return W*0.82;}).strength(0.06))
-  .force('y',d3.forceY(d=>{if(d.g==='entry')return H*0.06;if(d.g==='platform')return H*0.16;if(d.g==='infra')return H*0.38;if(d.g==='tools')return H*0.68;return H*0.50;}).strength(0.06));
+  .force('x',d3.forceX(d=>{
+    if(d.g==='entry')return W*0.55;if(d.g==='k8s')return W*0.45;
+    if(d.g==='tools')return W*0.18;return W*0.84;
+  }).strength(0.08))
+  .force('y',d3.forceY(d=>{
+    if(d.g==='entry')return H*0.06;if(d.g==='k8s')return H*0.38;
+    if(d.g==='tools')return H*0.72;return H*0.52;
+  }).strength(0.08));
 
+// Edges
 const lkg=g.append('g');
 const link=lkg.selectAll('line').data(emap).join('line')
-  .attr('stroke',d=>c(d.source.g)+'55').attr('stroke-width',1.5);
+  .attr('stroke',d=>c(d.source.g)+'44').attr('stroke-width',1.5).attr('stroke-linecap','round');
 
+// Nodes
 const ndg=g.append('g');
 const node=ndg.selectAll('g').data(nodes).join('g').attr('cursor','pointer')
   .call(d3.drag().on('start',(e,d)=>{if(!e.active)sim.alphaTarget(0.3).restart();d.fx=d.x;d.fy=d.y;})
     .on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y;}).on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null;}));
 
 node.append('circle').attr('r',d=>d.r).attr('fill',d=>c(d.g)).attr('fill-opacity',0.85)
-  .attr('stroke',d=>c(d.g)).attr('stroke-width',1.5).attr('id',d=>'n-'+d.id.replace(/\s+/g,'-'));
+  .attr('stroke',d=>d.ephemeral?'#3fb950':c(d.g)).attr('stroke-width',d=>d.ephemeral?2.5:1.5)
+  .attr('stroke-dasharray',d=>d.ephemeral?'5,3':null)
+  .attr('id',d=>'n-'+d.id.replace(/[^a-zA-Z0-9]/g,'-'));
 
 node.append('text').text(d=>d.id).attr('text-anchor','middle').attr('dy',d=>d.r+11)
-  .attr('font-size',d=>d.g==='platform'||d.g==='infra'?'0.6rem':'0.5rem')
-  .attr('font-weight',d=>d.g==='platform'||d.g==='infra'?'700':'400')
+  .attr('font-size',d=>d.g==='k8s'?'0.6rem':'0.48rem')
+  .attr('font-weight',d=>d.g==='k8s'?'700':'400')
   .attr('fill','#e6edf3').attr('font-family','SF Mono,monospace').style('pointer-events','none');
 
 node.filter(d=>d.c).append('text').text(d=>d.c).attr('text-anchor','middle').attr('dy','0.35em')
-  .attr('font-size',d=>Math.max(7,d.r*0.55)+'px').attr('font-weight','700')
+  .attr('font-size',d=>Math.max(7,d.r*0.5)+'px').attr('font-weight','700')
   .attr('fill','#fff').attr('font-family','SF Mono,monospace').style('pointer-events','none');
 
-// Hulls as rounded rectangles
+// Hulls
 const hullG=g.append('g');
-const groups={platform:'Centaur Platform',infra:'Infrastructure',tools:'Tool Server (73 CLIs)',external:'External APIs'};
+const grps={'entry':'Entry Points','k8s':'Kubernetes Plane','tools':'Tool Server (73 CLIs)','external':'External APIs'};
 
-function roundedRect(cx,cy,w,h,r){
-  r=Math.min(r,w/2,h/2);
-  return `M${cx-w/2+r},${cy-h/2} h${w-2*r} a${r},${r} 0 0 1 ${r},${r} v${h-2*r} a${r},${r} 0 0 1 -${r},${r} h-${w-2*r} a${r},${r} 0 0 1 -${r},-${r} v-${h-2*r} a${r},${r} 0 0 1 ${r},-${r} Z`;
+function rr(cx,cy,w,h,rd){
+  rd=Math.min(rd,w/2,h/2);
+  return `M${cx-w/2+rd},${cy-h/2} h${w-2*rd} a${rd},${rd} 0 0 1 ${rd},${rd} v${h-2*rd} a${rd},${rd} 0 0 1 -${rd},${rd} h-${w-2*rd} a${rd},${rd} 0 0 1 -${rd},-${rd} v-${h-2*rd} a${rd},${rd} 0 0 1 ${rd},-${rd} Z`;
 }
 
+// Interaction
 let sel=null;
 node.on('mouseover',(e,d)=>{
   tip.style.opacity=1;
-  tip.innerHTML=`<div class="tn">${d.id}</div><div class="td">${d.d}</div>${d.fl.length?`<div class="tf">Flows: ${d.fl.join(', ')}</div>`:''}`;
+  tip.innerHTML=`<div class="tn">${d.id}${d.ephemeral?' ⚡':''}</div><div class="td">${d.d}</div>${d.fl&&d.fl.length?`<div class="tf">Flows: ${d.fl.join(', ')}</div>`:''}`;
 }).on('mousemove',e=>{const[mx,my]=d3.pointer(e,viz);tip.style.left=(mx+14)+'px';tip.style.top=(my-14)+'px';})
   .on('mouseout',()=>{if(!sel)tip.style.opacity=0;});
 
@@ -178,72 +203,82 @@ node.on('click',(e,d)=>{
   sel=(sel===d.id)?null:d.id;
   if(!sel){pnl.style.display='none';resetHl();return;}
   pnl.style.display='block';
-  pnl.querySelector('.pn').innerHTML=d.id+'<span class="pg" style="background:'+c(d.g)+'22;color:'+c(d.g)+'">'+d.g+'</span>';
+  pnl.querySelector('.pn').innerHTML=d.id+'<span class="pg" style="background:'+c(d.g)+'22;color:'+c(d.g)+'">'+d.g+(d.ephemeral?' · ephemeral':'')+'</span>';
   pnl.querySelector('.pd').textContent=d.d;
-  const flEl=pnl.querySelector('.fl');
-  flEl.innerHTML=d.fl.length?d.fl.map(f=>'<span>'+f+'</span>: '+flowNames[f]).join('<br>'):'None';
+  pnl.querySelector('.fl').innerHTML=d.fl&&d.fl.length?d.fl.map(f=>'<s>'+f+'</s>: '+FN[f]).join('<br>'):'None';
   const conn=emap.filter(ed=>ed.source===d||ed.target===d);
   pnl.querySelector('.pe').textContent=conn.map(ed=>ed.source.id+' → '+ed.target.id).join('\n');
-  // Highlight
-  node.select('circle').attr('opacity',n=>n===d||conn.some(ed=>ed.source===n||ed.target===n)?1:0.12);
-  node.select('text').attr('opacity',n=>n===d||conn.some(ed=>ed.source===n||ed.target===n)?1:0.1);
-  link.attr('opacity',ed=>ed.source===d||ed.target===d?1:0.04);
+  node.select('circle').attr('opacity',n=>n===d||conn.some(ed=>ed.source===n||ed.target===n)?1:0.1);
+  link.attr('opacity',ed=>ed.source===d||ed.target===d?1:0.03);
 });
 svg.on('click',()=>{sel=null;pnl.style.display='none';resetHl();});
 document.getElementById('px').addEventListener('click',()=>{sel=null;pnl.style.display='none';resetHl();});
+function resetHl(){node.select('circle').attr('opacity',1);link.attr('opacity',1);}
 
-function resetHl(){node.select('circle').attr('opacity',1);node.select('text').attr('opacity',1);link.attr('opacity',1);}
-
-// === AGENT EXECUTION SIMULATION ===
+// === STEP-BY-STEP AGENT SIMULATION ===
 const agentFlow = [
-  {step:1,from:'Slack',to:'slackbot',label:'User sends @centaur message'},
-  {step:2,from:'slackbot',to:'centaur-api',label:'Slackbot normalizes event, forwards to API'},
-  {step:3,from:'centaur-api',to:'PostgreSQL',label:'API creates agent_session row (queued)'},
-  {step:4,from:'centaur-api',to:'Kubernetes',label:'API creates K8s Job for sandbox pod'},
-  {step:5,from:'Kubernetes',to:'Sandbox Pod',label:'K8s schedules pod, mounts tool volumes + Iron-Proxy sidecar'},
-  {step:6,from:'Sandbox Pod',to:'Tool Server',label:'Agent invokes tool → request sent to Tool Server'},
-  {step:7,from:'Tool Server',to:'Iron-Proxy',label:'Tool Server injects ${SECRET:KEY}, forwards to Iron-Proxy'},
-  {step:8,from:'Iron-Proxy',to:'Blockchain RPCs',label:'Iron-Proxy resolves credentials, makes authenticated API call'},
-  {step:9,from:'Blockchain RPCs',to:'Iron-Proxy',label:'External API responds with data'},
-  {step:10,from:'Iron-Proxy',to:'Tool Server',label:'Iron-Proxy strips sensitive headers, returns sanitized response'},
-  {step:11,from:'Tool Server',to:'Sandbox Pod',label:'Tool Server returns result to agent sandbox'},
-  {step:12,from:'Sandbox Pod',to:'centaur-api',label:'Agent emits SSE: done — final output sent to API'},
-  {step:13,from:'centaur-api',to:'Slack',label:'API → slackbot → Slack: final response delivered'},
+  {from:'Slack',to:'slackbot',label:'User sends @centaur "Analyze ETH gas trends" in Slack'},
+  {from:'slackbot',to:'centaur-api',label:'slackbot verifies HMAC, normalizes event, POSTs to centaur-api'},
+  {from:'centaur-api',to:'PostgreSQL',label:'centaur-api inserts agent_session row (status: queued)'},
+  {from:'centaur-api',to:'Sandbox Pod',label:'centaur-api creates K8s Job → Sandbox Pod spins up with tool volumes + Iron-Proxy sidecar'},
+  {from:'Sandbox Pod',to:'Tool Server',label:'Agent loop starts. LLM decides: "Need gas data → invoke etherscan tool." Invocation sent to Tool Server.'},
+  {from:'Tool Server',to:'Iron-Proxy',label:'Tool Server resolves etherscan handler, injects ${SECRET:ETHERSCAN_KEY}, forwards to Iron-Proxy'},
+  {from:'Iron-Proxy',to:'Blockchain RPCs',label:'Iron-Proxy resolves ETHERSCAN_KEY from Vault, makes authenticated GET to Etherscan API'},
+  {from:'Blockchain RPCs',to:'Iron-Proxy',label:'Etherscan returns gas price data (JSON)'},
+  {from:'Iron-Proxy',to:'Tool Server',label:'Iron-Proxy strips auth headers, returns sanitized gas data to Tool Server'},
+  {from:'Tool Server',to:'Sandbox Pod',label:'Tool Server returns gas data to agent. Agent reasons: "Avg gas 25 gwei, trend: rising."'},
+  {from:'Sandbox Pod',to:'Tool Server',label:'Agent decides: "Need DeFi context → invoke defillama." Tool Server → Iron-Proxy → DeFi & Governance APIs'},
+  {from:'Tool Server',to:'DeFi & Governance',label:'Iron-Proxy calls DefiLlama API for TVL data to contextualize gas trends'},
+  {from:'DeFi & Governance',to:'Tool Server',label:'DefiLlama returns TVL spike correlating with gas increase'},
+  {from:'Tool Server',to:'Sandbox Pod',label:'Agent synthesizes: "Gas rising due to DeFi TVL surge. Recommendation: wait 2h for off-peak."'},
+  {from:'Sandbox Pod',to:'centaur-api',label:'Agent emits SSE: done. centaur-api stores result, streams to slackbot'},
+  {from:'centaur-api',to:'Slack',label:'slackbot → Slack: final response delivered. Sandbox Pod terminated.'},
 ];
 
-let simRunning=false,simIdx=0;
-function runAgentSim(){
-  if(simRunning)return;
-  simRunning=true;simIdx=0;
-  document.getElementById('btn-sim').textContent='⏸ Running…';
-  stepEl.style.display='block';
-  nextStep();
+let simIdx=-1,simActive=false;
+function showSim(){simBar.style.display='flex';simActive=true;}
+function hideSim(){simBar.style.display='none';simActive=false;simIdx=-1;resetHl();}
+
+function updateSimUI(){
+  document.getElementById('step-num').textContent=simIdx>=0?`Step ${simIdx+1}/${agentFlow.length}`:'Ready';
+  document.getElementById('btn-prev').disabled=simIdx<=0;
+  document.getElementById('btn-next').disabled=simIdx>=agentFlow.length-1;
 }
-function nextStep(){
-  if(simIdx>=agentFlow.length){simRunning=false;stepEl.style.display='none';document.getElementById('btn-sim').textContent='▶ Simulate Agent Execution';return;}
+
+function goStep(dir){
+  if(!simActive) return;
+  resetHl();
+  simIdx = Math.max(0, Math.min(agentFlow.length-1, simIdx+dir));
   const s=agentFlow[simIdx];
-  stepEl.textContent=`Step ${s.step}/${agentFlow.length}: ${s.label}`;
-  stepEl.style.color='#3fb950';
+  document.getElementById('step-label').textContent=s.label;
 
-  // Highlight current edge
-  link.attr('opacity',l=>(l.source.id===s.from&&l.target.id===s.to)||(l.source.id===s.to&&l.target.id===s.from)?1:0.05);
-  link.attr('stroke',l=>(l.source.id===s.from&&l.target.id===s.to)||(l.source.id===s.to&&l.target.id===s.from)?'#3fb950':'#888');
-  link.attr('stroke-width',l=>(l.source.id===s.from&&l.target.id===s.to)||(l.source.id===s.to&&l.target.id===s.from)?3:1.5);
+  // Highlight current edge + nodes
+  link.attr('opacity',l=>(l.source.id===s.from&&l.target.id===s.to)?1:0.03);
+  link.attr('stroke',l=>(l.source.id===s.from&&l.target.id===s.to)?'#3fb950':'#888');
+  link.attr('stroke-width',l=>(l.source.id===s.from&&l.target.id===s.to)?3:1);
 
-  // Highlight nodes
-  node.select('circle').attr('opacity',n=>n.id===s.from||n.id===s.to?1:0.12);
-  node.select('text').attr('opacity',n=>n.id===s.from||n.id===s.to?1:0.08);
+  node.select('circle').attr('opacity',n=>n.id===s.from||n.id===s.to?1:0.08);
 
-  // Pulse the target node
-  const tid='n-'+s.to.replace(/\s+/g,'-');
-  const tgt=document.getElementById(tid);
-  if(tgt){tgt.classList.add('pulse');setTimeout(()=>tgt.classList.remove('pulse'),800);}
+  // Pulse target
+  const tid='n-'+s.to.replace(/[^a-zA-Z0-9]/g,'-');
+  const el=document.getElementById(tid);
+  if(el){d3.select(el.parentNode).classed('pulse',true);setTimeout(()=>d3.select(el.parentNode).classed('pulse',false),600);}
 
-  simIdx++;
-  setTimeout(nextStep,1200);
+  // If sandbox is involved, make its stroke more visible
+  if(s.from==='Sandbox Pod'||s.to==='Sandbox Pod'){
+    d3.select('#n-Sandbox-Pod').attr('stroke','#3fb950').attr('stroke-width',3);
+  }
+
+  updateSimUI();
 }
-document.getElementById('btn-sim').addEventListener('click',runAgentSim);
-document.getElementById('btn-reset').addEventListener('click',()=>{simRunning=false;simIdx=0;stepEl.style.display='none';document.getElementById('btn-sim').textContent='▶ Simulate Agent Execution';resetHl();});
+
+document.getElementById('btn-sim-start').addEventListener('click',()=>{
+  showSim();simIdx=-1;goStep(1);
+});
+document.getElementById('btn-prev').addEventListener('click',()=>goStep(-1));
+document.getElementById('btn-next').addEventListener('click',()=>goStep(1));
+document.getElementById('btn-sim-stop').addEventListener('click',hideSim);
+document.getElementById('btn-reset').addEventListener('click',()=>{hideSim();zoom.transform(svg,d3.zoomIdentity);});
 
 // Tick
 sim.on('tick',()=>{
@@ -251,23 +286,18 @@ sim.on('tick',()=>{
   node.attr('transform',d=>`translate(${d.x},${d.y})`);
 
   hullG.selectAll('*').remove();
-  Object.entries(groups).forEach(([grp,label])=>{
+  Object.entries(grps).forEach(([grp,label])=>{
     const pts=nodes.filter(n=>n.g===grp).map(n=>[n.x,n.y]);
-    if(pts.length<3)return;
+    if(pts.length<2)return;
     const cx=d3.mean(pts,p=>p[0]),cy=d3.mean(pts,p=>p[1]);
-    const rx=Math.max(...pts.map(p=>Math.abs(p[0]-cx)))+28,ry=Math.max(...pts.map(p=>Math.abs(p[1]-cy)))+22;
-    hullG.append('path').attr('d',roundedRect(cx,cy,rx*2,ry*2,14))
-      .attr('fill','none').attr('stroke',c(grp)+'44').attr('stroke-dasharray','5,4').attr('stroke-width',1.5);
-    const minY=Math.min(...pts.map(p=>p[1]));
-    hullG.append('text').attr('x',cx).attr('y',minY-14).attr('text-anchor','middle')
-      .attr('font-size','0.6rem').attr('font-weight','700').attr('fill',c(grp)+'99')
+    const RX=Math.max(...pts.map(p=>Math.abs(p[0]-cx)))+30,RY=Math.max(...pts.map(p=>Math.abs(p[1]-cy)))+24;
+    hullG.append('path').attr('d',rr(cx,cy,RX*2,RY*2,12))
+      .attr('fill','none').attr('stroke',c(grp)+'33').attr('stroke-dasharray','4,4').attr('stroke-width',1.2);
+    const my=Math.min(...pts.map(p=>p[1]));
+    hullG.append('text').attr('x',cx).attr('y',my-14).attr('text-anchor','middle')
+      .attr('font-size','0.55rem').attr('font-weight','700').attr('fill',c(grp)+'88')
       .attr('font-family','SF Mono,monospace').text(label);
   });
-
-  // Update highlighted link during sim
-  if(simRunning&&simIdx<agentFlow.length){
-    // Keep existing highlight (handled by nextStep timeout)
-  }
 });
 
 for(let i=0;i<300;i++)sim.tick();
