@@ -4,274 +4,231 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Centaur — Service Architecture</title>
-<script src="https://d3js.org/d3.v7.min.js"></script>
 <style>
-:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--teal:#39d353;--pink:#db61a2;--cyan:#56d4dd;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--body);overflow:hidden;height:100vh}
-#app{display:flex;flex-direction:column;height:100vh}
-#bar{display:flex;align-items:center;gap:12px;padding:8px 14px;background:var(--surface);border-bottom:1px solid var(--border);z-index:10;flex-shrink:0}
-#bar h1{font-size:1rem;font-weight:700;color:#fff;white-space:nowrap}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden;height:100vh;display:flex;flex-direction:column}
+#bar{display:flex;align-items:center;gap:12px;padding:8px 14px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+#bar h1{font-size:1rem;font-weight:700;color:#fff}
 #bar span{font-size:0.7rem;color:var(--muted)}
 #bar a{font-size:0.7rem;color:var(--muted);text-decoration:none;margin-left:auto}
-#container{flex:1;position:relative;overflow:hidden}
-#container svg{width:100%;height:100%}
-#tip{position:absolute;background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:10px 14px;font-size:0.72rem;pointer-events:none;z-index:20;max-width:300px;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0}
-#tip .n{font-weight:700;font-family:var(--font);color:#fff}
+#viz{flex:1;position:relative;overflow:hidden;min-height:400px}
+#viz svg{position:absolute;top:0;left:0;width:100%;height:100%}
+#tip{position:absolute;background:var(--surface);border:1px solid #58a6ff;border-radius:8px;padding:10px 14px;font-size:0.72rem;pointer-events:none;z-index:20;max-width:300px;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.1s}
+#tip .n{font-weight:700;font-family:'SF Mono',monospace;color:#fff}
 #tip .d{color:var(--muted);line-height:1.45;font-size:0.68rem;margin-top:3px}
-#tip .m{color:var(--text);font-size:0.62rem;margin-top:3px;font-family:var(--font)}
-#panel{position:absolute;bottom:12px;right:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:0.7rem;max-width:300px;display:none;z-index:5}
-#panel .pn{font-weight:700;font-family:var(--font);color:#fff;margin-bottom:2px}
-#panel .pd{color:var(--muted);line-height:1.4;font-size:0.66rem}
-#panel .pe{color:var(--muted);font-size:0.6rem;margin-top:4px;font-family:var(--font)}
-#panel button{position:absolute;top:4px;right:6px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem}
-.ellipse{fill:none;stroke-dasharray:6,4;stroke-width:1.5;pointer-events:none}
-.ellabel{font-size:0.7rem;font-weight:700;text-anchor:middle;pointer-events:none;font-family:var(--font)}
+#tip .m{color:var(--text);font-size:0.62rem;margin-top:3px;font-family:'SF Mono',monospace}
+#pnl{position:absolute;bottom:12px;right:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:0.7rem;max-width:300px;display:none;z-index:5}
+#pnl .pn{font-weight:700;font-family:'SF Mono',monospace;color:#fff}
+#pnl .pd{color:var(--muted);line-height:1.4;font-size:0.66rem;margin-top:2px}
+#pnl .pe{color:var(--muted);font-size:0.6rem;margin-top:4px;font-family:'SF Mono',monospace}
+#pnl button{position:absolute;top:4px;right:6px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem}
+
+/* loading state */
+#loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--muted);font-size:0.85rem;z-index:1}
 </style>
 </head>
 <body>
-<div id="app">
-<div id="bar">
-  <h1>Centaur · Service Architecture</h1>
-  <span>Drag · Zoom · Click</span>
-  <a href="https://github.com/researchoors/centaur-analysis">source →</a>
-</div>
-<div id="container">
-  <div id="tip"></div>
-  <div id="panel"><button id="px">×</button><div class="pn"></div><div class="pd"></div><div class="pe"></div></div>
-</div>
-</div>
-
+<div id="bar"><h1>Centaur · Service Architecture</h1><span>Drag · Zoom · Click</span><a href="https://github.com/researchoors/centaur-analysis">source →</a></div>
+<div id="viz"><div id="loading">Loading D3…</div><div id="tip"></div><div id="pnl"><button id="px">×</button><div class="pn"></div><div class="pd"></div><div class="pe"></div></div></div>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
-// === NODES: Services, not libraries ===
-const nodes = [
-  // Entry points
-  {id:"Slack",group:"entry",desc:"Slack workspace — primary user interface. Users send @centaur messages to trigger agents."},
-  {id:"REST API",group:"entry",desc:"HTTP API for programmatic agent execution. OpenAI-compatible chat completions endpoint."},
-  {id:"Web Docs",group:"entry",desc:"React 19 + Vocs documentation site for developers."},
+(function(){
+  // Ensure DOM and D3 are ready
+  if (typeof d3 === 'undefined') {
+    document.getElementById('loading').textContent = 'Failed to load D3. Try refreshing.';
+    return;
+  }
+  document.getElementById('loading').style.display = 'none';
 
-  // Platform services
-  {id:"centaur-api",group:"platform",desc:"Central orchestration hub. FastAPI server that manages agent sessions, spawns Kubernetes sandbox pods, handles SSE streaming, and routes tool invocations to the Tool Server."},
-  {id:"slackbot",group:"platform",desc:"Slack event gateway. Hono + TypeScript service that receives Slack webhooks, normalizes events, forwards to centaur-api, and streams agent responses back to Slack via chat.update."},
-  {id:"centaur-docs",group:"platform",desc:"Developer documentation site. React 19 + Vocs framework, MDX-based interactive API reference."},
+  const colors = {
+    entry: '#8b949e', platform: '#a371f7', infra: '#f0883e',
+    tools: '#3fb950', external: '#f85149'
+  };
 
-  // Infrastructure
-  {id:"PostgreSQL",group:"infra",desc:"Primary data store. pgVector for embedding similarity search, ParadeDB for BM25 full-text search, asyncpg for connection pooling. Stores agent sessions, workflow checkpoints, tool configs, and document indexes."},
-  {id:"Kubernetes",group:"infra",desc:"Container orchestration. Manages sandbox pod lifecycle — creates isolated pods per agent session, enforces security policies, TTL cleanup after execution. Each pod gets tool volumes + Iron-Proxy sidecar."},
-  {id:"Sandbox Pod",group:"infra",desc:"Isolated execution environment. Ephemeral K8s pod that runs one agent session. Contains the LLM agent loop, tool manifest, and connects to Tool Server for tool execution. Destroyed after session completes."},
-  {id:"Tool Server",group:"infra",desc:"Hosts and executes 73 CLI tools. Receives tool invocations from agent sandboxes, resolves tool handlers, injects ${SECRET:KEY} placeholders, forwards to Iron-Proxy. Auto-discovers tools via pyproject.toml glob."},
-  {id:"Iron-Proxy",group:"infra",desc:"Secret injection sidecar. Runs alongside Tool Server in each pod. Resolves ${SECRET:KEY} placeholders → real credentials, makes authenticated outbound calls, strips sensitive response headers. Tools never see real secrets."},
-  {id:"centaur-sdk",group:"infra",desc:"Tool development SDK. Provides secret() function for credential placeholders, tool context management via contextvars, attachment handling, structured logging, and CLI utilities."},
+  // === SERVICE NODES ===
+  const nodes = [
+    {id:"Slack",g:"entry",d:"Primary user interface. Users send @centaur messages to trigger agents."},
+    {id:"REST API",g:"entry",d:"HTTP API for programmatic agent execution."},
+    {id:"Web Docs",g:"entry",d:"React 19 + Vocs documentation site."},
+    {id:"centaur-api",g:"platform",d:"Central orchestration hub. FastAPI server: agent sessions, K8s sandbox lifecycle, SSE streaming, tool routing."},
+    {id:"slackbot",g:"platform",d:"Slack event gateway. Hono + TypeScript: receives webhooks, normalizes events, streams responses back via chat.update."},
+    {id:"centaur-docs",g:"platform",d:"Developer docs. React 19 + Vocs, MDX-based API reference."},
+    {id:"PostgreSQL",g:"infra",d:"Data store. pgVector embeddings, ParadeDB search, asyncpg pooling. Stores sessions, checkpoints, tool configs."},
+    {id:"Kubernetes",g:"infra",d:"Container orchestration. Creates isolated sandbox pods per agent session, enforces security policies, TTL cleanup."},
+    {id:"Sandbox Pod",g:"infra",d:"Ephemeral execution environment. One K8s pod per agent session. Contains LLM loop, tool manifest. Destroyed after completion."},
+    {id:"Tool Server",g:"infra",d:"Hosts 73 CLI tools. Receives invocations from sandboxes, resolves handlers, injects ${SECRET:KEY} placeholders, forwards to Iron-Proxy."},
+    {id:"Iron-Proxy",g:"infra",d:"Secret injection sidecar. Resolves placeholders → real credentials, makes authenticated outbound calls, strips sensitive headers."},
+    {id:"centaur-sdk",g:"infra",d:"Tool SDK. secret() placeholder function, tool context, attachments, structured logging."},
+    {id:"Crypto & DeFi",g:"tools",d:"23 CLIs: Alchemy, Etherscan, CoinGecko, CoinMetrics, DefiLlama, Messari, Nansen, Polymarket, Kalshi, DeBank, Dune, Allium, TokenTerminal, Tokenomist, Snapshot, Tally, Karma, MPP, Arkham, Databento, EODHD, Reth, Chart",c:23},
+    {id:"Research",g:"tools",d:"18 CLIs: Websearch, Crunchbase, Harmonic, SensorTower, SimilarWeb, Congress.gov, FedReg, OpenFEC, LegiStorm, Plural, ListenNotes, YouTube, CoinDesk, TheBlock, GoogleNews, NewsAPI, Archiver, DocSend",c:18},
+    {id:"Productivity",g:"tools",d:"10 CLIs: Linear, Notion, Airtable, Google Workspace, Slack search, Figma, Granola, OpenTable, CompanyContext, Composio",c:10},
+    {id:"Infra & Monitoring",g:"tools",d:"8 CLIs: Grafana, Sentry, AWS CloudWatch, PostHog, VictoriaMetrics, VictoriaLogs, Profslice, Laminar",c:8},
+    {id:"Business",g:"tools",d:"3 CLIs: Ashby (ATS), Attio (CRM), Pylon (Support)",c:3},
+    {id:"Media",g:"tools",d:"3 CLIs: NanoBanana (Gemini), Veo3 (video), Transcriber (Whisper)",c:3},
+    {id:"Communication",g:"tools",d:"2 CLIs: Telegram, Twitter/X",c:2},
+    {id:"Special",g:"tools",d:"6 CLIs: InvestMemos, InvestIntake, StandardMetrics, Eng, Demo, MPP",c:6},
+    {id:"Blockchain RPCs",g:"external",d:"Alchemy, Etherscan, Nansen, Allium, Arkham",c:5},
+    {id:"Market Data",g:"external",d:"CoinGecko, CoinMetrics, Messari, Databento, EODHD, CoinDesk, TheBlock",c:7},
+    {id:"DeFi & Gov",g:"external",d:"DefiLlama, DeBank, Dune, TokenTerminal, Snapshot, Tally, Karma, Polymarket, Kalshi, Tokenomist",c:10},
+    {id:"SaaS APIs",g:"external",d:"Linear, Notion, Airtable, Figma, Granola, OpenTable, Ashby, Attio, Pylon",c:9},
+    {id:"Google APIs",g:"external",d:"Gmail, Calendar, Drive, Docs, Sheets, Analytics, Gemini, Veo3",c:8},
+    {id:"Observability",g:"external",d:"Grafana, Sentry, AWS CloudWatch, PostHog, VictoriaMetrics, VictoriaLogs, Laminar",c:7},
+    {id:"Content & Intel",g:"external",d:"Crunchbase, Harmonic, SensorTower, SimilarWeb, Congress.gov, FedReg, OpenFEC, LegiStorm, Plural, ListenNotes, YouTube, Websearch, NewsAPI",c:13},
+    {id:"Messaging",g:"external",d:"Slack Web API, Telegram Bot API, Twitter/X API",c:3},
+    {id:"Composio Hub",g:"external",d:"1000+ service connector — GitHub, Gmail, Slack, Notion…",c:1},
+  ];
 
-  // Tool categories (hosted on Tool Server)
-  {id:"Crypto & DeFi tools",group:"tools",desc:"23 CLI tools — Alchemy, Etherscan, CoinGecko, CoinMetrics, DefiLlama, Messari, Nansen, Polymarket, Kalshi, DeBank, Dune, Allium, Token Terminal, Tokenomist, Snapshot, Tally, Karma, MPP, Arkham, Databento, EODHD, Reth, Chart",count:23},
-  {id:"Research tools",group:"tools",desc:"18 CLI tools — Websearch, Crunchbase, Harmonic, SensorTower, SimilarWeb, Congress.gov, FedReg, OpenFEC, LegiStorm, Plural, ListenNotes, YouTube, CoinDesk, TheBlock, GoogleNews, NewsAPI, Archiver, DocSend",count:18},
-  {id:"Productivity tools",group:"tools",desc:"10 CLI tools — Linear, Notion, Airtable, Google Workspace, Slack search, Figma, Granola, OpenTable, CompanyContext, Composio (1000+ services)",count:10},
-  {id:"Infra & Monitoring tools",group:"tools",desc:"8 CLI tools — Grafana, Sentry, AWS CloudWatch, PostHog, VictoriaMetrics, VictoriaLogs, Profslice, Laminar",count:8},
-  {id:"Business tools",group:"tools",desc:"3 CLI tools — Ashby (ATS), Attio (CRM), Pylon (Support)",count:3},
-  {id:"Media tools",group:"tools",desc:"3 CLI tools — NanoBanana (Gemini images), Veo3 (video), Transcriber (Whisper)",count:3},
-  {id:"Communication tools",group:"tools",desc:"2 CLI tools — Telegram, Twitter/X",count:2},
-  {id:"Special tools",group:"tools",desc:"6 CLI tools — InvestMemos, InvestIntake, StandardMetrics, Eng (code review), Demo, MPP",count:6},
+  // === SERVICE EDGES ===
+  const edges = [
+    ["Slack","slackbot"],["REST API","centaur-api"],["Web Docs","centaur-docs"],
+    ["slackbot","centaur-api"],
+    ["centaur-api","PostgreSQL"],["centaur-api","Kubernetes"],["centaur-api","Sandbox Pod"],
+    ["Kubernetes","Sandbox Pod"],
+    ["Sandbox Pod","Tool Server"],
+    ["centaur-sdk","Tool Server"],
+    ["Tool Server","Crypto & DeFi"],["Tool Server","Research"],["Tool Server","Productivity"],
+    ["Tool Server","Infra & Monitoring"],["Tool Server","Business"],["Tool Server","Media"],
+    ["Tool Server","Communication"],["Tool Server","Special"],
+    ["Tool Server","Iron-Proxy"],
+    ["Iron-Proxy","Blockchain RPCs"],["Iron-Proxy","Market Data"],["Iron-Proxy","DeFi & Gov"],
+    ["Iron-Proxy","SaaS APIs"],["Iron-Proxy","Google APIs"],["Iron-Proxy","Observability"],
+    ["Iron-Proxy","Content & Intel"],["Iron-Proxy","Messaging"],["Iron-Proxy","Composio Hub"],
+  ];
 
-  // External API categories
-  {id:"Blockchain RPCs",group:"external",desc:"External APIs — Alchemy, Etherscan, Nansen, Allium, Arkham",count:5},
-  {id:"Market Data APIs",group:"external",desc:"External APIs — CoinGecko, CoinMetrics, Messari, Databento, EODHD, CoinDesk, TheBlock",count:7},
-  {id:"DeFi & Governance",group:"external",desc:"External APIs — DefiLlama, DeBank, Dune, Token Terminal, Snapshot, Tally, Karma, Polymarket, Kalshi, Tokenomist",count:10},
-  {id:"SaaS APIs",group:"external",desc:"External APIs — Linear, Notion, Airtable, Figma, Granola, OpenTable, Ashby, Attio, Pylon",count:9},
-  {id:"Google APIs",group:"external",desc:"External APIs — Gmail, Calendar, Drive, Docs, Sheets, Analytics, Gemini, Veo3",count:8},
-  {id:"Observability APIs",group:"external",desc:"External APIs — Grafana, Sentry, AWS CloudWatch, PostHog, VictoriaMetrics, VictoriaLogs, Laminar",count:7},
-  {id:"Content & Intel APIs",group:"external",desc:"External APIs — Crunchbase, Harmonic, SensorTower, SimilarWeb, Congress.gov, FedReg, OpenFEC, LegiStorm, Plural, ListenNotes, YouTube, Websearch, NewsAPI, GoogleNews",count:14},
-  {id:"Messaging APIs",group:"external",desc:"External APIs — Slack Web API, Telegram Bot API, Twitter/X API",count:3},
-  {id:"Integration Hub",group:"external",desc:"Composio — 1000+ service connector. Single integration point for GitHub, Gmail, Slack, Notion, and more.",count:1},
-];
-
-// === EDGES: Service interactions ===
-const edges = [
-  // Entry → Platform
-  {source:"Slack",target:"slackbot",label:"@centaur messages"},
-  {source:"REST API",target:"centaur-api",label:"HTTP requests"},
-  {source:"Web Docs",target:"centaur-docs",label:"serves docs"},
-  // Platform internal
-  {source:"slackbot",target:"centaur-api",label:"forwards agent requests"},
-  // Platform → Infra
-  {source:"centaur-api",target:"PostgreSQL",label:"session state, checkpoints"},
-  {source:"centaur-api",target:"Kubernetes",label:"creates sandbox pods"},
-  {source:"centaur-api",target:"Sandbox Pod",label:"SSE streaming"},
-  // Infra internal
-  {source:"Kubernetes",target:"Sandbox Pod",label:"schedules, isolates"},
-  {source:"Sandbox Pod",target:"Tool Server",label:"tool invocations"},
-  {source:"centaur-sdk",target:"Tool Server",label:"tool SDK runtime"},
-  {source:"Slack",target:"slackbot",label:"events"},
-  // Tool Server → Tools
-  {source:"Tool Server",target:"Crypto & DeFi tools",label:"hosts"},
-  {source:"Tool Server",target:"Research tools",label:"hosts"},
-  {source:"Tool Server",target:"Productivity tools",label:"hosts"},
-  {source:"Tool Server",target:"Infra & Monitoring tools",label:"hosts"},
-  {source:"Tool Server",target:"Business tools",label:"hosts"},
-  {source:"Tool Server",target:"Media tools",label:"hosts"},
-  {source:"Tool Server",target:"Communication tools",label:"hosts"},
-  {source:"Tool Server",target:"Special tools",label:"hosts"},
-  // Tool Server → Iron-Proxy
-  {source:"Tool Server",target:"Iron-Proxy",label:"${SECRET:KEY} placeholders"},
-  // Iron-Proxy → External
-  {source:"Iron-Proxy",target:"Blockchain RPCs",label:"authenticated requests"},
-  {source:"Iron-Proxy",target:"Market Data APIs",label:"authenticated requests"},
-  {source:"Iron-Proxy",target:"DeFi & Governance",label:"authenticated requests"},
-  {source:"Iron-Proxy",target:"SaaS APIs",label:"authenticated requests"},
-  {source:"Iron-Proxy",target:"Google APIs",label:"authenticated requests"},
-  {source:"Iron-Proxy",target:"Observability APIs",label:"authenticated requests"},
-  {source:"Iron-Proxy",target:"Content & Intel APIs",label:"authenticated requests"},
-  {source:"Iron-Proxy",target:"Messaging APIs",label:"authenticated requests"},
-  {source:"Iron-Proxy",target:"Integration Hub",label:"authenticated requests"},
-];
-
-// Colors by group
-function color(g) {
-  if (g==='entry') return '#8b949e';
-  if (g==='platform') return '#a371f7';
-  if (g==='infra') return '#f0883e';
-  if (g==='tools') return '#3fb950';
-  if (g==='external') return '#f85149';
-  return '#8b949e';
-}
-
-// Radius by group
-function radius(g, cnt) {
-  if (g==='entry') return 18;
-  if (g==='platform') return 22;
-  if (g==='infra') return 20;
-  if (g==='tools') return 12 + (cnt||1)*0.4;
-  if (g==='external') return 12 + (cnt||1)*0.4;
-  return 14;
-}
-
-// Compute node map
-const nmap = {};
-nodes.forEach(n => { nmap[n.id] = n; n.r = radius(n.group, n.count); });
-edges.forEach(e => { e.source = nmap[e.source]; e.target = nmap[e.target]; });
-
-// D3
-const container = document.getElementById('container');
-const tip = document.getElementById('tip');
-const panel = document.getElementById('panel');
-const W = container.clientWidth, H = container.clientHeight;
-
-const svg = d3.select('#container').append('svg').attr('viewBox',[0,0,W,H]);
-const g = svg.append('g');
-const zoom = d3.zoom().scaleExtent([0.15,5]).on('zoom',e=>g.attr('transform',e.transform));
-svg.call(zoom);
-
-function hull(pts, pad) {
-  if (pts.length < 3) return `M${pts[0][0]},${pts[0][1]}`;
-  pts.sort((a,b)=>a[0]-b[0]);
-  const cross=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
-  const lower=[],upper=[];
-  for(const p of pts){while(lower.length>=2&&cross(lower[lower.length-2],lower[lower.length-1],p)<=0)lower.pop();lower.push(p);}
-  for(const p of pts.reverse()){while(upper.length>=2&&cross(upper[upper.length-2],upper[upper.length-1],p)<=0)upper.pop();upper.push(p);}
-  const hull=lower.concat(upper.slice(1,-1));
-  // Expand
-  const cx=d3.mean(hull,d=>d[0]),cy=d3.mean(hull,d=>d[1]);
-  return hull.map(([x,y])=>{const dx=x-cx,dy=y-cy,dist=Math.sqrt(dx*dx+dy*dy)||1;return[x+dx/dist*pad,y+dy/dist*pad];});
-}
-
-// Force
-const sim = d3.forceSimulation(nodes)
-  .force('link',d3.forceLink(edges).id(d=>d.id).distance(100).strength(0.5))
-  .force('charge',d3.forceManyBody().strength(-300))
-  .force('center',d3.forceCenter(W/2,H/2))
-  .force('collision',d3.forceCollide().radius(d=>d.r+8));
-
-// Layout hints: group positioning
-sim.force('x',d3.forceX(d=>{
-  if(d.group==='entry') return W*0.5;
-  if(d.group==='platform') return W*0.4;
-  if(d.group==='infra') return W*0.45;
-  if(d.group==='tools') return W*0.25;
-  if(d.group==='external') return W*0.78;
-  return W*0.5;
-}).strength(0.04));
-sim.force('y',d3.forceY(d=>{
-  if(d.group==='entry') return H*0.08;
-  if(d.group==='platform') return H*0.2;
-  if(d.group==='infra') return H*0.4;
-  if(d.group==='tools') return H*0.65;
-  if(d.group==='external') return H*0.5;
-  return H*0.5;
-}).strength(0.04));
-
-// Edges with labels
-const linkg = g.append('g');
-const link = linkg.selectAll('g').data(edges).join('g');
-link.append('line').attr('stroke',d=>color(d.source.group)+'44').attr('stroke-width',1.5);
-link.append('text').text(d=>d.label).attr('font-size','0.48rem').attr('fill','#8b949e66')
-  .attr('text-anchor','middle').attr('dy',-4).style('pointer-events','none');
-
-// Nodes
-const node = g.append('g').selectAll('g').data(nodes).join('g')
-  .attr('cursor','pointer')
-  .call(d3.drag().on('start',(e,d)=>{if(!e.active)sim.alphaTarget(0.3).restart();d.fx=d.x;d.fy=d.y;})
-    .on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y;})
-    .on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null;}));
-
-node.append('circle').attr('r',d=>d.r).attr('fill',d=>color(d.group)).attr('fill-opacity',0.8).attr('stroke',d=>color(d.group)).attr('stroke-width',1.5);
-
-// Labels
-node.append('text').text(d=>d.id).attr('text-anchor','middle').attr('dy',d=>d.r+12)
-  .attr('font-size',d=>d.group==='platform'||d.group==='infra'?'0.6rem':'0.52rem')
-  .attr('font-weight',d=>d.group==='platform'||d.group==='infra'?'700':'400')
-  .attr('fill','#e6edf3').attr('font-family','SF Mono,monospace').style('pointer-events','none');
-
-// Count badge on tool/external nodes
-node.filter(d=>d.count).append('text').text(d=>d.count).attr('text-anchor','middle').attr('dy','0.35em')
-  .attr('font-size',d=>Math.max(7,d.r*0.55)+'px').attr('font-weight','700')
-  .attr('fill','#fff').attr('font-family','SF Mono,monospace').style('pointer-events','none');
-
-// Interaction
-let sel = null;
-node.on('mouseover',(e,d)=>{
-  tip.style('opacity',1).html(`<div class="n">${d.id}</div><div class="d">${d.desc}</div>${d.count?`<div class="m">${d.count} components</div>`:''}`);
-}).on('mousemove',e=>{const[mx,my]=d3.pointer(e,container);tip.style('left',(mx+14)+'px').style('top',(my-14)+'px');})
-  .on('mouseout',()=>{if(!sel)tip.style('opacity',0);});
-
-node.on('click',(e,d)=>{
-  e.stopPropagation();
-  sel = (sel===d.id)?null:d.id;
-  if(!sel){panel.style.display='none';reset();return;}
-  panel.style.display='block';
-  panel.querySelector('.pn').textContent=d.id;
-  panel.querySelector('.pd').textContent=d.desc;
-  const conns = edges.filter(ed=>ed.source===d||ed.target===d);
-  panel.querySelector('.pe').textContent=conns.map(ed=>`${ed.source.id} → ${ed.target.id}`).join(' · ');
-  node.select('circle').attr('opacity',n=>n===d||conns.some(ed=>ed.source===n||ed.target===n)?1:0.15);
-  link.select('line').attr('opacity',ed=>ed.source===d||ed.target===d?1:0.08);
-  link.select('text').attr('opacity',ed=>ed.source===d||ed.target===d?1:0);
-});
-svg.on('click',()=>{sel=null;panel.style.display='none';reset();});
-document.getElementById('px').addEventListener('click',()=>{sel=null;panel.style.display='none';reset();});
-function reset(){node.select('circle').attr('opacity',1);link.select('line').attr('opacity',1);link.select('text').attr('opacity',0.7);}
-
-// Hulls
-const hulls = g.append('g').attr('class','hulls');
-sim.on('tick',()=>{
-  link.select('line').attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
-  link.select('text').attr('x',d=>(d.source.x+d.target.x)/2).attr('y',d=>(d.source.y+d.target.y)/2);
-  node.attr('transform',d=>`translate(${d.x},${d.y})`);
-
-  // Hulls
-  hulls.selectAll('*').remove();
-  const groups = {platform:'Centaur Platform',infra:'Infrastructure',tools:'Tool Server (73 CLIs)',external:'External APIs'};
-  Object.entries(groups).forEach(([grp,label])=>{
-    const pts = nodes.filter(n=>n.group===grp).map(n=>[n.x,n.y]);
-    if(pts.length<3) return;
-    const h = hull(pts, 24);
-    if(h.length<3) return;
-    const cx = d3.mean(pts,p=>p[0]), cy = d3.mean(pts,p=>p[1]);
-    const g2 = hulls.append('g');
-    g2.append('path').attr('d','M'+h.join('L')+'Z').attr('class','ellipse').attr('stroke',color(grp)+'55');
-    const minY = Math.min(...pts.map(p=>p[1]));
-    g2.append('text').attr('x',cx).attr('y',minY-12).attr('class','ellabel').attr('fill',color(grp)+'88').text(label);
+  // Build maps
+  const nmap = {};
+  nodes.forEach(n => {
+    n.r = n.g==='platform'?22:n.g==='infra'?20:n.g==='entry'?16:11+(n.c||1)*0.5;
+    nmap[n.id] = n;
   });
-});
+  const emap = edges.map(([s,t]) => ({source:nmap[s],target:nmap[t]}));
+
+  // Color
+  function c(g){return colors[g]||'#8b949e';}
+
+  // D3 setup
+  const viz = document.getElementById('viz');
+  const tip = document.getElementById('tip');
+  const pnl = document.getElementById('pnl');
+  const W = viz.clientWidth, H = viz.clientHeight;
+
+  const svg = d3.select('#viz').append('svg').attr('viewBox',[0,0,W,H]);
+  const g = svg.append('g');
+  const zoom = d3.zoom().scaleExtent([0.1,5]).on('zoom',e=>g.attr('transform',e.transform));
+  svg.call(zoom);
+
+  // Force
+  const sim = d3.forceSimulation(nodes)
+    .force('link',d3.forceLink(emap).id(d=>d.id).distance(110).strength(0.4))
+    .force('charge',d3.forceManyBody().strength(-350))
+    .force('center',d3.forceCenter(W/2,H/2))
+    .force('collision',d3.forceCollide().radius(d=>d.r+10))
+    .force('x',d3.forceX(d=>{
+      if(d.g==='entry')return W*0.5;if(d.g==='platform')return W*0.38;
+      if(d.g==='infra')return W*0.42;if(d.g==='tools')return W*0.22;
+      return W*0.8;
+    }).strength(0.05))
+    .force('y',d3.forceY(d=>{
+      if(d.g==='entry')return H*0.06;if(d.g==='platform')return H*0.18;
+      if(d.g==='infra')return H*0.38;if(d.g==='tools')return H*0.65;
+      return H*0.52;
+    }).strength(0.05));
+
+  // Edges
+  const lkg = g.append('g');
+  const link = lkg.selectAll('line').data(emap).join('line')
+    .attr('stroke',d=>c(d.source.g)+'44').attr('stroke-width',1.5);
+
+  // Nodes
+  const ndg = g.append('g');
+  const node = ndg.selectAll('g').data(nodes).join('g')
+    .attr('cursor','pointer')
+    .call(d3.drag().on('start',(e,d)=>{if(!e.active)sim.alphaTarget(0.3).restart();d.fx=d.x;d.fy=d.y;})
+      .on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y;})
+      .on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null;}));
+
+  node.append('circle').attr('r',d=>d.r).attr('fill',d=>c(d.g)).attr('fill-opacity',0.85)
+    .attr('stroke',d=>c(d.g)).attr('stroke-width',1.5);
+
+  // Labels
+  node.append('text').text(d=>d.id).attr('text-anchor','middle').attr('dy',d=>d.r+10)
+    .attr('font-size',d=>d.g==='platform'||d.g==='infra'?'0.58rem':'0.5rem')
+    .attr('font-weight',d=>d.g==='platform'||d.g==='infra'?'700':'400')
+    .attr('fill','#e6edf3').attr('font-family','SF Mono,monospace').style('pointer-events','none');
+
+  // Count badges
+  node.filter(d=>d.c).append('text').text(d=>d.c).attr('text-anchor','middle').attr('dy','0.35em')
+    .attr('font-size',d=>Math.max(7,d.r*0.55)+'px').attr('font-weight','700')
+    .attr('fill','#fff').attr('font-family','SF Mono,monospace').style('pointer-events','none');
+
+  // Hull groups
+  const hullG = g.append('g');
+  const groups = {platform:'Platform',infra:'Infrastructure',tools:'Tool Server (73 CLIs)',external:'External APIs'};
+
+  function convexHull(pts,pad){
+    if(pts.length<3)return pts;
+    pts.sort((a,b)=>a[0]-b[0]);
+    const cross=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
+    const lo=[],hi=[];
+    for(const p of pts){while(lo.length>=2&&cross(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p);}
+    for(const p of pts.reverse()){while(hi.length>=2&&cross(hi[hi.length-2],hi[hi.length-1],p)<=0)hi.pop();hi.push(p);}
+    const h=lo.concat(hi.slice(1,-1));
+    if(h.length<3)return h;
+    const cx=d3.mean(h,d=>d[0]),cy=d3.mean(h,d=>d[1]);
+    return h.map(([x,y])=>{const dx=x-cx,dy=y-cy,d=Math.sqrt(dx*dx+dy*dy)||1;return[x+dx/d*pad,y+dy/d*pad];});
+  }
+
+  // Interaction
+  let sel=null;
+  node.on('mouseover',(e,d)=>{
+    tip.style.opacity=1;
+    tip.innerHTML=`<div class="n">${d.id}</div><div class="d">${d.d}</div>${d.c?`<div class="m">${d.c} components</div>`:''}`;
+  }).on('mousemove',e=>{
+    const[mx,my]=d3.pointer(e,viz);tip.style.left=(mx+14)+'px';tip.style.top=(my-14)+'px';
+  }).on('mouseout',()=>{if(!sel)tip.style.opacity=0;});
+
+  node.on('click',(e,d)=>{
+    e.stopPropagation();
+    sel=(sel===d.id)?null:d.id;
+    if(!sel){pnl.style.display='none';resetHl();return;}
+    pnl.style.display='block';
+    pnl.querySelector('.pn').textContent=d.id;
+    pnl.querySelector('.pd').textContent=d.d;
+    const conn=emap.filter(ed=>ed.source===d||ed.target===d);
+    pnl.querySelector('.pe').textContent=conn.map(ed=>ed.source.id+' → '+ed.target.id).join(' · ');
+    node.select('circle').attr('opacity',n=>n===d||conn.some(ed=>ed.source===n||ed.target===n)?1:0.12);
+    link.attr('opacity',ed=>ed.source===d||ed.target===d?1:0.04);
+  });
+  svg.on('click',()=>{sel=null;pnl.style.display='none';resetHl();});
+  document.getElementById('px').addEventListener('click',()=>{sel=null;pnl.style.display='none';resetHl();});
+
+  function resetHl(){node.select('circle').attr('opacity',1);link.attr('opacity',1);}
+
+  // Tick
+  sim.on('tick',()=>{
+    link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+    node.attr('transform',d=>`translate(${d.x},${d.y})`);
+
+    hullG.selectAll('*').remove();
+    Object.entries(groups).forEach(([grp,label])=>{
+      const pts = nodes.filter(n=>n.g===grp).map(n=>[n.x,n.y]);
+      if(pts.length<3)return;
+      const h = convexHull(pts, 24);
+      if(h.length<3)return;
+      const cx = d3.mean(pts,p=>p[0]), cy = d3.mean(pts,p=>p[1]), minY = Math.min(...pts.map(p=>p[1]));
+      hullG.append('path').attr('d','M'+h.join('L')+'Z').attr('fill','none').attr('stroke',c(grp)+'44')
+        .attr('stroke-dasharray','6,4').attr('stroke-width',1.5);
+      hullG.append('text').attr('x',cx).attr('y',minY-12).attr('text-anchor','middle')
+        .attr('font-size','0.65rem').attr('font-weight','700').attr('fill',c(grp)+'88')
+        .attr('font-family','SF Mono,monospace').text(label);
+    });
+  });
+
+  // Warm up simulation
+  for(let i=0;i<300;i++)sim.tick();
+  sim.alpha(0.3).restart();
+})();
 </script>
 </body>
 </html>
