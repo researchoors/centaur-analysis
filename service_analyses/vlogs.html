@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: vlogs — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>vlogs</h1>
+</header>
+<h1>VLogs Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The vlogs component is a Python CLI tool that provides a command-line interface for interacting with VictoriaLogs, a log analytics platform. The component implements a comprehensive LogsQL query client with specialized methods for analyzing application logs, tool usage, and system performance metrics in a distributed microservices environment.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a clean separation of concerns with a <strong>client-server architecture pattern</strong>:</p>
+<br>
+<p>- <strong>Client Layer</strong> (`VictoriaLogsClient`): HTTP client for VictoriaLogs API interactions</p>
+<p>- <strong>CLI Layer</strong> (`cli.py`): Command-line interface using Typer framework</p>
+<p>- <strong>Test Layer</strong> (`test_client.py`, `tests/`): Unit tests and mocking infrastructure</p>
+<br>
+<p>The architecture emphasizes convenience methods for common log analysis patterns, particularly around thread tracing, tool analytics, and execution monitoring.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> VictoriaLogsClient (client.py)</h3>
+<p>The core client class providing HTTP API access to VictoriaLogs with comprehensive query capabilities. It includes basic LogsQL operations (query, field_names, field_values, streams) and specialized convenience methods for application monitoring.</p>
+<br>
+<h3> CLI Interface (cli.py)  </h3>
+<p>Typer-based command-line interface exposing four primary commands: <code>query</code> for LogsQL queries, <code>fields</code> for listing field names, <code>field-values</code> for field value enumeration, and <code>streams</code> for log stream discovery. All commands support JSON output and time range filtering.</p>
+<br>
+<h3> Query Builder Functions</h3>
+<p>Utility functions for constructing LogsQL queries, including <code>_quote_logsql_value()</code> for escaping special characters in field values and <code>_field_expr()</code> for building field expressions.</p>
+<br>
+<h3> Convenience Analytics Methods</h3>
+<p>Specialized methods for common monitoring tasks: <code>thread_logs()</code> and <code>thread_trace()</code> for distributed tracing, <code>tool_analytics()</code> for tool usage analysis, <code>execution_summaries()</code> for workflow monitoring, and <code>service_health()</code> for error rate tracking.</p>
+<br>
+<h3> Time Handling Utilities</h3>
+<p>Helper methods for time range processing, including <code>_time_prefix()</code> for LogsQL time expressions, <code>_hits_step()</code> for determining appropriate time bucket sizes, and duration parsing with regex patterns.</p>
+<br>
+<h3> Health Monitoring</h3>
+<p>Basic health check functionality via the <code>ready()</code> method and corresponding <code>health</code> CLI command for deployment verification.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Typer Argument Parser]
+    B --&gt; C[get_client()]
+    C --&gt; D[VictoriaLogsClient]
+    D --&gt; E[HTTP Request to VictoriaLogs]
+    E --&gt; F[JSON Response Processing]
+    F --&gt; G[Result Formatting]
+    G --&gt; H[Console Output]
+    
+    subgraph &quot;Client Operations&quot;
+        D --&gt; I[Query Building]
+        I --&gt; J[URL Construction]
+        J --&gt; K[Request Execution]
+        K --&gt; L[Response Validation]
+    end</code></pre>
+<br>
+<pre><code class="language-mermaid">graph LR
+    A[LogsQL Query] --&gt; B[VictoriaLogsClient.query()]
+    B --&gt; C[POST /select/logsql/query]
+    C --&gt; D[Line-by-Line JSON Parsing]
+    D --&gt; E[Result List]
+    
+    F[Field Discovery] --&gt; G[VictoriaLogsClient.field_names()]
+    G --&gt; H[POST /select/logsql/field_names]
+    H --&gt; I[Field Name Extraction]
+    
+    J[Analytics Query] --&gt; K[Specialized Method]
+    K --&gt; L[Multiple API Calls]
+    L --&gt; M[Data Aggregation]
+    M --&gt; N[Statistics Generation]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client library for making requests to VictoriaLogs API. Used throughout the VictoriaLogsClient class for all HTTP interactions. Imported in: `tools/infra/vlogs/client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Command-line interface framework providing argument parsing, help generation, and command registration. Used to build the main CLI application with subcommands. Imported in: `tools/infra/vlogs/cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library providing colored output, tables, and progress bars. Used for formatting CLI output and creating tables for streams display. Imported in: `tools/infra/vlogs/cli.py`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loading from .env files. Used to load configuration before starting the CLI application. Imported in: `tools/infra/vlogs/cli.py`.</p>
+<br>
+<h3> Standard Library Usage</h3>
+<br>
+<p>- <strong>json</strong>: JSON serialization/deserialization for API responses and CLI output formatting</p>
+<p>- <strong>os</strong>: Environment variable access for VictoriaLogs URL configuration  </p>
+<p>- <strong>re</strong>: Regular expression matching for duration parsing and LogsQL value validation</p>
+<p>- <strong>typing</strong>: Type annotations for function parameters and return values</p>
+<p>- <strong>collections</strong>: defaultdict and Counter for analytics data aggregation</p>
+<p>- <strong>pathlib</strong>: File path handling in test utilities</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>The component exposes a <code>vlogs</code> command-line tool with the following subcommands:</p>
+<br>
+<p>- <strong>vlogs query</strong> `<query>`: Execute LogsQL queries with optional time range and limit parameters</p>
+<p>- <strong>vlogs fields</strong>: List all known field names, optionally filtered by query and time range  </p>
+<p>- <strong>vlogs field-values</strong> `<field>`: Enumerate all values for a specific field</p>
+<p>- <strong>vlogs streams</strong>: Discover log streams matching a query pattern</p>
+<p>- <strong>vlogs health</strong>: Check VictoriaLogs service readiness</p>
+<br>
+<h3> Python API</h3>
+<br>
+<p>The <code>VictoriaLogsClient</code> class provides programmatic access to VictoriaLogs functionality:</p>
+<br>
+<p><strong>Core Query Methods:</strong></p>
+<p>- <code>query(query, limit, start, end)</code>: Execute LogsQL queries</p>
+<p>- <code>hits(query, start, end, step)</code>: Get log hit statistics over time ranges</p>
+<p>- <code>field_names(query, start, end)</code>: List available log field names  </p>
+<p>- <code>field_values(field, query, limit, start, end)</code>: Get values for specific fields</p>
+<p>- <code>streams(query, start, end)</code>: Find log streams</p>
+<br>
+<p><strong>Analytics Methods:</strong></p>
+<p>- <code>thread_logs(thread_key, level, limit, start, end)</code>: Get logs for specific thread</p>
+<p>- <code>thread_trace(thread_key, start, limit)</code>: End-to-end thread timeline</p>
+<p>- <code>tool_analytics(start, limit)</code>: Tool usage statistics and performance metrics</p>
+<p>- <code>execution_summaries(start, harness, status, prompt_ref, limit)</code>: Execution outcome analysis</p>
+<p>- <code>service_health(start)</code>: Per-service error rates and log volumes</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> VictoriaLogs Database</h3>
+<p>The component connects to a VictoriaLogs instance for log storage and querying. The connection URL is configurable via the <code>VICTORIALOGS_URL</code> environment variable, defaulting to <code>http://victorialogs:9428</code> for containerized deployments.</p>
+<br>
+<p><strong>API Endpoints Used:</strong></p>
+<p>- <code>POST /select/logsql/query</code>: Execute LogsQL queries</p>
+<p>- <code>POST /select/logsql/hits</code>: Get log hit statistics  </p>
+<p>- <code>POST /select/logsql/field_names</code>: List field names</p>
+<p>- <code>POST /select/logsql/field_values</code>: Get field values</p>
+<p>- <code>POST /select/logsql/streams</code>: Find log streams</p>
+<p>- <code>GET /health</code>: Health check endpoint</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

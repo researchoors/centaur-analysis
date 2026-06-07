@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: posthog — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>posthog</h1>
+</header>
+<h1>PostHog CLI Component Analysis</h1>
+<br>
+<p>The PostHog component is a command-line interface tool for interacting with PostHog's product analytics platform. It provides a Python-based CLI that executes HogQL queries and generates formatted reports for web analytics data.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a classic CLI architecture with clear separation between the command-line interface and the API client. It uses a <strong>client-server pattern</strong> where the local CLI acts as a client to the remote PostHog API service. The architecture consists of:</p>
+<br>
+<p>- <strong>CLI Layer</strong> (`cli.py`): Command definitions using Typer framework</p>
+<p>- <strong>Client Layer</strong> (`client.py`): HTTP API client with authentication and query execution</p>
+<p>- <strong>Configuration</strong>: Environment-based configuration for API credentials</p>
+<br>
+<p>The design emphasizes clean separation of concerns with the CLI handling user interaction and formatting while the client manages all API communication and HogQL query construction.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> PostHogClient Class</h3>
+<p>The core API client that handles authentication and HTTP requests to PostHog's REST API. It supports HogQL queries and provides pre-built analytics methods for common use cases like pageviews and breakdowns.</p>
+<br>
+<h3> CLI Command Handlers</h3>
+<p>Five main commands that provide different analytics views:</p>
+<p>- <code>query</code>: Execute arbitrary HogQL queries</p>
+<p>- <code>breakdown</code>: Property-based event breakdowns (browser, OS, etc.)</p>
+<p>- <code>pageviews</code>: Website traffic analytics</p>
+<p>- <code>user-agents</code>: Browser and OS distribution analysis</p>
+<p>- <code>events</code>: Raw event listing with filtering</p>
+<br>
+<h3> Authentication System</h3>
+<p>Secure credential management using the centaur-sdk secret system, supporting both environment variables and runtime configuration for API keys and project IDs.</p>
+<br>
+<h3> Output Formatters</h3>
+<p>Multiple output formats including rich console tables, markdown tables, and JSON output to support different use cases from interactive exploration to automation and reporting.</p>
+<br>
+<h3> HTTP Client Management</h3>
+<p>Proper resource management with context manager support and configurable timeouts for reliable API communication.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">flowchart TD
+    A[CLI Command] --&gt; B[Argument Parsing]
+    B --&gt; C[get_client()]
+    C --&gt; D[PostHogClient.__init__]
+    D --&gt; E[Load Credentials]
+    E --&gt; F[Execute Method]
+    F --&gt; G[Build HogQL Query]
+    G --&gt; H[HTTP Request to PostHog API]
+    H --&gt; I[Parse JSON Response]
+    I --&gt; J[Format Output]
+    J --&gt; K[Display Results]
+    
+    E --&gt; E1[Check Instance Variables]
+    E1 --&gt; E2[Check Environment Variables]
+    E2 --&gt; E3[Check centaur-sdk Secrets]
+    
+    J --&gt; J1[Rich Table]
+    J --&gt; J2[Markdown Table]
+    J --&gt; J3[JSON Output]</code></pre>
+<br>
+<h3> Query Execution Flow</h3>
+<p>1. User invokes CLI command with parameters</p>
+<p>2. CLI validates arguments and creates PostHogClient instance</p>
+<p>3. Client loads API credentials from environment or centaur-sdk</p>
+<p>4. Method-specific HogQL query is constructed with user filters</p>
+<p>5. HTTP POST request sent to PostHog API with authentication</p>
+<p>6. JSON response parsed and formatted according to output preference</p>
+<p>7. Results displayed to user via Rich console or printed as markdown/JSON</p>
+<br>
+<h3> Error Handling Flow</h3>
+<p>The component implements comprehensive error handling at multiple levels:</p>
+<li>Network errors caught and converted to user-friendly messages</li>
+<li>API authentication failures detected and reported</li>
+<li>Missing configuration gracefully handled with clear error messages</li>
+<li>HTTP status errors converted to RuntimeError with context</li>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library providing async/sync support and comprehensive error handling. Used in `PostHogClient._request()` for all API communication to PostHog services. Imported in: `client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Command-line interface framework built on Click that provides type hints and automatic help generation. Powers all CLI commands including `query`, `breakdown`, `pageviews`, `user-agents`, and `events`. Imported in: `cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Rich text and beautiful formatting library for terminal output. Used via `Console` for colored error messages and `Table` (from centaur-sdk) for formatted analytics output. Imported in: `cli.py`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [cli]: Environment variable loading from .env files for development configuration. Listed as dependency but not directly imported, likely used by the build system for development environment setup.</p>
+<br>
+<p>The component also depends on the internal <code>centaur_sdk</code> module for:</p>
+<p>- <code>secret()</code> function for secure credential management</p>
+<p>- <code>Table</code> class for rich table formatting (wraps rich.table.Table)</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes both a programmatic API through the PostHogClient class and a command-line interface.</p>
+<br>
+<h3> Command-Line Interface</h3>
+<br>
+<p><strong>posthog query</strong> - Execute arbitrary HogQL queries</p>
+<pre><code class="language-bash">posthog query &quot;SELECT event, count() FROM events GROUP BY event&quot;</code></pre>
+<br>
+<p><strong>posthog breakdown</strong> - Property-based event analysis</p>
+<pre><code class="language-bash">posthog breakdown --property=$browser --event=page_view --days=30</code></pre>
+<br>
+<p><strong>posthog pageviews</strong> - Website traffic analytics</p>
+<pre><code class="language-bash">posthog pageviews --url=&quot;/dashboard&quot; --days=7</code></pre>
+<br>
+<p><strong>posthog user-agents</strong> - Browser/OS distribution</p>
+<pre><code class="language-bash">posthog user-agents --days=14 --limit=50</code></pre>
+<br>
+<p><strong>posthog events</strong> - Raw event listing</p>
+<pre><code class="language-bash">posthog events --after=2024-01-01 --before=2024-01-31</code></pre>
+<br>
+<p>All commands support <code>--json</code>, <code>--markdown</code>, and rich console output formats.</p>
+<br>
+<h3> Programmatic API</h3>
+<br>
+<p><strong>PostHogClient</strong> provides methods for:</p>
+<p>- <code>query(sql, name=None)</code>: Execute arbitrary HogQL queries</p>
+<p>- <code>events()</code>, <code>breakdown()</code>, <code>pageviews()</code>, <code>user_agents()</code>: Pre-built analytics queries</p>
+<li>Context manager support for proper resource cleanup</li>
+<li>Configurable authentication and host settings</li>
+<br>
+<h2>External Systems</h2>
+<br>
+<p>The component integrates with the following external systems:</p>
+<br>
+<p><strong>PostHog Cloud API</strong> (us.posthog.com by default)</p>
+<p>- REST API endpoint at <code>/api/projects/{project_id}/query/</code></p>
+<li>Requires Bearer token authentication with personal API key</li>
+<li>Accepts HogQL queries in JSON payloads</li>
+<li>Returns structured analytics data with columns and results arrays</li>
+<br>
+<p><strong>Configuration Sources</strong></p>
+<p>- Environment variables: <code>POSTHOG_API_KEY</code>, <code>POSTHOG_PROJECT_ID</code>, <code>POSTHOG_HOST</code></p>
+<li>centaur-sdk secret management system for secure credential storage</li>
+<p>- Optional <code>.env</code> file support for development environments</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component has no internal dependencies on other centaur-src components. It operates independently as a standalone CLI tool that connects directly to external PostHog services. The only internal dependency is on the <code>centaur_sdk</code> module for secret management and UI components.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

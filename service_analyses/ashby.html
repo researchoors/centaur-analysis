@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: ashby — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>ashby</h1>
+</header>
+<h1>Ashby Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The ashby component follows a <strong>layered architecture pattern</strong> with clear separation between API client functionality and CLI interface. The component is structured as a Python library that provides both programmatic access to the Ashby ATS API and a comprehensive command-line interface for AI agents.</p>
+<br>
+<p>The architecture consists of three main layers:</p>
+<p>1. <strong>API Client Layer</strong> (`client.py`) - Handles HTTP communication with Ashby API</p>
+<p>2. <strong>CLI Layer</strong> (`cli.py`) - Provides command-line interface with rich formatting</p>
+<p>3. <strong>Entry Point</strong> (`__init__.py`) - Minimal module initialization</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> AshbyClient (client.py)</h3>
+<p>The core API client class that provides authenticated access to all Ashby ATS endpoints. It implements:</p>
+<p>- <strong>Authentication</strong>: Uses HTTP basic auth with API key</p>
+<p>- <strong>Error Handling</strong>: Comprehensive error handling for 401/403 responses and API errors</p>
+<p>- <strong>Pagination Support</strong>: Automatic pagination handling for large result sets</p>
+<p>- <strong>Rate Limiting</strong>: 30-second timeout configuration</p>
+<br>
+<p>Key methods include:</p>
+<p>- Job management: <code>jobs()</code>, <code>job()</code>, <code>applications()</code></p>
+<p>- Candidate operations: <code>candidates()</code>, <code>candidate()</code>, <code>search_candidates()</code></p>
+<p>- Interview functionality: <code>interviews()</code>, <code>interview()</code>, <code>stages()</code></p>
+<p>- User management: <code>users()</code>, <code>user()</code>, <code>api_key_info()</code></p>
+<p>- File operations: <code>file_url()</code>, <code>resume_url()</code>, <code>resume_text()</code></p>
+<br>
+<h3> CLI Application (cli.py)</h3>
+<p>A comprehensive Typer-based CLI that exposes all API functionality through structured commands:</p>
+<p>- <strong>Job Commands</strong>: List and inspect jobs with filtering options</p>
+<p>- <strong>Candidate Commands</strong>: Search, list, and analyze candidate data</p>
+<p>- <strong>Application Commands</strong>: Track application status and history</p>
+<p>- <strong>Interview Commands</strong>: Manage interview scheduling and feedback</p>
+<p>- <strong>Screening Commands</strong>: Advanced candidate screening with resume analysis</p>
+<p>- <strong>Access Control</strong>: Employee data protection mechanisms</p>
+<br>
+<h3> Data Flow Architecture</h3>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[AshbyClient]
+    B --&gt; C[HTTP Request]
+    C --&gt; D[Ashby API]
+    D --&gt; E[JSON Response]
+    E --&gt; F[Client Processing]
+    F --&gt; G[Pagination Loop]
+    G --&gt; H[Rich Table Display]
+    
+    I[Secret Management] --&gt; B
+    J[Resume Processing] --&gt; K[PDF Text Extraction]
+    K --&gt; L[Keyword Matching]</code></pre>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Authentication Flow</h3>
+<p>1. Client initialization retrieves API key from <code>ASHBY_API_KEY</code> environment variable or centaur_sdk secret</p>
+<p>2. HTTP client configured with basic auth using API key as username</p>
+<p>3. All requests include authentication headers and version specification</p>
+<br>
+<h3> Candidate Search Flow</h3>
+<p>1. CLI command receives search parameters (name/email, filters)</p>
+<p>2. AshbyClient constructs appropriate API request based on search type</p>
+<p>3. API returns paginated results with candidate basic information</p>
+<p>4. For detailed view, additional API calls fetch full candidate profiles</p>
+<p>5. Results formatted into Rich tables with truncated IDs and formatted dates</p>
+<br>
+<h3> Resume Analysis Flow</h3>
+<p>1. Candidate ID used to fetch candidate details including file handles</p>
+<p>2. Resume file handle identified from candidate's file attachments</p>
+<p>3. File URL generated through Ashby's file API</p>
+<p>4. PDF downloaded and processed using pypdf library</p>
+<p>5. Text extracted and searched for keywords with case-insensitive matching</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client used for all Ashby API communication. Provides timeout configuration, authentication, and JSON handling. Used throughout `client.py` for API requests.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: CLI framework that provides command parsing, help generation, and option handling. Core framework for the entire CLI interface in `cli.py`. Handles argument validation and command routing.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library providing colored output, tables, and progress indicators. Used extensively in `cli.py` for formatting command output, creating tables, and console styling.</p>
+<br>
+<p>- <strong>pypdf</strong> (>=6.6.0) [document-processing]: PDF parsing library for extracting text from candidate resume files. Used in resume analysis commands like `resume-text` and `resume-search` for processing downloaded PDF files.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong>: Provides secret management through `secret()` function and table formatting through `Table` class. Used for secure API key retrieval and consistent table display formatting.</p>
+<br>
+<p>- <strong>dotenv</strong>: Environment variable loading for development. Called via `load_dotenv()` at CLI startup to load `.env` files.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes two primary interfaces:</p>
+<br>
+<h3> Programmatic API (AshbyClient)</h3>
+<pre><code class="language-python">from ashby.client import AshbyClient
+
+client = AshbyClient()
+jobs = client.jobs(status=&quot;open&quot;, limit=10)
+candidate = client.candidate(&quot;candidate_id&quot;)</code></pre>
+<br>
+<h3> CLI Interface</h3>
+<pre><code class="language-bash">ashby jobs --status open --limit 10
+ashby candidate-search &quot;John Smith&quot;
+ashby screen job_id --stage &quot;Phone Screen&quot;
+ashby check-access candidate_id</code></pre>
+<br>
+<h3> Key CLI Commands</h3>
+<br>
+<p>- <strong>Data Retrieval</strong>: `jobs`, `candidates`, `applications`, `interviews`</p>
+<p>- <strong>Search Operations</strong>: `candidate-search`, `resume-search` </p>
+<p>- <strong>Analysis Tools</strong>: `screen`, `interviewer-stats`, `feedback`</p>
+<p>- <strong>Access Control</strong>: `check-access` (prevents sharing employee data)</p>
+<p>- <strong>File Operations</strong>: `resume-url`, `resume-text`</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Ashby ATS API</h3>
+<p>- <strong>Endpoint</strong>: `https://api.ashbyhq.com`</p>
+<p>- <strong>Authentication</strong>: HTTP Basic Auth with API key</p>
+<p>- <strong>Protocol</strong>: REST API with JSON payloads</p>
+<p>- <strong>Rate Limits</strong>: 30-second timeout per request</p>
+<p>- <strong>Pagination</strong>: Cursor-based pagination with `nextCursor` field</p>
+<br>
+<h3> PM Admin Database</h3>
+<p>The CLI includes integration with an internal "pmadmin" database for employee verification:</p>
+<p>- <strong>Access Method</strong>: Shell command execution via `reshift db`</p>
+<p>- <strong>Purpose</strong>: Fetch employee emails and names for access control</p>
+<p>- <strong>Query</strong>: PostgreSQL query joining User and Person tables</p>
+<p>- <strong>Timeout</strong>: 30-second command timeout</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component has <strong>no direct internal dependencies</strong> on other centaur components, but integrates with:</p>
+<br>
+<h3> centaur_sdk</h3>
+<p>- <strong>Type</strong>: Library dependency</p>
+<p>- <strong>Usage</strong>: Secret management and UI utilities</p>
+<p>- <strong>Integration Points</strong>: `secret()` for API key retrieval, `Table` for consistent formatting</p>
+<br>
+<h3> External Tool Integration</h3>
+<p>- <strong>reshift</strong>: Database CLI tool for employee data queries</p>
+<p>- <strong>Purpose</strong>: Employee verification for access control</p>
+<p>- <strong>Method</strong>: Subprocess execution with captured output</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

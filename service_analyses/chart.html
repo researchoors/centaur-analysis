@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: chart — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>chart</h1>
+</header>
+<p>Now I have enough information to perform the analysis. The chart component is a standalone Python library with a single main file.</p>
+<br>
+<h1>Chart Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The chart component is a lightweight Python library providing programmatic chart generation capabilities for the Centaur system. It implements a single-purpose API through the <code>ChartClient</code> class, exposing one primary method <code>render_chart</code> that converts tabular data into base64-encoded PNG images suitable for Slack integration.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>functional architecture pattern</strong> with a thin object-oriented wrapper. The design emphasizes simplicity and single responsibility:</p>
+<br>
+<p>- <strong>Data Processing Pipeline</strong>: Raw data → DataFrame → Chart configuration → Matplotlib figure → Base64 PNG</p>
+<p>- <strong>Stateless Design</strong>: The `ChartClient` maintains no internal state between calls</p>
+<p>- <strong>Functional Helpers</strong>: Core logic is implemented as pure functions with clear separation of concerns</p>
+<p>- <strong>Backend-Agnostic Rendering</strong>: Uses matplotlib's "Agg" backend for headless server environments</p>
+<br>
+<p>The architecture supports extensibility through the chart type routing system while maintaining a consistent API surface.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> ChartClient Class</h3>
+<p>The main API entry point providing chart generation services. Contains a single public method <code>render_chart</code> that handles all chart types through internal routing logic.</p>
+<br>
+<h3> Data Processing Functions</h3>
+<p>- <code>_pick_x()</code>: Automatically selects appropriate x-axis column from DataFrame</p>
+<p>- <code>_pick_y()</code>: Intelligently chooses y-axis columns, prioritizing numeric data</p>
+<p>- <code>_numeric_columns()</code>: Filters DataFrame columns to numeric types for plotting</p>
+<br>
+<h3> Chart Rendering Functions</h3>
+<p>- <code>_style_axes()</code>: Applies consistent styling including titles, subtitles, grid lines, and source attribution</p>
+<p>- <code>_figure_to_base64()</code>: Converts matplotlib figures to base64-encoded PNG strings for web transmission</p>
+<br>
+<h3> Chart Type Handlers</h3>
+<p>The component supports multiple chart types through conditional routing:</p>
+<p>- <strong>Pie Charts</strong>: Circular visualizations with percentage labels and Okabe-Ito color scheme</p>
+<p>- <strong>Bar Charts</strong>: Vertical bar plots with support for multiple series and grouped bars</p>
+<p>- <strong>Scatter Plots</strong>: Point-based visualizations for correlation analysis</p>
+<p>- <strong>Line Charts</strong>: Default handler for time series and continuous data</p>
+<br>
+<h3> Visual Design System</h3>
+<p>- <strong>Color Palette</strong>: Uses the Okabe-Ito color scheme (`_OKABE_ITO`) for accessibility</p>
+<p>- <strong>Typography</strong>: Consistent font sizing (title: 15pt, subtitle: 10pt, source: 8pt)</p>
+<p>- <strong>Layout</strong>: 8:4.5 aspect ratio with tight layout and clean styling</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Raw Data List] --&gt; B[DataFrame Creation]
+    B --&gt; C[Column Selection Logic]
+    C --&gt; D[Chart Type Router]
+    D --&gt; E[Matplotlib Figure]
+    E --&gt; F[Style Application]
+    F --&gt; G[PNG Generation]
+    G --&gt; H[Base64 Encoding]
+    H --&gt; I[Return to Client]
+    
+    D --&gt; J[Pie Chart Handler]
+    D --&gt; K[Bar Chart Handler] 
+    D --&gt; L[Scatter Handler]
+    D --&gt; M[Line Chart Handler]</code></pre>
+<br>
+<p>The component implements a linear data processing pipeline with type-specific branching for chart generation.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>matplotlib</strong> (>=3.7.0) [visualization]: Core plotting library providing figure creation, chart rendering, and PNG export capabilities. Configured with "Agg" backend for server environments. Used throughout `client.py` for all chart generation operations.</p>
+<br>
+<p>- <strong>pandas</strong> (>=2.0.0) [data-manipulation]: DataFrame library for data processing and column type detection. Used in `render_chart()` method for converting input data to structured format and in helper functions for column selection and numeric type filtering.</p>
+<br>
+<h3> Standard Library Dependencies</h3>
+<br>
+<p>- <strong>base64</strong> [encoding]: Converts PNG bytes to base64 strings for web transmission</p>
+<p>- <strong>typing</strong> [type-hints]: Provides type annotations for function signatures</p>
+<p>- <strong>io.BytesIO</strong> [streaming]: In-memory buffer for PNG data before base64 conversion</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Interface</h3>
+<br>
+<p>The component exposes a minimal public API through the <code>ChartClient</code> class:</p>
+<br>
+<p><strong>`render_chart(chart_type, data, title="", question="", protagonist=None, subtitle=None, source="", theme_mode="light", x=None, y=None, extras=None) -> str`</strong></p>
+<br>
+<p><strong>Parameters:</strong></p>
+<p>- <code>chart_type</code>: Chart variant (line, bar, pie, scatter, etc.)</p>
+<p>- <code>data</code>: List of dictionaries representing tabular data</p>
+<p>- <code>title</code>: Primary chart title (sentence case)</p>
+<p>- <code>subtitle</code>: Optional units or context information</p>
+<p>- <code>source</code>: Attribution text</p>
+<p>- <code>x/y</code>: Column hints for axis selection</p>
+<p>- <code>extras</code>: Handler-specific configuration options</p>
+<br>
+<p><strong>Returns:</strong> Base64-encoded PNG image string</p>
+<br>
+<p><strong>Supported Chart Types:</strong></p>
+<li>Line charts (default): Time series and continuous data visualization</li>
+<li>Bar charts: Categorical comparisons with single or multiple series</li>
+<li>Pie charts: Proportional data with percentage labels</li>
+<li>Scatter plots: Correlation and distribution analysis</li>
+<br>
+<h3> Module-Level Factory</h3>
+<br>
+<p>The <code>_client()</code> function provides a simple factory method for creating <code>ChartClient</code> instances, though direct instantiation is also supported.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

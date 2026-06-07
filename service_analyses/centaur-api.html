@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: centaur-api — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>centaur-api</h1>
+</header>
+<p>Now I have a comprehensive understanding of the centaur-api component. Let me write the analysis.</p>
+<br>
+<h1>Centaur API Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The Centaur API follows a <strong>layered microservice architecture</strong> with clear separation of concerns. It serves as the central orchestration hub for the Centaur AI agent system, implementing a <strong>control-plane pattern</strong> for managing agent executions, workflows, and sandboxed environments. The architecture consists of:</p>
+<br>
+<p>1. <strong>HTTP API Layer</strong>: FastAPI-based REST endpoints with comprehensive middleware</p>
+<p>2. <strong>Control Plane</strong>: Durable execution orchestration with PostgreSQL persistence</p>
+<p>3. <strong>Sandbox Management</strong>: Kubernetes-based container orchestration for agent environments</p>
+<p>4. <strong>Workflow Engine</strong>: Checkpoint-replay workflow execution system</p>
+<p>5. <strong>Integration Layer</strong>: External system connectors (Slack, Linear, G Suite)</p>
+<p>6. <strong>Tool Management</strong>: Dynamic tool discovery and REST API generation</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. **FastAPI Application** (`api/app.py`)</h3>
+<li>Central HTTP server with comprehensive middleware stack</li>
+<li>Graceful shutdown handling with request draining</li>
+<li>OpenTelemetry instrumentation and structured logging</li>
+<li>CORS configuration and trace context propagation</li>
+<li>Tool discovery and namespace management</li>
+<br>
+<h3> 2. **Agent Control Plane** (`api/agent.py`, `api/runtime_control.py`)</h3>
+<li>Session lifecycle management with PostgreSQL persistence</li>
+<li>Sandbox orchestration with Kubernetes backend</li>
+<li>Real-time streaming via Server-Sent Events (SSE)</li>
+<li>Turn-based execution model with replay capability</li>
+<li>Comprehensive error handling and retry logic</li>
+<br>
+<h3> 3. **Kubernetes Sandbox Backend** (`api/sandbox/kubernetes.py`)</h3>
+<li>Pod-based sandbox isolation with security policies</li>
+<li>Iron-proxy sidecar for secure external connectivity</li>
+<li>Tool-server sidecar for in-sandbox tool execution</li>
+<li>Volume mounting for overlay and state persistence</li>
+<li>Network policies and service account management</li>
+<br>
+<h3> 4. **Workflow Engine** (`api/workflow_engine.py`)</h3>
+<li>Checkpoint-replay execution model inspired by Cloudflare Workflows</li>
+<li>Step-based execution with automatic retry and backoff</li>
+<li>Event-driven coordination with external systems</li>
+<li>Scheduled workflow execution with cron support</li>
+<li>Hierarchical workflow composition with parent-child relationships</li>
+<br>
+<h3> 5. **Tool Manager** (`api/tool_manager.py`)</h3>
+<li>Dynamic Python module discovery and loading</li>
+<li>REST API generation from tool definitions</li>
+<li>Secret management with iron-proxy integration</li>
+<li>OAuth2, HMAC, and AWS SigV4 authentication support</li>
+<li>Real-time tool reloading with file watching</li>
+<br>
+<h3> 6. **Database Layer** (`api/db.py`)</h3>
+<li>AsyncPG connection pooling with retry logic</li>
+<li>Migration management with dbmate integration</li>
+<li>Schema compatibility validation</li>
+<li>Support for core and overlay migration sets</li>
+<br>
+<h3> 7. **Integration Modules**</h3>
+<p>- <strong>Linear Client</strong> (`api/integrations/linear/client.py`): GraphQL API wrapper</p>
+<p>- <strong>G Suite Integrations</strong> (`api/integrations/gsuite/`): Calendar, Drive, Docs</p>
+<p>- <strong>Slack Client</strong> (`api/slackbot_client.py`): Message delivery and session management</p>
+<br>
+<h3> 8. **Router Modules**</h3>
+<p>- <strong>Agent Router</strong> (`api/routers/agent.py`): Execution and session management</p>
+<p>- <strong>Workflow Router</strong> (`api/routers/workflows.py`): Workflow lifecycle operations</p>
+<p>- <strong>Webhooks Router</strong> (`api/routers/webhooks.py`): External event ingestion</p>
+<p>- <strong>Attachments Router</strong> (`api/routers/attachments.py`): File upload/download</p>
+<br>
+<h3> 9. **Observability Stack**</h3>
+<p>- <strong>OpenTelemetry</strong> (`api/otel.py`): Distributed tracing and metrics</p>
+<p>- <strong>VM Metrics</strong> (`api/vm_metrics.py`): Custom application metrics</p>
+<p>- <strong>Structured Logging</strong> (`api/logging_config.py`): JSON-formatted logs</p>
+<br>
+<h3> 10. **Configuration Management** (`api/config.py`)</h3>
+<li>Pydantic-based settings with environment variable support</li>
+<li>Database URL configuration and CORS policy management</li>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Agent Execution Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Client
+    participant API
+    participant Postgres
+    participant Kubernetes
+    participant Sandbox
+    
+    Client-&gt;&gt;API: POST /agent/execute
+    API-&gt;&gt;Postgres: Store execution request
+    API-&gt;&gt;Kubernetes: Create sandbox pod
+    Kubernetes-&gt;&gt;Sandbox: Start agent container
+    Sandbox-&gt;&gt;API: Stream execution events (SSE)
+    API-&gt;&gt;Postgres: Update execution status
+    API-&gt;&gt;Client: Stream events to client
+    Sandbox-&gt;&gt;API: Execution complete
+    API-&gt;&gt;Postgres: Store final result
+    API-&gt;&gt;Kubernetes: Cleanup sandbox</code></pre>
+<br>
+<h3> Workflow Execution Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Trigger
+    participant API
+    participant Postgres
+    participant WorkflowPod
+    participant ExternalSys
+    
+    Trigger-&gt;&gt;API: POST /workflows/runs
+    API-&gt;&gt;Postgres: Create workflow run
+    API-&gt;&gt;Kubernetes: Spawn workflow pod
+    WorkflowPod-&gt;&gt;Postgres: Load checkpoints
+    WorkflowPod-&gt;&gt;ExternalSys: Execute steps
+    WorkflowPod-&gt;&gt;Postgres: Save checkpoints
+    Note over WorkflowPod: Suspend/resume as needed
+    WorkflowPod-&gt;&gt;Postgres: Mark completed
+    API-&gt;&gt;Postgres: Update final status</code></pre>
+<br>
+<h3> Tool Execution Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Sandbox
+    participant ToolServer
+    participant IronProxy
+    participant ExternalAPI
+    
+    Sandbox-&gt;&gt;ToolServer: POST /tools/some_tool
+    ToolServer-&gt;&gt;IronProxy: HTTP request with secrets
+    IronProxy-&gt;&gt;ExternalAPI: Authenticated request
+    ExternalAPI-&gt;&gt;IronProxy: API response
+    IronProxy-&gt;&gt;ToolServer: Filtered response
+    ToolServer-&gt;&gt;Sandbox: Tool result</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Libraries</h3>
+<br>
+<p>- <strong>fastapi</strong> (>=0.115.0) [web-framework]: Core HTTP framework providing REST API endpoints, dependency injection, and OpenAPI schema generation. Used in `api/app.py`, `api/tool_server_app.py`, and all router modules.</p>
+<br>
+<p>- <strong>uvicorn[standard]</strong> (>=0.34.0) [web-framework]: ASGI server for serving FastAPI applications. Provides HTTP/2, WebSocket support, and process management. Used as the main application server.</p>
+<br>
+<p>- <strong>asyncpg</strong> (>=0.30.0) [database]: High-performance PostgreSQL driver for async database operations. Used in `api/db.py` for connection pooling and query execution across all data access patterns.</p>
+<br>
+<p>- <strong>pgvector</strong> (>=0.3.6) [database]: PostgreSQL vector similarity search extension. Used for embeddings and similarity operations in agent memory and retrieval systems.</p>
+<br>
+<p>- <strong>pydantic</strong> (>=2.10.0) [serialization]: Data validation and serialization library. Used extensively for request/response models in `api/models.py` and configuration in `api/config.py`.</p>
+<br>
+<p>- <strong>pydantic-settings</strong> (>=2.7.0) [serialization]: Environment variable configuration management. Used in `api/config.py` for centralized settings with type validation.</p>
+<br>
+<p>- <strong>structlog</strong> (>=24.4.0) [logging]: Structured logging library providing consistent JSON log format. Configured in `api/logging_config.py` and used throughout the codebase.</p>
+<br>
+<p>- <strong>httpx</strong> (>=0.28.0) [networking]: Modern async HTTP client for external API calls. Used in integration modules like `api/integrations/linear/client.py` and `api/slackbot_client.py`.</p>
+<br>
+<p>- <strong>sse-starlette</strong> (>=3.2.0) [web-framework]: Server-Sent Events implementation for FastAPI. Used in `api/routers/agent.py` for real-time execution streaming.</p>
+<br>
+<h3> AI and ML Libraries</h3>
+<br>
+<p>- <strong>anthropic</strong> (>=0.54.0) [ai-api]: Official Anthropic Claude API client. Used for Claude model integrations in agent harnesses.</p>
+<br>
+<p>- <strong>openai</strong> (>=1.60.0) [ai-api]: Official OpenAI API client. Used for GPT model integrations and Codex functionality.</p>
+<br>
+<h3> Infrastructure Libraries</h3>
+<br>
+<p>- <strong>kubernetes-asyncio</strong> (>=33.3.0) [cloud-sdk]: Async Kubernetes API client for container orchestration. Used extensively in `api/sandbox/kubernetes.py` for pod lifecycle management.</p>
+<br>
+<p>- <strong>aiodocker</strong> (>=0.22.0) [cloud-sdk]: Async Docker API client. Used for container management in development and testing environments.</p>
+<br>
+<p>- <strong>psycopg2-binary</strong> (>=2.9.11) [database]: PostgreSQL adapter for Python. Used alongside asyncpg for certain synchronous database operations.</p>
+<br>
+<h3> Observability and Monitoring</h3>
+<br>
+<p>- <strong>opentelemetry-api</strong> (>=1.42.1) [monitoring]: OpenTelemetry tracing API. Used in `api/otel.py` for distributed tracing across the service mesh.</p>
+<br>
+<p>- <strong>opentelemetry-sdk</strong> (>=1.42.1) [monitoring]: OpenTelemetry SDK implementation. Provides trace export and processing capabilities.</p>
+<br>
+<p>- <strong>opentelemetry-exporter-otlp-proto-http</strong> (>=1.42.1) [monitoring]: OTLP HTTP exporter for sending traces to observability backends like Jaeger or DataDog.</p>
+<br>
+<p>- <strong>opentelemetry-instrumentation-fastapi</strong> (>=0.63b1) [monitoring]: Auto-instrumentation for FastAPI applications. Provides automatic HTTP request tracing.</p>
+<br>
+<p>- <strong>opentelemetry-instrumentation-httpx</strong> (>=0.63b1) [monitoring]: Auto-instrumentation for httpx HTTP client calls.</p>
+<br>
+<p>- <strong>opentelemetry-instrumentation-asyncpg</strong> (>=0.63b1) [monitoring]: Auto-instrumentation for PostgreSQL database queries.</p>
+<br>
+<h3> Workflow and Scheduling</h3>
+<br>
+<p>- <strong>croniter</strong> (>=6.2.2) [scheduling]: Cron expression parsing for scheduled workflows. Used in `api/workflow_engine.py` for workflow scheduling.</p>
+<br>
+<p>- <strong>tenacity</strong> (>=9.0.0) [reliability]: Retry library with exponential backoff. Used throughout for resilient external API calls.</p>
+<br>
+<h3> Protocol and Format Libraries</h3>
+<br>
+<p>- <strong>mcp</strong> (>=1.0.0) [protocol]: Model Context Protocol implementation for agent communication standards.</p>
+<br>
+<p>- <strong>toon-format</strong> (git+https://github.com/toon-format/toon-python.git) [serialization]: Custom serialization format for agent data exchange.</p>
+<br>
+<p>- <strong>feedparser</strong> (>=6.0.0) [parsing]: RSS/Atom feed parsing for content ingestion workflows.</p>
+<br>
+<h3> Development Dependencies</h3>
+<br>
+<p>- <strong>pytest</strong> (>=9.0.2) [testing]: Test framework for unit and integration tests.</p>
+<p>- <strong>pytest-asyncio</strong> (>=0.25.0) [testing]: Async test support for pytest.</p>
+<p>- <strong>asgi-lifespan</strong> (>=2.1.0) [testing]: ASGI lifespan management for testing.</p>
+<p>- <strong>ruff</strong> (>=0.15.5) [build-tool]: Fast Python linter and formatter.</p>
+<br>
+<h2>Internal Dependencies</h2>
+<br>
+<h3> centaur-sdk</h3>
+<p>The API extensively uses the Centaur SDK for:</p>
+<br>
+<p>- <strong>Tool Context Management</strong>: Uses `ToolContext`, `set_tool_context`, and `reset_tool_context` from `centaur_sdk` in `api/tool_manager.py` for maintaining execution context during tool calls.</p>
+<br>
+<p>- <strong>Secret Management</strong>: Uses `secret()` function from `centaur_sdk` in `api/integrations/linear/client.py` for secure credential access within sandboxed environments.</p>
+<br>
+<p>- <strong>Backend Registry</strong>: References `centaur_sdk.backends.registry` in test files for mock backend implementations during testing.</p>
+<br>
+<p>The SDK provides the foundational abstractions for tool development, secret management, and execution context that the API orchestrates across distributed sandbox environments.</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Infrastructure Services</h3>
+<br>
+<p>- <strong>PostgreSQL Database</strong>: Primary data store for execution state, workflow checkpoints, session metadata, and application configuration. Accessed via asyncpg with connection pooling.</p>
+<br>
+<p>- <strong>Kubernetes Cluster</strong>: Container orchestration platform hosting agent sandboxes, workflow execution pods, and supporting services. Managed through kubernetes-asyncio client.</p>
+<br>
+<p>- <strong>Iron-Proxy</strong>: Security proxy service deployed as sidecars to handle authentication, secret injection, and network policy enforcement for sandbox communications.</p>
+<br>
+<h3> External APIs</h3>
+<br>
+<p>- <strong>Slack Workspace APIs</strong>: Message delivery, thread management, and user interaction through the Slack Bot API. Integrated via `api/slackbot_client.py`.</p>
+<br>
+<p>- <strong>Linear GraphQL API</strong>: Issue tracking and project management integration. Accessed through `api/integrations/linear/client.py` with OAuth authentication.</p>
+<br>
+<p>- <strong>Google Workspace APIs</strong>: Calendar, Drive, and Docs integration for productivity workflows. Implemented in `api/integrations/gsuite/` modules with service account authentication.</p>
+<br>
+<p>- <strong>Anthropic Claude API</strong>: Large language model access for AI agent capabilities via the anthropic client library.</p>
+<br>
+<p>- <strong>OpenAI API</strong>: GPT model access and Codex functionality via the openai client library.</p>
+<br>
+<h3> Observability Infrastructure</h3>
+<br>
+<p>- <strong>OpenTelemetry Collector</strong>: Distributed tracing and metrics aggregation. Traces exported via OTLP HTTP protocol.</p>
+<br>
+<p>- <strong>Prometheus/Grafana</strong>: Custom metrics collection and dashboarding through `api/vm_metrics.py` metric definitions.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<h3> HTTP API Calls</h3>
+<p>- <strong>Slackbot Service</strong>: Bidirectional HTTP communication for message delivery and session management</p>
+<p>- <strong>External Webhooks</strong>: Inbound HTTP requests from Linear, GitHub, and other services trigger workflow execution</p>
+<br>
+<h3> Database Sharing</h3>
+<p>- <strong>Shared PostgreSQL</strong>: All components share the same database instance with separate connection pools</p>
+<p>- <strong>Tool Server</strong>: Lightweight database access for metadata queries without schema ownership</p>
+<br>
+<h3> Kubernetes Resources</h3>
+<p>- <strong>Pod Lifecycle</strong>: API creates and manages sandbox pods, workflow execution pods, and proxy pods</p>
+<p>- <strong>ConfigMap Management</strong>: Dynamic configuration updates for token broker and proxy services</p>
+<p>- <strong>Network Policies</strong>: Enforcement of security boundaries between components</p>
+<br>
+<h3> Message Queuing (Implicit)</h3>
+<p>- <strong>PostgreSQL as Queue</strong>: Execution and workflow queues implemented as database tables with worker polling</p>
+<p>- <strong>Event Broadcasting</strong>: Database triggers and polling for workflow event distribution</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

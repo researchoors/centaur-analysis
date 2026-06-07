@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: sentry — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>sentry</h1>
+</header>
+<h1>Sentry Client Library</h1>
+<br>
+<p>The sentry component is a Python library that provides a read-only client for the Sentry error tracking platform. It wraps the Sentry REST API to enable browsing issues, events, and related metadata without requiring Sentry's AI-powered search capabilities.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a simple client-server architecture pattern with a single-class API wrapper design. The <code>SentryClient</code> class encapsulates all HTTP communication with the Sentry API, providing a clean abstraction over the underlying REST endpoints. The architecture emphasizes simplicity and ease of use, with minimal configuration requirements and automatic connection management.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<p>The library consists of two primary modules:</p>
+<br>
+<h3> SentryClient Class (`client.py`)</h3>
+<p>The main API client class that handles authentication, request/response processing, and endpoint access. It manages an internal <code>httpx.Client</code> instance for HTTP communication and provides methods for all supported Sentry operations. The client supports both SaaS (sentry.io) and self-hosted Sentry instances through configurable base URLs.</p>
+<br>
+<h3> Authentication System</h3>
+<p>Built-in authentication handling using Bearer tokens sourced from environment variables or direct configuration. The client integrates with the <code>centaur_sdk.secret</code> function for secure token management, falling back to standard environment variable access when needed.</p>
+<br>
+<h3> Navigation Methods</h3>
+<p>Organization and project discovery endpoints that allow users to enumerate available Sentry resources. These methods provide the slugs needed for subsequent issue-related operations.</p>
+<br>
+<h3> Issue Management API</h3>
+<p>Core functionality for listing, searching, and retrieving issue details. Supports Sentry's native query syntax for filtering and sorting, with configurable pagination and statistics periods.</p>
+<br>
+<h3> Event Processing</h3>
+<p>Methods for accessing individual error events within issues, including full stacktraces and breadcrumb data. Supports both specific event retrieval and latest/oldest event shortcuts.</p>
+<br>
+<h3> Tag Analysis</h3>
+<p>Functionality to retrieve tag value distributions for issues, enabling analysis of error patterns across different dimensions like releases, browsers, or custom tags.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TB
+    A[Client Initialization] --&gt; B[Token Authentication]
+    B --&gt; C[Base URL Configuration]
+    C --&gt; D[HTTP Client Setup]
+    
+    D --&gt; E[List Organizations]
+    E --&gt; F[List Projects]
+    F --&gt; G[Search Issues]
+    
+    G --&gt; H[Get Issue Details]
+    H --&gt; I[List Issue Events] 
+    I --&gt; J[Get Event Details]
+    
+    G --&gt; K[Get Tag Values]
+    
+    L[Environment Variables] --&gt; B
+    M[Secret Manager] --&gt; B</code></pre>
+<br>
+<p>The primary data flow starts with client initialization, where authentication tokens are retrieved from either the centaur SDK secret manager or environment variables. The client then establishes the base URL for API communication, defaulting to Sentry's SaaS offering. Users typically begin by listing organizations and projects to identify the appropriate scopes for issue searches. Issue queries return summarized results that can be expanded with detailed event data and tag analysis.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library for Python with async support and automatic connection pooling. Used as the underlying transport layer for all Sentry API communication. The client leverages httpx's built-in timeout handling, redirect following, and request/response processing capabilities. Imported in: `tools/infra/sentry/client.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The library exposes a single public class <code>SentryClient</code> with the following interface:</p>
+<br>
+<h3> Initialization</h3>
+<p>- <code>__init__(url, auth_token, timeout)</code> - Configure client with optional URL override, auth token, and request timeout</p>
+<p>- Context manager support via <code>__enter__</code>/<code>__exit__</code> for automatic resource cleanup</p>
+<br>
+<h3> Navigation</h3>
+<p>- <code>list_organizations()</code> - Enumerate accessible Sentry organizations</p>
+<p>- <code>list_projects(organization_slug)</code> - List projects within an organization</p>
+<br>
+<h3> Issue Operations  </h3>
+<p>- <code>list_issues(organization_slug, project_slug, query, sort, stats_period, limit)</code> - Search issues with native Sentry query syntax</p>
+<p>- <code>get_issue(organization_slug, issue_id)</code> - Retrieve detailed issue information</p>
+<p>- <code>list_issue_events(organization_slug, issue_id, full, limit)</code> - List events for an issue</p>
+<p>- <code>get_event(organization_slug, issue_id, event_id)</code> - Get complete event data including stacktraces</p>
+<br>
+<h3> Tag Analysis</h3>
+<p>- <code>get_issue_tag_values(organization_slug, issue_id, tag_key)</code> - Retrieve tag value distributions</p>
+<br>
+<h3> Resource Management</h3>
+<p>- <code>close()</code> - Explicitly close the HTTP client connection</p>
+<p>- <code>client</code> property - Access to the underlying httpx.Client instance</p>
+<br>
+<p>The library also provides a factory function <code>_client()</code> that creates a default <code>SentryClient</code> instance with standard configuration.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

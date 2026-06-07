@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: reth-log-analyzer — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>reth-log-analyzer</h1>
+</header>
+<p>Now I have enough information to write the comprehensive analysis. Let me create the detailed analysis:</p>
+<br>
+<h1>Reth Log Analyzer</h1>
+<br>
+<p>The reth-log-analyzer is a Python library component designed to parse Reth (Ethereum execution client) log files and generate comprehensive performance analysis graphs. It provides both programmatic APIs and command-line tools for analyzing blockchain node performance metrics, with a focus on block processing latency, gas throughput, and execution time breakdowns.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> pattern with clear separation of concerns across four main modules:</p>
+<br>
+<p>- <strong>Parser Layer</strong> (`parser.py`): Raw log file parsing and data extraction</p>
+<p>- <strong>Client Layer</strong> (`client.py`): High-level API orchestration and business logic</p>
+<p>- <strong>Visualization Layer</strong> (`graphs.py`): Chart generation with standardized styling</p>
+<p>- <strong>Interface Layer</strong> (`cli.py`): Command-line interface and user interactions</p>
+<br>
+<p>The architecture emphasizes data flow transformation: raw log text → structured metrics → pandas DataFrames → matplotlib visualizations. This pipeline design enables both programmatic usage and interactive CLI operations while maintaining type safety through dataclasses and pandas.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. **BlockMetrics Dataclass** (`parser.py:10-25`)</h3>
+<p>Core data structure representing performance metrics for a single blockchain block, including timing data (elapsed_ms, state_root_elapsed_ms), gas utilization (gas_used_mgas, gas_throughput_mgas_s), and block metadata (block_number, hash, txs).</p>
+<br>
+<h3> 2. **RethLogAnalyzerClient** (`client.py:12-121`)</h3>
+<p>Main API class providing three primary methods: <code>parse()</code> for extracting metrics, <code>generate_graphs()</code> for visualization creation, and <code>summary()</code> for statistical analysis. Serves as the primary integration point for other components.</p>
+<br>
+<h3> 3. **Log Parser Engine** (`parser.py:80-149`)</h3>
+<p>Regex-based parser using compiled patterns (BLOCK_ADDED_RE, STATE_ROOT_RE) to extract structured data from Reth log files. Handles unit conversions and correlates state root timing with block processing events.</p>
+<br>
+<h3> 4. **Graph Generation System** (`graphs.py:98-345`)</h3>
+<p>Four specialized plotting functions: gas throughput trends, latency breakdowns (stacked bars), percentage analysis, and gas-vs-latency scatter plots. Implements Centaur visual standards with Okabe-Ito color palette and 16:9 aspect ratios.</p>
+<br>
+<h3> 5. **CLI Application** (`cli.py:17-192`)</h3>
+<p>Typer-based command-line interface with three commands: <code>parse</code> (tabular output), <code>graphs</code> (PNG generation), and <code>summary</code> (statistical reports). Supports both console display and file output with rich formatting.</p>
+<br>
+<h3> 6. **Data Transformation Pipeline** (`graphs.py:52-80`)</h3>
+<p>Converts BlockMetrics objects to pandas DataFrames with computed derived metrics (execution_pct, state_root_pct, gas_throughput_ggas_s). Handles percentage calculations and unit conversions for visualization.</p>
+<br>
+<h3> 7. **Visual Styling Framework** (`graphs.py:24-50`)</h3>
+<p>Standardized matplotlib configuration implementing Centaur design system: consistent color palette, subplot formatting, title styling, and 200 DPI output for professional-quality charts.</p>
+<br>
+<h3> 8. **Regex Pattern Matching** (`parser.py:29-51`)</h3>
+<p>Two primary regex patterns for extracting block completion events and state root timing from Reth logs, with support for various gas/time units and ANSI color code stripping.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<p>The component implements three primary data flow patterns:</p>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Reth Log File] --&gt; B[parse_log_file]
+    B --&gt; C[List[BlockMetrics]]
+    C --&gt; D[metrics_to_dataframe]
+    D --&gt; E[pandas DataFrame]
+    E --&gt; F[Plot Functions]
+    F --&gt; G[PNG Files]
+    
+    C --&gt; H[Summary Analysis]
+    H --&gt; I[Statistics Dict]
+    
+    E --&gt; J[CLI Display]
+    J --&gt; K[Rich Tables]</code></pre>
+<br>
+<p><strong>Parse Flow</strong>: Raw log text is processed line-by-line through regex matching, extracting timestamps, block numbers, gas metrics, and timing data. State root events are correlated with subsequent block completion events to compute execution vs state root time percentages.</p>
+<br>
+<p><strong>Visualization Flow</strong>: BlockMetrics are converted to pandas DataFrames with computed derived columns (throughput in Ggas/s, percentage breakdowns). Four specialized plotting functions generate different analytical perspectives with consistent visual styling.</p>
+<br>
+<p><strong>Summary Flow</strong>: Statistical analysis computes category-based metrics (empty, light, medium, big, huge blocks), average performance indicators, and identifies performance outliers for reporting.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern Python CLI framework providing argument parsing, command routing, and help generation. Used in `cli.py` for the main application interface with decorators like `@app.command()` and type-driven argument validation.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting and rich text rendering library. Imported in `cli.py` as `Console` for colored output, progress bars, and structured table display via `centaur_sdk.Table`.</p>
+<br>
+<p>- <strong>pandas</strong> (>=2.0.0) [data-processing]: DataFrame library for structured data manipulation and analysis. Core dependency used throughout `client.py` and `graphs.py` for metrics aggregation, filtering (`df[df["gas_used_mgas"] > min_gas]`), and statistical calculations.</p>
+<br>
+<p>- <strong>matplotlib</strong> (>=3.7.0) [visualization]: Plotting library for graph generation. Extensively used in `graphs.py` with specific configuration (`matplotlib.use("Agg")`) for headless rendering. Includes `matplotlib.pyplot` for plotting and `matplotlib.ticker.PercentFormatter` for axis formatting.</p>
+<br>
+<p>- <strong>numpy</strong> (imported via matplotlib): Numerical computing library used in `graphs.py` for trend line calculations (`np.polyfit`, `np.poly1d`) and array operations (`np.arange`, `np.linspace`) in scatter plot generation.</p>
+<br>
+<p>- <strong>dotenv</strong> (imported in cli.py): Environment variable loading from .env files. Used via `load_dotenv()` at CLI startup for configuration management.</p>
+<br>
+<h3> Internal Framework Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal-framework]: Centaur platform SDK providing `Table` class for rich terminal output formatting. Imported in `cli.py:13` and used for structured data display in the parse command.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes a clean public API through the <code>RethLogAnalyzerClient</code> class:</p>
+<br>
+<h3> Primary Methods</h3>
+<br>
+<p>- <strong>`parse(log_file: Path, min_gas: float = 0.0) -> pd.DataFrame`</strong>: Parses Reth log files and returns structured block metrics with optional gas threshold filtering</p>
+<p>- <strong>`generate_graphs(log_file: Path, output_dir: Path, min_gas: float = 0.0, title_suffix: str = "") -> list[Path]`</strong>: Creates four performance visualization charts and returns output file paths</p>
+<p>- <strong>`summary(log_file: Path, min_gas: float = 10.0) -> dict[str, Any]`</strong>: Generates comprehensive performance statistics with block categorization and outlier identification</p>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>- <strong>`reth-log-analyzer parse <log_file>`</strong>: Interactive table display with summary statistics</p>
+<p>- <strong>`reth-log-analyzer graphs <log_file>`</strong>: Batch chart generation to specified output directory  </p>
+<p>- <strong>`reth-log-analyzer summary <log_file>`</strong>: Performance report with optional markdown output</p>
+<br>
+<h3> Data Structures</h3>
+<br>
+<p>- <strong>`BlockMetrics`</strong>: Core dataclass containing all extracted block performance metrics</p>
+<p>- <strong>DataFrame Schema</strong>: Standardized column set including `block_number`, `gas_used_mgas`, `elapsed_ms`, `execution_pct`, `state_root_pct`, and derived throughput calculations</p>
+<br>
+<p>The API is designed for both programmatic integration (via client class) and end-user interaction (via CLI), supporting various output formats (CSV, PNG, markdown, terminal tables) and filtering options.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

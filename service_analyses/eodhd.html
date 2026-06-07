@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: eodhd — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>eodhd</h1>
+</header>
+<p>Now I have all the information needed to write a comprehensive analysis. Let me structure the analysis with proper citations.</p>
+<br>
+<h1>EODHD Financial API CLI Tool Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The eodhd component follows a <strong>layered architecture</strong> pattern typical of CLI tools, with clear separation between the command-line interface, API client, and external service integration. The architecture consists of three main layers:</p>
+<br>
+<p>1. <strong>CLI Layer</strong> (`cli.py`) - Handles user interaction, command parsing, and output formatting</p>
+<p>2. <strong>Client Layer</strong> (`client.py`) - Manages HTTP communication with the EODHD API</p>
+<p>3. <strong>External Service</strong> - EODHD Financial API for market data</p>
+<br>
+<p>The component is designed as a simple, focused tool that provides command-line access to equity market data from the EODHD financial API service. It supports both human-readable formatted output and JSON output for programmatic consumption.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. EodhdClient (`client.py`)</h3>
+<p>The core API client class that handles authentication and HTTP requests to the EODHD service. It manages API key authentication, request formatting, error handling, and response parsing. The client automatically appends <code>.US</code> suffix to symbols and provides a standardized interface for market data retrieval.</p>
+<br>
+<h3> 2. CLI Application (`cli.py`) </h3>
+<p>A Typer-based command-line application that exposes two main commands: <code>quote</code> for real-time quotes and <code>eod</code> for historical daily prices. It handles argument parsing, output formatting with Rich for colored terminal output, and provides both human-readable and JSON output modes.</p>
+<br>
+<h3> 3. Quote Command Handler</h3>
+<p>Retrieves delayed real-time quotes including OHLCV data and percentage change. Formats output with color-coded changes (green for positive, red for negative) and provides clean tabular display of market data.</p>
+<br>
+<h3> 4. EOD Command Handler  </h3>
+<p>Fetches historical end-of-day pricing data with optional date range filtering. Displays the most recent 20 days of data in a formatted table, with full dataset available in JSON mode.</p>
+<br>
+<h3> 5. Authentication System</h3>
+<p>Integrates with the Centaur SDK's secret management system for secure API key handling. Falls back to environment variables and provides clear error messages when credentials are missing.</p>
+<br>
+<h3> 6. HTTP Client Infrastructure</h3>
+<p>Uses httpx for async-capable HTTP requests with 30-second timeouts, proper error handling, and JSON response parsing. Implements proper error propagation from API responses.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<p>The component implements two primary data flows for market data retrieval:</p>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Argument Parsing]
+    B --&gt; C[Client Initialization]
+    C --&gt; D[Secret Retrieval]
+    D --&gt; E[HTTP Request]
+    E --&gt; F[EODHD API]
+    F --&gt; G[Response Parsing]
+    G --&gt; H[Output Formatting]
+    H --&gt; I[Terminal Display]</code></pre>
+<br>
+<h3> Quote Data Flow</h3>
+<p>1. User executes <code>eodhd quote SYMBOL</code> command</p>
+<p>2. CLI parses symbol argument and output format options</p>
+<p>3. Client retrieves API key from secret management or environment</p>
+<p>4. HTTP GET request to <code>/real-time/{SYMBOL}.US</code> endpoint</p>
+<p>5. API returns real-time quote data (OHLCV + change metrics)</p>
+<p>6. Response formatted for terminal display or JSON output</p>
+<p>7. Data presented to user with color-coded change indicators</p>
+<br>
+<h3> Historical Data Flow</h3>
+<p>1. User executes <code>eodhd eod SYMBOL</code> with optional date range</p>
+<p>2. CLI parses symbol, date range, and output format parameters</p>
+<p>3. Client constructs request with date filtering parameters</p>
+<p>4. HTTP GET request to <code>/eod/{SYMBOL}.US</code> endpoint with date params</p>
+<p>5. API returns array of historical daily price records</p>
+<p>6. Data limited to last 20 entries for display (full data in JSON mode)</p>
+<p>7. Formatted output shows date, OHLCV data in tabular format</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library providing both synchronous and asynchronous request capabilities. Used in `client.py` for making authenticated requests to the EODHD API with timeout handling and error management. Integration point: `client.py` lines 5, 30-31.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: CLI framework built on top of Click that provides type hints and automatic help generation. Used throughout `cli.py` for command definition, argument parsing, and option handling. Integration points: `cli.py` lines 5, 13, 22-24, 46-50.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library for colored output, tables, and enhanced text display. Used in `cli.py` for console output formatting and colored text display based on market data values. Integration points: `cli.py` lines 7, 14, 33-42, 59-68.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loader for development configuration. Used in `cli.py` to load environment variables from `.env` files. Integration point: `cli.py` lines 6, 11.</p>
+<br>
+<h3> Build Dependencies</h3>
+<br>
+<p>- <strong>hatchling</strong> [build-tool]: Modern Python build backend for packaging and distribution. Required for building the Python package as specified in the `pyproject.toml` build system configuration.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes a command-line interface with two primary commands:</p>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>- <strong>`eodhd quote <SYMBOL>`</strong>: Retrieves delayed real-time quotes for US equities</p>
+<p>  - Arguments: <code>symbol</code> (required) - ticker symbol (e.g., AAPL)</p>
+<p>  - Options: <code>--json/-j</code> for JSON output format</p>
+<p>  - Output: OHLCV data with formatted percentage change indicators</p>
+<br>
+<p>- <strong>`eodhd eod <SYMBOL>`</strong>: Retrieves historical end-of-day pricing data</p>
+<p>  - Arguments: <code>symbol</code> (required) - ticker symbol</p>
+<p>  - Options: <code>--from-date/-f</code>, <code>--to-date/-t</code> for date range, <code>--json/-j</code> for JSON output</p>
+<p>  - Output: Historical daily OHLCV data (last 20 days in formatted mode, full dataset in JSON)</p>
+<br>
+<h3> Python API</h3>
+<br>
+<p>- <strong>`EodhdClient`</strong>: Main API client class</p>
+<p>  - <code>__init__(api_key: str | None = None)</code>: Initialize with optional API key</p>
+<p>  - <code>get_quote(symbol: str) -> dict[str, Any]</code>: Get real-time quote data</p>
+<p>  - <code>get_eod_prices(symbol: str, from_date: str | None = None, to_date: str | None = None) -> list[dict[str, Any]]</code>: Get historical pricing data</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<p>The component integrates with the following external systems:</p>
+<br>
+<p>- <strong>EODHD Financial API</strong> (eodhd.com): Third-party financial data provider offering real-time quotes and historical market data for US equities. The component makes authenticated HTTPS requests to `https://eodhd.com/api` endpoints for market data retrieval.</p>
+<br>
+<p>- <strong>Centaur SDK Secret Management</strong>: Runtime integration with the Centaur platform's secret management system for secure API key storage and retrieval through the `centaur_sdk.tool_sdk.secret` function.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: gsuite — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>gsuite</h1>
+</header>
+<h1>GSuite Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The gsuite component implements a comprehensive CLI tool for interacting with Google Workspace services. It follows a layered architecture pattern where the <code>cli.py</code> module provides the command-line interface using Typer, while <code>client.py</code> contains all the backend service integration logic. The component uses the Google API Python client libraries to communicate with various Google services, with authentication handled transparently through iron-proxy's OAuth token transformation.</p>
+<br>
+<p>The architecture is organized around seven main service areas: Gmail, Calendar, Drive, Docs, Sheets, Slides, and Analytics. Each service has its own sub-application within the CLI and corresponding functions in the client module. The design emphasizes separation of concerns, with the CLI layer focusing on user interaction and argument parsing, while the client layer handles all API communication and data transformation.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> CLI Module (`cli.py`)</h3>
+<p>The main command-line interface built with Typer, providing 7 sub-applications (gmail, calendar, drive, docs, sheets, slides, analytics) with 70+ total commands. Each sub-app has extensive argument parsing, help text, and rich console output formatting using the Rich library.</p>
+<br>
+<h3> Client Module (`client.py`)</h3>
+<p>Core API client with 132 functions implementing Google Workspace service integrations. Handles authentication via iron-proxy, HTTP client configuration with proxy support, and provides comprehensive CRUD operations for all supported services.</p>
+<br>
+<h3> Analytics Properties (`analytics_properties.py`)</h3>
+<p>Manages GA4 property ID mappings for known websites with both static mappings and dynamic discovery capabilities. Includes caching and fallback mechanisms for resolving site names to Google Analytics property IDs.</p>
+<br>
+<h3> HTTP Transport Layer</h3>
+<p>Custom httplib2 configuration that routes requests through iron-proxy for authentication. Handles SOCKS proxy setup, SSL certificate configuration, and falls back to direct connections in non-proxied environments.</p>
+<br>
+<h3> Authentication System</h3>
+<p>Uses Google's AnonymousCredentials pattern where iron-proxy's <code>oauth_token</code> transform injects OAuth access tokens into outbound requests. The refresh token grant exchanges stored credentials for short-lived access tokens at the network boundary.</p>
+<br>
+<h3> Service Factory Pattern</h3>
+<p>Centralized service creation functions (<code>get_gmail_service()</code>, <code>get_calendar_service()</code>, etc.) that configure Google API clients with proper HTTP transport and authentication settings.</p>
+<br>
+<h3> Error Handling and Rich Output</h3>
+<p>Comprehensive error handling with user-friendly console output using Rich formatting. Commands provide colored output, tables, progress indicators, and structured error messages with appropriate exit codes.</p>
+<br>
+<h3> File Operations Framework</h3>
+<p>Sophisticated file handling supporting multiple input sources (base64 content, Centaur attachments, local paths) with automatic MIME type detection, format conversion (e.g., CSV to Google Sheets), and thread-scoped attachment management.</p>
+<br>
+<h3> Permission Management System</h3>
+<p>Advanced Google Drive permission handling including bulk sharing, ownership transfer, and integration with Slack channel membership for automated workspace collaboration setup.</p>
+<br>
+<h3> Batch Operations Support</h3>
+<p>Optimized batch processing for operations like bulk labeling, multi-file sharing, and batch document updates with progress tracking and error reporting.</p>
+<br>
+<h3> Analytics Query Engine</h3>
+<p>Flexible Google Analytics 4 reporting system with custom query support, predefined report types, and multiple output formats including JSON and formatted tables.</p>
+<br>
+<h3> Document Processing Pipeline</h3>
+<p>Google Docs manipulation including text extraction, find/replace operations, bullet point formatting, and content insertion with revision tracking and conflict detection.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Typer Argument Parsing]
+    B --&gt; C[Client Function Call]
+    C --&gt; D[HTTP Client Factory]
+    D --&gt; E[iron-proxy]
+    E --&gt; F[Google API Endpoint]
+    F --&gt; G[Response Processing]
+    G --&gt; H[Rich Console Output]
+    
+    I[Authentication Flow] --&gt; J[iron-proxy oauth_token transform]
+    J --&gt; K[GOOGLE_TOKEN_JSON secret]
+    K --&gt; L[OAuth2 Token Mint]
+    L --&gt; M[Authorization Header Injection]
+    
+    N[File Upload Flow] --&gt; O[Content Source Detection]
+    O --&gt; P[Base64/Attachment/Path Processing]
+    P --&gt; Q[MIME Type Detection]
+    Q --&gt; R[Google Drive API]
+    R --&gt; S[Permission Setup]
+    S --&gt; T[Slack Integration]</code></pre>
+<br>
+<p>The main data flow starts with CLI commands being parsed by Typer, then routed to appropriate client functions. These functions create authenticated HTTP clients that route through iron-proxy for OAuth token injection before reaching Google APIs. Responses are processed and formatted using Rich for console output.</p>
+<br>
+<p>Authentication follows a separate flow where iron-proxy's oauth_token transform uses stored refresh tokens to mint access tokens and inject them as Authorization headers on outbound requests to Google services.</p>
+<br>
+<p>File operations have a specialized flow that handles multiple input sources (base64 content, Centaur attachments, local paths), performs MIME type detection and format conversion, then integrates with Slack for automated permission management.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Google API Libraries</h3>
+<p>- <strong>google-api-python-client</strong> (>=2.100.0) [google-api]: Core Google API client library providing service discovery and HTTP transport. Used throughout `client.py` for Gmail, Calendar, Drive, Docs, Sheets, and Slides operations. Imported in: `client.py` lines 17-18.</p>
+<br>
+<p>- <strong>google-analytics-data</strong> (>=0.18.0) [analytics]: Google Analytics Data API client for GA4 reporting and real-time data queries. Used for all Analytics commands and custom query operations. Imported in: `client.py` for analytics functions.</p>
+<br>
+<p>- <strong>google-analytics-admin</strong> (>=0.22.0) [analytics]: Google Analytics Admin API client for property discovery and configuration. Used in `analytics_properties.py` for dynamic property ID resolution. Imported in: `analytics_properties.py` lines 74-75.</p>
+<br>
+<h3> Authentication & HTTP</h3>
+<p>- <strong>google-auth-httplib2</strong> (>=0.2.0) [auth]: Google authentication library integration with httplib2 transport. Provides authentication flow support and credential management. Used in conjunction with httplib2 for authenticated requests.</p>
+<br>
+<p>- <strong>google-auth-oauthlib</strong> (>=1.2.0) [auth]: OAuth 2.0 client library for Google authentication flows. Supports refresh token grants and credential management. Used for authentication setup and token refresh operations.</p>
+<br>
+<p>- <strong>httplib2</strong> (>=0.20.0) [networking]: HTTP client library with proxy support used by google-api-python-client. Configured with SOCKS proxy support for iron-proxy routing. Imported in: `client.py` line 13.</p>
+<br>
+<p>- <strong>pysocks</strong> (>=1.7.1) [networking]: SOCKS proxy support library required by httplib2 for proxy functionality. Critical for routing requests through iron-proxy. Without this, httplib2 silently ignores proxy settings. Imported in: `client.py` line 14.</p>
+<br>
+<h3> CLI & UI Framework</h3>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework building on Click with automatic help generation and type hints. Provides the entire command-line interface structure with sub-commands and argument parsing. Imported in: `cli.py` line 5.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal output formatting library providing colors, tables, progress bars, and styled console output. Used extensively throughout `cli.py` for user interface formatting. Imported in: `cli.py` line 7.</p>
+<br>
+<h3> Configuration</h3>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loading from .env files. Used for local development configuration and secret management. Provides fallback configuration when iron-proxy secrets are unavailable.</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Google Workspace Services</h3>
+<p>The component integrates with multiple Google Workspace APIs at runtime:</p>
+<p>- <strong>Gmail API</strong> for email search, reading, sending, and management operations</p>
+<p>- <strong>Google Calendar API</strong> for event creation, scheduling, and RSVP functionality  </p>
+<p>- <strong>Google Drive API</strong> for file storage, sharing, and permission management</p>
+<p>- <strong>Google Docs API</strong> for document creation, editing, and formatting</p>
+<p>- <strong>Google Sheets API</strong> for spreadsheet operations and data manipulation</p>
+<p>- <strong>Google Slides API</strong> for presentation creation and management</p>
+<p>- <strong>Google Analytics API</strong> for website traffic analysis and reporting</p>
+<br>
+<h3> Iron-Proxy Integration</h3>
+<p>All HTTP requests are routed through iron-proxy which provides:</p>
+<p>- OAuth token injection via the <code>oauth_token</code> transform</p>
+<li>MITM SSL certificate handling for API requests</li>
+<li>Request/response logging and monitoring</li>
+<li>Authentication credential management</li>
+<br>
+<h3> Slack Integration</h3>
+<p>The component integrates with Slack via CLI subprocess calls for:</p>
+<li>Channel member email resolution for file sharing</li>
+<li>User email lookup for ownership transfers</li>
+<li>Automated workspace permission setup</li>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>The gsuite component is designed as a standalone CLI tool with minimal direct dependencies on other components in the codebase. However, it does interact with the broader ecosystem:</p>
+<br>
+<h3> Centaur SDK Integration</h3>
+<p>- Uses <code>centaur_sdk.save_attachment()</code> for thread-scoped file management</p>
+<p>- Leverages <code>centaur_sdk.current_thread_key()</code> for attachment API access</p>
+<p>- Utilizes <code>centaur_sdk.secret()</code> for configuration and API key retrieval</p>
+<p>- Imports <code>centaur_sdk.Table</code> for structured data presentation</p>
+<br>
+<h3> Slack CLI Integration  </h3>
+<p>- Makes subprocess calls to the <code>slack</code> CLI tool for user and channel information</p>
+<p>- Uses <code>slack channel-emails</code> command to resolve channel membership</p>
+<p>- Uses <code>slack user-info</code> command to get user email addresses</p>
+<li>This enables automated permission setup for shared Google Drive files</li>
+<br>
+<h3> Optional API Integration</h3>
+<p>- Attempts to import <code>api.integrations.gsuite.http.build_http</code> for shared HTTP client configuration</p>
+<li>Falls back to local HTTP client configuration if the API integration is unavailable</li>
+<li>This allows for consistent HTTP handling across different deployment scenarios</li>
+<br>
+<p>The component is designed to be self-contained while still integrating seamlessly with the broader Centaur platform for file management, authentication, and workspace collaboration.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: arkham — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>arkham</h1>
+</header>
+<h1>Arkham Intelligence CLI Library</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The arkham component follows a <strong>client-library pattern</strong> with a CLI wrapper architecture. The library is structured around two core modules:</p>
+<br>
+<p>- <strong>`ArkhamClient`</strong>: A comprehensive HTTP client that wraps the Arkham Intelligence REST API, providing 35+ methods for blockchain analytics</p>
+<p>- <strong>CLI Interface</strong>: A feature-rich command-line interface built with Typer that exposes client functionality to end users</p>
+<br>
+<p>The architecture emphasizes separation of concerns, with the client handling all API communication logic while the CLI focuses on user experience, formatting, and output presentation.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> ArkhamClient (`client.py`)</h3>
+<p>The core HTTP client class that manages all interactions with the Arkham Intelligence API. It provides a comprehensive set of methods covering intelligence gathering, portfolio analysis, transaction tracking, and market data retrieval. The client implements proper error handling, timeout management, and API key authentication.</p>
+<br>
+<h3> CLI Application (`cli.py`)  </h3>
+<p>A rich command-line interface built with Typer that exposes 13 user-facing commands. Each command corresponds to different blockchain analytics use cases, from address intelligence to token trending analysis. The CLI provides multiple output formats (JSON, markdown, rich console) and extensive filtering options.</p>
+<br>
+<h3> Authentication & Configuration</h3>
+<p>API key management is handled through environment variables or direct initialization, with integration into the centaur_sdk secret management system. The client automatically retrieves credentials and handles authentication headers for all requests.</p>
+<br>
+<h3> Data Formatting & Presentation</h3>
+<p>Sophisticated output formatting functions handle USD value formatting with B/M/K suffixes, timestamp conversion, string truncation, and table rendering in both rich console and markdown formats.</p>
+<br>
+<h3> Command Structure</h3>
+<p>The CLI organizes functionality into logical command groups:</p>
+<p>- <strong>Identity Commands</strong>: `address`, `entity` - Get intelligence on blockchain addresses and entities</p>
+<p>- <strong>Transaction Commands</strong>: `transfers`, `tx` - Analyze token transfers and transaction details  </p>
+<p>- <strong>Portfolio Commands</strong>: `portfolio`, `counterparties` - View holdings and trading relationships</p>
+<p>- <strong>Market Commands</strong>: `token`, `token-holders`, `trending`, `networks` - Market data and token analytics</p>
+<p>- <strong>Utility Commands</strong>: `health`, `chains`, `raw` - API status and raw endpoint access</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Command Handler]
+    B --&gt; C[get_client()]
+    C --&gt; D[ArkhamClient]
+    D --&gt; E[_request() Method]
+    E --&gt; F[API Key Resolution]
+    F --&gt; G[HTTPX Client]
+    G --&gt; H[Arkham API]
+    H --&gt; I[JSON Response]
+    I --&gt; J[Data Processing]
+    J --&gt; K{Output Format}
+    K --&gt;|JSON| L[Raw JSON Output]
+    K --&gt;|Rich| M[Rich Console Tables]
+    K --&gt;|Markdown| N[Markdown Tables]</code></pre>
+<br>
+<p>The data flow follows a consistent pattern where CLI commands invoke client methods, which make authenticated HTTP requests to the Arkham Intelligence API. Responses are processed and formatted according to user preferences before being displayed.</p>
+<br>
+<pre><code class="language-mermaid">graph LR
+    A[Environment/Config] --&gt; B[API Key]
+    B --&gt; C[HTTP Headers]
+    C --&gt; D[Authenticated Request]
+    D --&gt; E[Arkham Intelligence API]
+    E --&gt; F[Blockchain Data]
+    F --&gt; G[Formatted Output]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client library used for all API requests. Provides robust connection management, timeout handling, and HTTP status error handling. Used in: `client.py` for the core `_request()` method and health check endpoints.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Feature-rich CLI framework that provides argument parsing, command grouping, help generation, and type validation. Powers the entire command-line interface structure with decorators like `@app.command()`. Used in: `cli.py` for all command definitions and argument handling.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library that provides styled console output, tables, progress bars, and color formatting. Enables the attractive table displays and colored output throughout the CLI. Used in: `cli.py` for console output, table rendering, and text styling.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong>: Internal SDK providing `Table` class for enhanced table rendering and `secret()` function for secure API key management. The `Table` class extends rich's table functionality while `secret()` integrates with the platform's secret management system.</p>
+<br>
+<p>- <strong>dotenv</strong>: Environment variable loading from `.env` files, loaded automatically at CLI startup to ensure API keys and configuration are available. Used in: `cli.py` at module initialization.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes a comprehensive public API through both programmatic and command-line interfaces:</p>
+<br>
+<h3> Programmatic API (ArkhamClient)</h3>
+<br>
+<p><strong>Intelligence Methods:</strong></p>
+<p>- <code>get_address_intelligence(address)</code> - Get intelligence for blockchain addresses</p>
+<p>- <code>get_address_enriched(address, include_tags, include_clusters)</code> - Enhanced address data</p>
+<p>- <code>get_entity(entity_id)</code> - Entity details and metadata</p>
+<p>- <code>get_entity_summary(entity_id)</code> - Statistical summaries for entities</p>
+<br>
+<p><strong>Portfolio & Holdings:</strong></p>
+<p>- <code>get_portfolio_address(address, chain)</code> - Token holdings by address</p>
+<p>- <code>get_portfolio_entity(entity, chain)</code> - Entity portfolio analysis</p>
+<p>- <code>get_balances_address(address, chain)</code> - Current token balances</p>
+<br>
+<p><strong>Transaction Analysis:</strong></p>
+<p>- <code>get_transfers(base, flow, chain, token_id, usd_gte, limit)</code> - Filtered token transfers</p>
+<p>- <code>get_transaction(tx_hash)</code> - Transaction details by hash</p>
+<p>- <code>get_counterparties_address(address, flow, limit)</code> - Top trading partners</p>
+<br>
+<p><strong>Market Data:</strong></p>
+<p>- <code>get_token(pricing_id)</code> - Token information and metrics</p>
+<p>- <code>get_token_holders(pricing_id, limit)</code> - Top token holders</p>
+<p>- <code>get_token_trending(chain)</code> - Trending tokens by chain</p>
+<p>- <code>get_networks_status()</code> - Network status and prices</p>
+<br>
+<h3> CLI Interface</h3>
+<br>
+<p><strong>Core Commands:</strong></p>
+<p>- <code>arkham address <addr></code> - Address intelligence with enrichment options</p>
+<p>- <code>arkham entity <entity_id></code> - Entity analysis with summary statistics</p>
+<p>- <code>arkham transfers</code> - Token transfer analysis with extensive filtering</p>
+<p>- <code>arkham portfolio <entity_id></code> - Portfolio holdings visualization</p>
+<p>- <code>arkham token <token_id></code> - Token information and market data</p>
+<p>- <code>arkham trending</code> - Trending token discovery</p>
+<br>
+<p><strong>Output Format Options:</strong></p>
+<p>- <code>--json</code> - Raw JSON output for programmatic consumption</p>
+<p>- <code>--markdown</code> - Markdown tables for documentation</p>
+<li>Rich console tables with styling (default)</li>
+<br>
+<p>All commands support comprehensive filtering options including chain selection, value thresholds, time ranges, and flow directions (in/out/all).</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: centaur-sdk — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>centaur-sdk</h1>
+</header>
+<h1>Centaur SDK Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The Centaur SDK follows a layered architecture pattern with distinct concerns:</p>
+<br>
+<p>1. <strong>Public API Layer</strong>: Clean interface exposed through `__init__.py` for secret management, tool context, and table rendering</p>
+<p>2. <strong>Secret Backend System</strong>: Pluggable architecture for secret resolution with multiple backend implementations</p>
+<p>3. <strong>Tool Context Management</strong>: Thread-safe context variables for managing tool execution state</p>
+<p>4. <strong>Utility Modules</strong>: Supporting functionality for logging and CLI table rendering</p>
+<br>
+<p>The design emphasizes security through secret isolation, with different backends for CLI vs server environments to prevent secret leakage.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. **Tool SDK Core** (`tool_sdk.py`)</h3>
+<p>The primary module containing the main SDK functionality:</p>
+<p>- <code>ToolContext</code> dataclass storing tool name, secrets, thread key, and container ID</p>
+<p>- Context variable management using Python's <code>contextvars</code> for thread-safe tool isolation</p>
+<li>Secret resolution with fallback chain: tool context → backend → default</li>
+<li>Attachment management for uploading files to Centaur API</li>
+<br>
+<h3> 2. **Secret Backend System** (`backends/`)</h3>
+<p>Pluggable architecture for secret management:</p>
+<p>- <code>SecretBackend</code> abstract base class defining async/sync interface</p>
+<p>- <code>StubBackend</code> for server mode returning key names as placeholders for firewall injection</p>
+<p>- <code>EnvBackend</code> for CLI mode reading from environment variables</p>
+<p>- <code>Registry</code> module managing the global backend singleton</p>
+<br>
+<h3> 3. **Logging Infrastructure** (`logging.py`)</h3>
+<p>Structured JSON logging implementation:</p>
+<p>- <code>JsonFormatter</code> class producing single-line JSON logs</p>
+<li>Service-specific configuration with timestamp, level, and event fields</li>
+<li>Support for uvicorn integration in web services</li>
+<br>
+<h3> 4. **CLI Table Utilities** (`cli_tables.py`)</h3>
+<p>Table rendering helpers for command-line tools:</p>
+<li>Re-export of Rich library's Table class</li>
+<li>Plain-text table renderer with automatic column width calculation</li>
+<br>
+<h3> 5. **Test Suite** (`tests/test_tool_sdk.py`)</h3>
+<p>Comprehensive unit tests covering:</p>
+<li>Secret resolution priority ordering</li>
+<li>Backend behavior verification</li>
+<li>Context management and thread isolation</li>
+<li>Synchronous/asynchronous execution patterns</li>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Tool Code] --&gt; B[secret() function]
+    B --&gt; C{Tool Context Available?}
+    C --&gt;|Yes| D[Check Context Secrets]
+    C --&gt;|No| E[Query Backend]
+    D --&gt; F{Key Found?}
+    F --&gt;|Yes| G[Return Value]
+    F --&gt;|No| E
+    E --&gt; H{Backend Has Key?}
+    H --&gt;|Yes| G
+    H --&gt;|No| I{Default Provided?}
+    I --&gt;|Yes| G
+    I --&gt;|No| J[Raise KeyError]</code></pre>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[save_attachment()] --&gt; B[Get Thread Key]
+    B --&gt; C[Prepare Payload]
+    C --&gt; D[Base64 Encode Data]
+    D --&gt; E[Add API Key Header]
+    E --&gt; F[HTTP POST to Centaur API]
+    F --&gt; G[Parse Response]
+    G --&gt; H[Return Attachment Metadata]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>rich</strong> (>=13.0) [ui]: Provides Rich text rendering capabilities including the Table class for CLI formatting. Used in `cli_tables.py` as a re-export for tool developers. Imported in: `centaur_sdk/cli_tables.py`.</p>
+<br>
+<h3> Optional Dependencies</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.28.0) [networking]: Optional HTTP client library listed in optional dependencies but not currently used in the codebase. The SDK uses Python's built-in `urllib.request` for HTTP operations instead.</p>
+<br>
+<h3> Standard Library Dependencies</h3>
+<br>
+<p>The SDK extensively uses Python's standard library:</p>
+<p>- <strong>contextvars</strong>: Thread-local storage for tool context management</p>
+<p>- <strong>urllib.request</strong>: HTTP client for attachment uploads to Centaur API</p>
+<p>- <strong>json</strong>: JSON serialization for logging and API communication</p>
+<p>- <strong>base64</strong>: Binary data encoding for file attachments</p>
+<p>- <strong>mimetypes</strong>: MIME type detection for uploaded files</p>
+<p>- <strong>logging</strong>: Structured logging infrastructure</p>
+<p>- <strong>asyncio</strong>: Asynchronous execution support in secret backends</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Primary Functions</h3>
+<br>
+<p>- <code>secret(key, default=None)</code>: Resolve secrets with configurable fallback chain</p>
+<p>- <code>save_attachment(name, data, mime_type=None, source_url=None)</code>: Upload binary data as thread-scoped attachment</p>
+<p>- <code>save_attachment_from_path(path, name=None, mime_type=None, source_url=None)</code>: Upload local files</p>
+<br>
+<h3> Context Management</h3>
+<br>
+<p>- <code>get_tool_context()</code>: Access current tool execution context</p>
+<p>- <code>set_tool_context(ctx)</code>: Establish tool context (returns reset token)</p>
+<p>- <code>reset_tool_context(token)</code>: Restore previous context state</p>
+<p>- <code>current_thread_key()</code>: Get active thread identifier for scoped operations</p>
+<br>
+<h3> Backend Configuration</h3>
+<br>
+<p>- <code>configure(backend)</code>: Set active secret backend implementation</p>
+<p>- <code>get_backend()</code>: Access current backend (auto-configures if needed)</p>
+<br>
+<h3> Utility Functions</h3>
+<br>
+<p>- <code>Table</code>: Rich table class for CLI formatting (re-export)</p>
+<p>- <code>render_text_table(headers, rows)</code>: Plain-text table with auto-sized columns</p>
+<p>- <code>configure_json_logging(service_name, level=None, uvicorn=False)</code>: Structured logging setup</p>
+<br>
+<p>The SDK provides a clean separation between CLI and server modes through its backend system, ensuring secrets are handled appropriately for each environment while maintaining a consistent API surface.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

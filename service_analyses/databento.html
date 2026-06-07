@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: databento — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>databento</h1>
+</header>
+<h1>Databento CLI Component Analysis</h1>
+<br>
+<p>The databento component is a Python CLI tool that provides access to Databento's Historical API for retrieving stock market OHLCV (Open, High, Low, Close, Volume) data. This tool enables users to fetch historical stock price data through a command-line interface, targeting financial data analysis and research use cases.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a layered CLI architecture pattern with clear separation between the command-line interface layer and the API client layer. The design emphasizes simplicity and direct API interaction, with minimal abstraction over the underlying Databento HTTP API.</p>
+<br>
+<p>The architecture consists of three main layers:</p>
+<p>1. <strong>CLI Layer</strong> (`cli.py`) - Handles command parsing, user interaction, and output formatting using Typer</p>
+<p>2. <strong>Client Layer</strong> (`client.py`) - Manages HTTP communication with the Databento API using httpx</p>
+<p>3. <strong>Configuration Layer</strong> - Environment-based configuration for API authentication</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> DatabentoClient Class</h3>
+<p>The core HTTP client that handles all communication with the Databento Historical API. It implements connection pooling, authentication, error handling, and response parsing. The client uses basic authentication with the API key and supports context manager protocol for proper resource cleanup.</p>
+<br>
+<h3> CLI Command Handler</h3>
+<p>The <code>prices</code> command function serves as the primary user interface, accepting parameters for symbol, date range, and schema type. It provides rich console output with color-coded messages and supports both human-readable and JSON output formats.</p>
+<br>
+<h3> Authentication System</h3>
+<p>Integrates with the centaur SDK's secret management system to securely retrieve the DATABENTO_API_KEY from environment variables or secure storage, with clear error messages when credentials are missing.</p>
+<br>
+<h3> Error Handling Framework</h3>
+<p>Comprehensive error handling covering HTTP request failures, API errors (400+ status codes), and JSON parsing issues. Different error types receive appropriate handling - 422/403 errors return empty results while other errors raise RuntimeError exceptions.</p>
+<br>
+<h3> Configuration Management</h3>
+<p>Uses python-dotenv for loading environment variables from .env files, with an example configuration file provided for user setup.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<p>The primary data flow follows a simple request-response pattern:</p>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Parse Arguments]
+    B --&gt; C[Initialize DatabentoClient]
+    C --&gt; D[Load API Key from Environment]
+    D --&gt; E[Create HTTP Request]
+    E --&gt; F[Send to Databento API]
+    F --&gt; G[Parse JSONL Response]
+    G --&gt; H[Format Output]
+    H --&gt; I[Display Results]</code></pre>
+<br>
+<p><strong>Error Flow</strong>: When API errors occur, the system gracefully handles different error types - returning empty results for permission/validation errors (422/403) and raising exceptions with detailed error messages for other failures.</p>
+<br>
+<p><strong>Authentication Flow</strong>: The client first attempts to use a provided API key, then falls back to the centaur SDK secret manager to retrieve DATABENTO_API_KEY, raising a descriptive error if neither is available.</p>
+<br>
+<h2>Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library providing async/sync capabilities and connection pooling. Used in `client.py` for all API communication with the Databento Historical API, including authentication, request timeout handling, and error management.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework built on Click that provides type hints, automatic help generation, and rich command parsing. Used in `cli.py` to define the `prices` command with its options and arguments, handles parameter validation and help text generation.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library providing colored output, progress bars, and styled console text. Used in `cli.py` for console output formatting with color-coded success/error messages and improved user experience.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [build-tool]: Environment variable loader that reads key-value pairs from .env files. Used in `cli.py` to automatically load environment variables including DATABENTO_API_KEY from local configuration files.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk.tool_sdk</strong> [framework]: Internal Centaur framework providing the `secret` function for secure credential management. Used in `client.py` to retrieve the DATABENTO_API_KEY from the platform's secret management system with proper security handling.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> CLI Interface</h3>
+<pre><code class="language-bash">databento prices --symbol AAPL --start 2026-01-01 --end 2026-01-31 [--schema ohlcv-1d] [--json]</code></pre>
+<br>
+<p><strong>Parameters:</strong></p>
+<p>- <code>--symbol/-s</code>: Required ticker symbol (e.g., AAPL, MSFT)</p>
+<p>- <code>--start</code>: Required start date in YYYY-MM-DD format</p>
+<p>- <code>--end</code>: Required end date in YYYY-MM-DD format  </p>
+<p>- <code>--schema</code>: Optional data schema (default: ohlcv-1d, options: ohlcv-1m, ohlcv-1h)</p>
+<p>- <code>--json/-j</code>: Optional flag for JSON output format</p>
+<br>
+<h3> Python API</h3>
+<pre><code class="language-python">from databento.client import DatabentoClient
+
+client = DatabentoClient(api_key=&quot;your_key&quot;)
+data = client.get_stock_prices(&quot;AAPL&quot;, &quot;2026-01-01&quot;, &quot;2026-01-31&quot;, &quot;ohlcv-1d&quot;)</code></pre>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Databento Historical API</h3>
+<p>The component integrates with Databento's Historical API at <code>hist.databento.com</code> using HTTPS. It specifically uses:</p>
+<p>- <strong>Endpoint</strong>: `/v0/timeseries.get_range`</p>
+<p>- <strong>Dataset</strong>: XNAS.ITCH (NASDAQ ITCH feed)</p>
+<p>- <strong>Authentication</strong>: HTTP Basic Auth with API key</p>
+<p>- <strong>Response Format</strong>: JSONL (JSON Lines) with one record per line</p>
+<br>
+<p>The API requires valid subscription credentials and returns OHLCV data in structured JSON format. The client handles various response scenarios including successful data retrieval, empty results for invalid symbols/dates, and error conditions.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

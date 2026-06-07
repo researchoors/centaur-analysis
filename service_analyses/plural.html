@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: plural — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>plural</h1>
+</header>
+<p>Now I have enough information to write the analysis. Let me create a comprehensive analysis of the plural component.</p>
+<br>
+<h1>Plural Component Analysis</h1>
+<br>
+<p>The plural component is a Python library that provides a client interface and CLI for the Open States API v3 (also known as Plural). It enables access to comprehensive US state legislative data including legislation, legislators, committees, and legislative events across all 50 states and territories.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> pattern with clear separation of concerns:</p>
+<br>
+<p>1. <strong>Client Layer</strong> (`client.py`): Core HTTP client implementing the Open States API v3 interface</p>
+<p>2. <strong>CLI Layer</strong> (`cli.py`): Command-line interface providing user-friendly access to the API</p>
+<p>3. <strong>Configuration Layer</strong>: Environment-based configuration with API key management</p>
+<br>
+<p>The architecture emphasizes simplicity and direct API mapping, with the <code>PluralClient</code> class serving as a comprehensive wrapper around the Open States REST API endpoints.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. PluralClient Class (client.py:7-355)</h3>
+<p>The main client class implementing the Open States API v3 interface. Provides methods for accessing jurisdictions, people, bills, committees, and events. Features lazy initialization of HTTP client, automatic API key management through the Centaur SDK, and comprehensive error handling.</p>
+<br>
+<h3> 2. HTTP Request Management (_request method, client.py:29-42)</h3>
+<p>Centralized request handling with automatic authentication, parameter filtering, and structured error handling. Converts HTTP errors to runtime exceptions with descriptive messages.</p>
+<br>
+<h3> 3. Jurisdictions API (client.py:45-84)</h3>
+<p>Methods for listing and retrieving jurisdiction data (states, territories, municipalities). Supports filtering by classification and including related data like organizations and legislative sessions.</p>
+<br>
+<h3> 4. People/Legislators API (client.py:87-142)</h3>
+<p>Search and retrieval of legislator data with support for filtering by jurisdiction, name, role, and district. Includes geolocation-based lookup for finding representatives by latitude/longitude.</p>
+<br>
+<h3> 5. Bills API (client.py:145-243)</h3>
+<p>Comprehensive bill search and retrieval functionality supporting full-text search, filtering by jurisdiction/session/chamber, sponsor lookup, and date-based queries. Includes both search and direct bill access methods.</p>
+<br>
+<h3> 6. Committees API (client.py:245-287)</h3>
+<p>Committee listing and detail retrieval with chamber-based filtering and membership information.</p>
+<br>
+<h3> 7. Events API (client.py:290-341)</h3>
+<p>Legislative event data access for hearings, floor sessions, and other legislative activities with date range filtering and bill association options.</p>
+<br>
+<h3> 8. CLI Commands (cli.py:31-252)</h3>
+<p>Rich console-based command interface providing table-formatted output for all API endpoints. Supports JSON output mode and comprehensive parameter handling.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TB
+    A[CLI Command] --&gt; B[PluralClient]
+    B --&gt; C[_request method]
+    C --&gt; D[httpx.Client]
+    D --&gt; E[Open States API v3]
+    E --&gt; F[JSON Response]
+    F --&gt; G[Data Processing]
+    G --&gt; H[Rich Table Output]
+    G --&gt; I[JSON Output]
+    
+    J[API Key Management] --&gt; K[centaur_sdk.secret]
+    K --&gt; L[Environment Variables]
+    J --&gt; C</code></pre>
+<br>
+<h3> Primary Data Flow</h3>
+<p>1. <strong>CLI Invocation</strong>: User executes command with parameters</p>
+<p>2. <strong>Client Creation</strong>: PluralClient initialized with optional API key</p>
+<p>3. <strong>Request Preparation</strong>: Parameters filtered and formatted for API call</p>
+<p>4. <strong>Authentication</strong>: API key retrieved from environment or Centaur SDK</p>
+<p>5. <strong>HTTP Request</strong>: GET request to Open States API with authentication headers</p>
+<p>6. <strong>Response Processing</strong>: JSON response parsed and error handling applied</p>
+<p>7. <strong>Output Formatting</strong>: Data formatted as Rich tables or JSON for display</p>
+<br>
+<h3> Authentication Flow</h3>
+<p>1. <strong>Key Resolution</strong>: API key from constructor parameter or environment</p>
+<p>2. <strong>SDK Integration</strong>: Fallback to centaur_sdk.secret for key management</p>
+<p>3. <strong>Header Injection</strong>: X-API-KEY header added to all requests</p>
+<p>4. <strong>Error Handling</strong>: Runtime exception if no valid key available</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library providing async/sync support and connection pooling. Used in `PluralClient` for all API communication. Imported in: `client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Type-driven CLI framework providing automatic help generation and parameter validation. Powers all CLI commands with rich argument parsing. Imported in: `cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library providing styled output, tables, and progress indicators. Used for console output and table formatting in CLI commands. Imported in: `cli.py`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (unlisted) [configuration]: Environment variable loading from .env files. Used for development environment setup. Imported in: `cli.py`.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk.tool_sdk</strong> [configuration]: Provides `secret()` function for secure API key retrieval. Used in: `client.py`.</p>
+<br>
+<p>- <strong>centaur_sdk.cli_tables</strong> [cli]: Provides `Table` class for consistent CLI table formatting across Centaur tools. Used in: `cli.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes two primary interfaces:</p>
+<br>
+<h3> Python Library Interface</h3>
+<br>
+<pre><code class="language-python">from plural.client import PluralClient
+
+client = PluralClient(api_key=&quot;optional&quot;)
+
+# Jurisdictions
+jurisdictions = client.list_jurisdictions()
+california = client.get_jurisdiction(&quot;ca&quot;)
+
+# Legislators  
+legislators = client.search_people(jurisdiction=&quot;ca&quot;, name=&quot;Smith&quot;)
+local_reps = client.people_by_location(lat=37.7749, lng=-122.4194)
+
+# Bills
+bills = client.search_bills(jurisdiction=&quot;ca&quot;, session=&quot;2023&quot;, q=&quot;climate&quot;)
+bill = client.get_bill(&quot;ca&quot;, &quot;2023&quot;, &quot;AB 100&quot;)
+
+# Committees
+committees = client.list_committees(&quot;ca&quot;, chamber=&quot;upper&quot;)
+
+# Events
+events = client.list_events(jurisdiction=&quot;ca&quot;, after=&quot;2023-01-01&quot;)</code></pre>
+<br>
+<h3> CLI Interface</h3>
+<br>
+<pre><code class="language-bash"># List jurisdictions
+plural jurisdictions --classification state
+
+# Search legislators
+plural people --jurisdiction ca --name &quot;Smith&quot;
+
+# Search bills
+plural bills --jurisdiction ca --query &quot;climate change&quot; --session 2023
+
+# List committees
+plural committees ca --chamber upper
+
+# List events
+plural events --jurisdiction ca --after 2023-01-01T00:00:00</code></pre>
+<br>
+<p>All CLI commands support <code>--json</code> flag for machine-readable output and comprehensive filtering options matching the API capabilities.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

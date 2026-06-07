@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: granola — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>granola</h1>
+</header>
+<p>Now I have sufficient information to write a comprehensive analysis. Let me create the analysis document.</p>
+<br>
+<h1>Granola Meeting Notes CLI Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The granola component implements a command-line interface for accessing Granola meeting notes and transcripts via their Enterprise API. It follows a clean separation between the API client layer and the CLI presentation layer, utilizing a simple but effective client-server architecture pattern.</p>
+<br>
+<p>The component is structured as a Python package with two main modules:</p>
+<p>- <code>client.py</code>: Handles HTTP communication with the Granola Enterprise API</p>
+<p>- <code>cli.py</code>: Provides the user-facing Typer-based command-line interface</p>
+<br>
+<p>The architecture follows the principles of separation of concerns, with the client module handling all API interactions and data fetching, while the CLI module focuses exclusively on command parsing, user interaction, and output formatting.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> GranolaClient Class</h3>
+<p>The core API client class that manages authentication and HTTP requests to the Granola Enterprise API. It provides methods for listing notes, retrieving individual notes with optional transcripts, and performing basic search functionality. The client uses HTTPX for HTTP operations and implements proper error handling with automatic status code checking.</p>
+<br>
+<h3> CLI Command Structure</h3>
+<p>The CLI is built using Typer and provides four main commands:</p>
+<p>- <code>list</code>: Display recent meeting notes with pagination support</p>
+<p>- <code>get</code>: Retrieve and display a specific note by ID</p>
+<p>- <code>search</code>: Search meeting notes by title substring matching  </p>
+<p>- <code>transcript</code>: Fetch and display the transcript for a specific note</p>
+<br>
+<h3> Date Formatting Utility</h3>
+<p>A helper function <code>_format_date</code> that converts ISO 8601 date strings from the API into human-readable format, handling timezone information and parsing errors gracefully.</p>
+<br>
+<h3> Rich Console Output</h3>
+<p>The CLI leverages the Rich library for enhanced terminal output, including formatted tables, markdown rendering, and colored panels for better user experience.</p>
+<br>
+<h3> Authentication Layer</h3>
+<p>Authentication is handled through the centaur-sdk's secret management system, with the component expecting a <code>GRANOLA_API_KEY</code> environment variable or secret store entry.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">flowchart TD
+    A[CLI Command] --&gt; B[GranolaClient]
+    B --&gt; C[HTTPX HTTP Client]
+    C --&gt; D[Granola API]
+    D --&gt; E[JSON Response]
+    E --&gt; F[Data Processing]
+    F --&gt; G[Rich Console Output]
+    
+    H[Authentication] --&gt; B
+    I[centaur-sdk secret] --&gt; H</code></pre>
+<br>
+<p>The primary data flow follows this pattern:</p>
+<p>1. User invokes CLI command with arguments</p>
+<p>2. CLI module creates GranolaClient instance</p>
+<p>3. Client authenticates using API key from secret store</p>
+<p>4. HTTP request sent to Granola Enterprise API</p>
+<p>5. JSON response processed and formatted</p>
+<p>6. Rich console renders formatted output to terminal</p>
+<br>
+<p>For the search functionality, an additional client-side filtering step occurs after fetching a larger set of notes from the API.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client library used for making requests to the Granola Enterprise API. Provides better performance and features compared to requests. Used in: `tools/productivity/granola/client.py` for all API communication.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework built on top of Click, providing automatic help generation, type hints support, and clean command definition syntax. Used in: `tools/productivity/granola/cli.py` for all command-line interface functionality.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting and rendering library that provides rich text, tables, markdown rendering, and colored output. Used in: `tools/productivity/granola/cli.py` for formatting console output, tables, and markdown content.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (implicit dependency) [configuration]: Environment variable management for loading .env files. Used in: `tools/productivity/granola/cli.py` for loading environment configuration.</p>
+<br>
+<p>- <strong>centaur-sdk</strong> (internal dependency) [framework]: Internal SDK providing secret management and table utilities. Used in: `tools/productivity/granola/client.py` for secret retrieval and `tools/productivity/granola/cli.py` for table display.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The granola component exposes a library API through the GranolaClient class and a CLI interface through the typer application.</p>
+<br>
+<h3> Library API (GranolaClient)</h3>
+<br>
+<pre><code class="language-python">class GranolaClient:
+    def __init__(self, api_key: str | None = None)
+    def list_notes(page_size: int, cursor: str | None, ...) -&gt; dict
+    def get_note(note_id: str, include_transcript: bool) -&gt; dict  
+    def list_all_notes(limit: int, created_after: str | None) -&gt; list
+    def get_transcript(note_id: str) -&gt; list
+    def search_notes(query: str, limit: int) -&gt; list</code></pre>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>- <code>granola list [--limit N] [--full] [--after DATE]</code>: List recent meeting notes</p>
+<p>- <code>granola get NOTE_ID [--raw] [--transcript]</code>: Get specific note by ID</p>
+<p>- <code>granola search QUERY [--limit N]</code>: Search notes by title</p>
+<p>- <code>granola transcript NOTE_ID</code>: Get transcript for a note</p>
+<br>
+<p>The CLI provides both machine-readable (--raw) and human-readable output formats, with rich formatting for interactive use.</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Granola Enterprise API</h3>
+<p>The component integrates with the Granola Enterprise API hosted at <code>public-api.granola.ai</code>. This is a REST API that requires Bearer token authentication and provides workspace-wide access to meeting notes and transcripts. The API supports pagination, filtering by creation/update dates, and optional transcript inclusion.</p>
+<br>
+<h3> Authentication System</h3>
+<p>Authentication relies on API keys generated through the Granola Enterprise workspace settings. The component uses the centaur-sdk secret management system to securely retrieve and manage these credentials.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

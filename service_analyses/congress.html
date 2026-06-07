@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: congress — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>congress</h1>
+</header>
+<h1>Congress Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The congress component implements a clean client-server architecture pattern with separation of concerns between the API client and CLI interface. It follows a command-based CLI architecture where each major Congress.gov API resource (bills, members, committees, etc.) is exposed as a separate command with consistent parameter handling and output formatting options.</p>
+<br>
+<p>The architecture consists of two main layers:</p>
+<p>- <strong>Client Layer</strong>: HTTP client wrapper (`CongressClient`) that handles authentication, request formatting, and error handling for the Congress.gov API v3</p>
+<p>- <strong>CLI Layer</strong>: Typer-based command interface that provides user-friendly access to congressional data with multiple output formats (table, markdown, JSON)</p>
+<br>
+<p>The component uses a stateless design where each command creates its own client instance and performs independent API calls. All data flows are synchronous with immediate response formatting and display.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> CongressClient (client.py)</h3>
+<p>The core API client that wraps the Congress.gov REST API v3. It handles authentication via DATAGOV_API_KEY, manages HTTP connections through httpx, and provides structured methods for each API endpoint. The client supports bills, members, committees, hearings, and roll call votes with consistent parameter validation and error handling.</p>
+<br>
+<h3> CLI Commands (cli.py)</h3>
+<p>Eight primary commands that expose congressional data:</p>
+<p>- <strong>bills</strong>: Lists bills with optional filtering by congress, type, and pagination</p>
+<p>- <strong>bill</strong>: Retrieves detailed bill information with optional sub-resources (actions, amendments, cosponsors, subjects, summaries, text)</p>
+<p>- <strong>members</strong>: Lists members of Congress with optional state filtering</p>
+<p>- <strong>member</strong>: Gets specific member details by bioguide ID</p>
+<p>- <strong>committees</strong>: Lists congressional committees with chamber filtering</p>
+<p>- <strong>hearings</strong>: Lists committee hearings by congress and chamber</p>
+<p>- <strong>votes</strong>: Lists roll call votes with session and chamber filtering</p>
+<p>- <strong>search</strong>: Keyword search through bill titles (client-side filtering)</p>
+<br>
+<h3> Output Formatters</h3>
+<p>Three output format handlers:</p>
+<p>- <strong>Rich Table</strong>: Colored, formatted tables for terminal display using the Rich library</p>
+<p>- <strong>Markdown Table</strong>: Plain text markdown-formatted tables for documentation</p>
+<p>- <strong>JSON</strong>: Raw API response data for programmatic consumption</p>
+<br>
+<h3> Utility Functions</h3>
+<p>Helper functions for data presentation:</p>
+<p>- <strong>truncate()</strong>: Limits text length with ellipsis for table display</p>
+<p>- <strong>print_markdown_table()</strong>: Generates markdown table format</p>
+<p>- <strong>_print_bill_info()</strong> and <strong>_print_bill_detail()</strong>: Specialized formatters for bill data</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<p>The component follows a consistent request-response data flow pattern:</p>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Parameter Validation]
+    B --&gt; C[CongressClient Creation]
+    C --&gt; D[API Key Resolution]
+    D --&gt; E[HTTP Request to Congress.gov]
+    E --&gt; F[JSON Response Processing]
+    F --&gt; G{Output Format}
+    G --&gt;|table| H[Rich Table Display]
+    G --&gt;|markdown| I[Markdown Table Print]
+    G --&gt;|json| J[JSON Dump]
+    
+    K[Error Handling] --&gt; L[User-Friendly Error Messages]
+    E --&gt; K
+    F --&gt; K</code></pre>
+<br>
+<h3> Authentication Flow</h3>
+<pre><code class="language-mermaid">graph LR
+    A[Command Start] --&gt; B[get_client()]
+    B --&gt; C[CongressClient.__init__]
+    C --&gt; D[API Key Check]
+    D --&gt; E[secret(&#x27;DATAGOV_API_KEY&#x27;)]
+    E --&gt; F[HTTP Client Setup]
+    F --&gt; G[API Request]</code></pre>
+<br>
+<h3> Bill Detail Flow</h3>
+<p>The bill command supports multiple sub-resources with specialized formatting for each type (actions, amendments, cosponsors, subjects, summaries, text). Each sub-resource has its own table structure and field mapping optimized for the specific data type.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library providing async/sync request capabilities. Used in CongressClient for all API communication with Congress.gov, including connection pooling, timeout handling, and error management. Imported in: `tools/research/congress/client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Python library for building CLI applications with automatic help generation and type validation. Provides the main application framework, command registration, option/argument parsing, and help text generation. Core to all CLI functionality. Imported in: `tools/research/congress/cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Library for rich text and beautiful formatting in terminals. Provides the Console class for colored output and styled table display. Used for all formatted table output in the default display mode. Imported in: `tools/research/congress/cli.py`.</p>
+<br>
+<h3> Internal SDK Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk.tool_sdk.secret</strong> [configuration]: Centaur SDK function for retrieving API keys and secrets from environment or configuration. Used to obtain the DATAGOV_API_KEY required for Congress.gov API authentication. Imported in: `tools/research/congress/client.py`.</p>
+<br>
+<p>- <strong>centaur_sdk.cli_tables.Table</strong> [cli]: Centaur SDK table component that extends Rich tables with additional formatting capabilities. Used as the primary table display mechanism for all tabular data output. Imported in: `tools/research/congress/cli.py`.</p>
+<br>
+<p>- <strong>dotenv</strong> (load_dotenv) [configuration]: Loads environment variables from .env files. Called at module initialization to ensure API keys are available from environment files. Imported in: `tools/research/congress/cli.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The congress component exposes a comprehensive CLI interface for accessing Congress.gov data:</p>
+<br>
+<h3> Public CLI Commands</h3>
+<p>- <code>congress bills</code> - List bills with filtering options (congress, type, limit, page)</p>
+<p>- <code>congress bill</code> - Get specific bill details with sub-resource support  </p>
+<p>- <code>congress members</code> - List members with state filtering</p>
+<p>- <code>congress member <bioguide_id></code> - Get member details by ID</p>
+<p>- <code>congress committees</code> - List committees with chamber filtering</p>
+<p>- <code>congress hearings</code> - List hearings by congress and chamber</p>
+<p>- <code>congress votes</code> - List roll call votes with session filtering</p>
+<p>- <code>congress search <keyword></code> - Search bills by title keyword</p>
+<br>
+<h3> Output Format Options</h3>
+<p>All commands support three output formats via flags:</p>
+<li>Default: Rich-formatted colored tables</li>
+<p>- <code>--markdown</code>: Markdown table format</p>
+<p>- <code>--json</code>: Raw JSON API responses</p>
+<br>
+<h3> Public Library Interface</h3>
+<p>The CongressClient class can be imported and used programmatically:</p>
+<br>
+<pre><code class="language-python">from congress.client import CongressClient
+
+client = CongressClient()
+bills = client.list_bills(congress=119, limit=10)
+member = client.get_member(&quot;L000174&quot;)</code></pre>
+<br>
+<h3> Configuration Requirements</h3>
+<p>- <strong>DATAGOV_API_KEY</strong>: Required environment variable for Congress.gov API access</p>
+<li>API key must be valid for api.congress.gov domain</li>
+<br>
+<p>The component provides a complete interface to the Congress.gov API v3 with user-friendly CLI access and programmatic library usage for congressional data research and analysis.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

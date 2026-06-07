@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: harmonic — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>harmonic</h1>
+</header>
+<h1>Harmonic Research Library</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The harmonic component implements a <strong>client-server library pattern</strong> with a clear separation between API client logic and CLI presentation layer. The architecture follows the <strong>facade pattern</strong> where the `HarmonicClient` class provides a unified interface to the Harmonic.AI API, while the CLI module handles user interaction and output formatting.</p>
+<br>
+<p>The component is structured as a Python package with three core modules:</p>
+<p>- <code>client.py</code> - HTTP API client with comprehensive data normalization</p>
+<p>- <code>cli.py</code> - Typer-based command-line interface with rich output formatting</p>
+<p>- <code>__init__.py</code> - Package initialization (minimal)</p>
+<br>
+<p>The design emphasizes <strong>data transformation and normalization</strong>, with extensive helper functions to clean and standardize API responses from Harmonic.AI's varying data formats.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> HarmonicClient Class</h3>
+<p>The main API client class provides authenticated HTTP requests to the Harmonic.AI REST API. It handles authentication via API key, manages HTTP sessions with configurable timeouts, and provides methods for all major API endpoints including company enrichment, person enrichment, search operations, and saved search management.</p>
+<br>
+<h3> CLI Command Structure</h3>
+<p>The CLI implements 8 primary commands using Typer: <code>company</code>, <code>person</code>, <code>search</code>, <code>similar</code>, <code>typeahead</code>, <code>saved-searches</code>, <code>saved-search-results</code>, and <code>status</code>. Each command supports multiple output formats (JSON, markdown tables, rich console output) with consistent error handling and user feedback.</p>
+<br>
+<h3> Data Normalization Pipeline</h3>
+<p>A comprehensive set of helper functions handles data cleaning and standardization: <code>_clean_text()</code>, <code>_dedupe_strings()</code>, <code>_normalize_seniority()</code>, <code>_location_text()</code>, and <code>_normalize_person_result()</code>. These functions address inconsistencies in Harmonic.AI's API responses and provide recruiting-friendly data structures.</p>
+<br>
+<h3> Authentication System</h3>
+<p>Integrates with the Centaur SDK's secret management system to retrieve API keys, with fallback support for direct key injection. The <code>_clean_secret()</code> function handles multi-line 1Password field formats.</p>
+<br>
+<h3> Output Formatting System</h3>
+<p>Provides three distinct output modes: JSON for machine consumption, rich console tables with color coding and truncation, and markdown tables for documentation. The <code>format_money()</code> and <code>truncate()</code> functions ensure consistent data presentation.</p>
+<br>
+<h3> Search and Filter Engine</h3>
+<p>Implements sophisticated filtering capabilities for people recruiting searches, including role queries, background matching, prior employer filtering, seniority levels, and location constraints. Uses fuzzy text matching via <code>_match_query()</code>.</p>
+<br>
+<h3> Error Handling Framework</h3>
+<p>Centralized error handling converts HTTP exceptions into user-friendly RuntimeError messages, with proper status code and response text propagation for debugging.</p>
+<br>
+<h3> Pagination Support</h3>
+<p>Handles cursor-based pagination across multiple endpoints with consistent parameter passing and next-page cursor extraction from API responses.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Company Enrichment Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[CLI company command] --&gt; B[Parse input parameters]
+    B --&gt; C[HarmonicClient.enrich_company]
+    C --&gt; D[POST /companies with identifiers]
+    D --&gt; E[Harmonic.AI API]
+    E --&gt; F[Raw company data response]
+    F --&gt; G[Extract standard fields]
+    G --&gt; H[Format output based on --json/--markdown flags]
+    H --&gt; I[Display to user]</code></pre>
+<br>
+<h3> Person Search and Filter Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[CLI search_people_recruiting] --&gt; B[Resolve saved search by name/ID]
+    B --&gt; C[Get raw results from saved search]
+    C --&gt; D[Normalize each person record]
+    D --&gt; E[Apply role query filter]
+    E --&gt; F[Apply background query filter]
+    F --&gt; G[Apply prior employer filter]
+    G --&gt; H[Apply seniority filter]
+    H --&gt; I[Apply location filter]
+    I --&gt; J[Return filtered results]</code></pre>
+<br>
+<h3> API Request Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[Method call on HarmonicClient] --&gt; B[Get API key from Centaur SDK]
+    B --&gt; C[Build HTTP request with headers]
+    C --&gt; D[Send request via httpx]
+    D --&gt; E[Handle HTTP errors]
+    E --&gt; F[Parse JSON response]
+    F --&gt; G[Return dict/list to caller]</code></pre>
+<br>
+<h2>Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client for making requests to the Harmonic.AI REST API. Provides better performance and developer experience than requests library. Used throughout `client.py` for all API communications with timeout handling and proper session management.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework built on Click that provides type hints, automatic help generation, and rich integration. Powers the entire CLI interface in `cli.py` with decorators for commands, options, and arguments. Handles command parsing, validation, and help text generation.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library for creating beautiful console output with colors, tables, and progress bars. Used in `cli.py` for console output, table formatting, and colored text display. Imported via `Console` class and `Table` component from centaur_sdk.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk.secret</strong>: Provides secure secret retrieval functionality for accessing the `HARMONIC_API_KEY` environment variable. Used in `client.py` for authentication token management with proper secret cleaning and fallback handling.</p>
+<br>
+<p>- <strong>centaur_sdk.Table</strong>: Rich table component wrapper from the Centaur SDK used for formatted console output in CLI commands. Imported in `cli.py` for displaying search results and company data in tabular format.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> HarmonicClient Public Methods</h3>
+<br>
+<p>- <strong>enrich_company()</strong>: Enriches company data by website domain, URL, LinkedIn, Twitter, Crunchbase, or PitchBook identifiers. Returns comprehensive company profile with funding, headcount, tags, and highlights.</p>
+<br>
+<p>- <strong>enrich_person()</strong>: Enriches person data using LinkedIn profile URL. Returns normalized person profile with current title, company, location, experience history, and social profiles.</p>
+<br>
+<p>- <strong>search_companies_natural_language()</strong>: Performs Scout Search using natural language queries with similarity thresholds and pagination support. Returns ranked company results based on semantic matching.</p>
+<br>
+<p>- <strong>get_similar_companies()</strong>: Finds companies similar to a given company ID or URN. Returns list of companies with similar profiles, funding stages, or business models.</p>
+<br>
+<p>- <strong>search_typeahead()</strong>: Provides autocomplete search for companies, people, or investors. Supports partial name matching and returns structured suggestions with IDs.</p>
+<br>
+<p>- <strong>get_saved_searches()</strong>: Lists all saved searches accessible to the authenticated account. Returns search metadata including names, types, and result counts.</p>
+<br>
+<p>- <strong>get_saved_search_results()</strong>: Retrieves paginated results from a specific saved search by ID or URN. Supports cursor-based pagination for large result sets.</p>
+<br>
+<p>- <strong>search_people_recruiting()</strong>: Advanced people search with recruiting-focused filters including role queries, background matching, prior employers, seniority levels, and locations. Returns normalized candidate profiles.</p>
+<br>
+<p>- <strong>get_enrichment_status()</strong>: Checks status of pending enrichment requests using IDs or URNs. Returns completion status and enriched entity URNs when available.</p>
+<br>
+<p>- <strong>raw()</strong>: Direct API access method for making arbitrary HTTP requests to any Harmonic.AI endpoint with custom parameters and JSON bodies.</p>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>- <strong>company</strong>: Enriches company by domain/URL/LinkedIn with JSON, markdown, or rich console output</p>
+<p>- <strong>person</strong>: Enriches person by LinkedIn URL with multiple output formats</p>
+<p>- <strong>search</strong>: Natural language company search with pagination and similarity thresholds</p>
+<p>- <strong>similar</strong>: Finds companies similar to a given company ID</p>
+<p>- <strong>typeahead</strong>: Autocomplete search for companies/people/investors</p>
+<p>- <strong>saved-searches</strong>: Lists accessible saved searches</p>
+<p>- <strong>saved-search-results</strong>: Retrieves paginated results from saved searches</p>
+<p>- <strong>status</strong>: Checks enrichment request completion status</p>
+<p>- <strong>raw</strong>: Direct API endpoint access for debugging and advanced usage</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

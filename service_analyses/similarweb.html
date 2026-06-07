@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: similarweb — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>similarweb</h1>
+</header>
+<h1>SimilarWeb CLI Tool</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The similarweb component is a command-line interface (CLI) tool that provides access to SimilarWeb's web traffic and market intelligence API. It follows a clean separation of concerns with a client-server architecture pattern where the CLI layer (<code>cli.py</code>) handles user interactions and command parsing, while the client layer (<code>client.py</code>) manages API communication and data processing.</p>
+<br>
+<p>The architecture is built around the Typer CLI framework, providing a rich command-line experience with multiple subcommands for different types of market intelligence data. The component uses a lazy client instantiation pattern to ensure API credentials are only validated when needed.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<p>1. <strong>SimilarWebClient</strong> (`client.py:26-392`): Core API client class that handles all communication with the SimilarWeb REST API, including authentication, request formatting, and response parsing.</p>
+<br>
+<p>2. <strong>CLI Application</strong> (`cli.py:11`): Main Typer application that orchestrates all CLI commands and provides the primary user interface for the tool.</p>
+<br>
+<p>3. <strong>Traffic Analysis Commands</strong> (`cli.py:69-119`): Command group for website traffic metrics including visits, engagement, and temporal analysis.</p>
+<br>
+<p>4. <strong>Ranking Commands</strong> (`cli.py:122-179`): Commands for retrieving global, country, and industry rankings for domains.</p>
+<br>
+<p>5. <strong>Traffic Sources Analysis</strong> (`cli.py:182-242`): Functionality to analyze traffic distribution across different marketing channels (organic search, paid search, direct, social, etc.).</p>
+<br>
+<p>6. <strong>Geographic Analysis</strong> (`cli.py:245-300`): Commands for understanding traffic distribution by country and region.</p>
+<br>
+<p>7. <strong>Competitive Intelligence</strong> (`cli.py:303-347`): Tools for discovering similar websites and competitor analysis.</p>
+<br>
+<p>8. <strong>Keyword Research</strong> (`cli.py:350-407`): SEO and SEM keyword analysis functionality.</p>
+<br>
+<p>9. <strong>Mobile App Intelligence</strong> (`cli.py:410-466`): Commands for analyzing mobile applications across Google Play and Apple App Store.</p>
+<br>
+<p>10. <strong>Output Formatters</strong> (`cli.py:21-50`): Utility functions for formatting numbers, percentages, and generating different output formats (JSON, markdown, rich tables).</p>
+<br>
+<p>11. <strong>Date Handling</strong> (`cli.py:52-66`): Date parsing and default date range calculation utilities.</p>
+<br>
+<p>12. <strong>Raw API Access</strong> (`cli.py:468-491`): Direct API endpoint access for advanced users and debugging.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[User CLI Input] --&gt; B[Typer Command Router]
+    B --&gt; C[Parameter Validation]
+    C --&gt; D[get_client Factory]
+    D --&gt; E[SimilarWebClient]
+    E --&gt; F[API Key Resolution]
+    F --&gt; G[HTTP Request Builder]
+    G --&gt; H[SimilarWeb API]
+    H --&gt; I[Response Processing]
+    I --&gt; J[Data Formatting]
+    J --&gt; K{Output Format?}
+    K --&gt;|JSON| L[JSON Output]
+    K --&gt;|Markdown| M[Markdown Table]
+    K --&gt;|Rich| N[Console Display]</code></pre>
+<br>
+<p>The primary data flow starts with user commands that are parsed by Typer, validated, and then routed to the appropriate client method. The client constructs authenticated HTTP requests to the SimilarWeb API, processes responses, and returns structured data that gets formatted according to user preferences (JSON, markdown tables, or rich console output).</p>
+<br>
+<pre><code class="language-mermaid">graph LR
+    A[CLI Command] --&gt; B[Date Processing]
+    B --&gt; C[Domain Validation]
+    C --&gt; D[API Request]
+    D --&gt; E[Error Handling]
+    E --&gt; F[Data Transformation]
+    F --&gt; G[Output Rendering]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client for making requests to the SimilarWeb API. Used in `client.py` for all API communication with connection pooling and timeout management. Imported in: `tools/research/similarweb/client.py:6`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework that provides command parsing, argument validation, and help generation. Powers the entire CLI interface with decorators for command definition. Imported in: `tools/research/similarweb/cli.py:6`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Rich text and beautiful formatting library for console output. Provides table rendering, colored output, and enhanced console display capabilities. Imported in: `tools/research/similarweb/cli.py:7`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [build-tool]: Environment variable loading from .env files. Listed as dependency but not directly imported in the codebase - likely used by centaur_sdk for configuration management.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong>: Internal SDK providing `secret()` function for secure credential management and `Table` class for rich table rendering. Imported in: `tools/research/similarweb/client.py:8`, `tools/research/similarweb/cli.py:9`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes a comprehensive CLI interface with the following commands:</p>
+<br>
+<p><strong>Website Analysis Commands:</strong></p>
+<p>- <code>traffic</code>: Get website traffic and engagement metrics with date range filtering</p>
+<p>- <code>rank</code>: Retrieve global, country, and industry rankings for domains  </p>
+<p>- <code>sources</code>: Analyze traffic distribution by marketing channel</p>
+<p>- <code>geo</code>: Geographic traffic distribution analysis</p>
+<p>- <code>similar</code>: Discover competitor and similar websites</p>
+<p>- <code>keywords</code>: SEO/SEM keyword research and analysis</p>
+<br>
+<p><strong>Mobile App Commands:</strong></p>
+<p>- <code>app</code>: Get mobile application details and metadata</p>
+<p>- <code>app-rank</code>: Retrieve app store ranking information</p>
+<br>
+<p><strong>Utility Commands:</strong></p>
+<p>- <code>raw</code>: Direct API endpoint access for advanced usage</p>
+<br>
+<p>Each command supports multiple output formats (JSON, markdown, rich console) and includes comprehensive parameter validation and error handling. The CLI provides consistent date parsing, number formatting, and user-friendly error messages across all commands.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

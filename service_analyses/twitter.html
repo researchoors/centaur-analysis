@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: twitter — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>twitter</h1>
+</header>
+<p>Now I have a comprehensive understanding of the Twitter component. Let me write the analysis:</p>
+<br>
+<h1>Twitter Component Analysis</h1>
+<br>
+<p>The Twitter component is a comprehensive Python library that provides a CLI and SDK for interacting with Twitter/X data through the Synoptic API. It offers user profile management, follower/following analysis, tweet search capabilities, and timeline access with rich output formatting options.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> pattern with clear separation between CLI presentation, client abstraction, and API communication layers. The design emphasizes async/await patterns for efficient HTTP operations while providing synchronous wrappers for CLI usage.</p>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Layer - cli.py] --&gt; B[Client Wrapper - client.py]
+    B --&gt; C[SDK Layer - TwitterClient]
+    C --&gt; D[Synoptic Client - SynopticClient]
+    D --&gt; E[HTTP Layer - httpx]
+    E --&gt; F[Synoptic API]
+    
+    G[FxTwitter API] --&gt; B
+    H[centaur_sdk] --&gt; A
+    H --&gt; B</code></pre>
+<br>
+<p>The architecture includes three distinct layers:</p>
+<p>1. <strong>CLI Layer</strong>: Typer-based command interface with rich formatting</p>
+<p>2. <strong>Client Layer</strong>: Sync wrapper with article expansion and caching</p>
+<p>3. <strong>SDK Layer</strong>: Async HTTP client with retry logic and budget management</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> CLI Interface (cli.py)</h3>
+<p>The main CLI application built with Typer, providing 8 commands for Twitter data access. Includes comprehensive output formatting with JSON, Markdown, and rich table options. Key features include number formatting (K/M suffixes), timestamp conversion, and metadata display for API usage tracking.</p>
+<br>
+<h3> Synchronous Client Wrapper (client.py) </h3>
+<p>A sync wrapper (<code>PTwitterClient</code>) that bridges the async SDK with CLI usage. Handles article expansion for X long-form posts via FxTwitter API integration. Provides pagination management and automatic connection pooling through the embedded SDK.</p>
+<br>
+<h3> Async Twitter SDK (sdk/clients/twitter.py)</h3>
+<p>Main SDK class that inherits from <code>SynopticClient</code>. Acts as a future-proof abstraction layer that can accommodate additional Twitter API providers while currently delegating all operations to the Synoptic backend.</p>
+<br>
+<h3> Synoptic API Client (sdk/clients/synoptic.py)</h3>
+<p>Core async HTTP client with sophisticated retry logic, TTL caching, and budget management. Implements exponential backoff for rate limiting and connection errors. Features request batching for user/tweet lookups and comprehensive usage tracking.</p>
+<br>
+<h3> Configuration Management (sdk/config.py)</h3>
+<p>Pydantic-based settings management supporting environment variables and .env files. Handles API credentials, retry configuration, and backward compatibility with legacy RapidAPI providers.</p>
+<br>
+<h3> Data Models (sdk/models.py)</h3>
+<p>Pydantic models defining API response structures for followers, following users, and provider enums. Ensures type safety and validation across the SDK.</p>
+<br>
+<h3> Exception Handling (sdk/exceptions.py)</h3>
+<p>Comprehensive exception hierarchy including retryable HTTP errors, rate limit handling, and authentication failures. Supports the retry logic in the HTTP client layer.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> User Profile Lookup Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant CLI
+    participant Client
+    participant SDK
+    participant API
+    
+    CLI-&gt;&gt;Client: get_user(handle)
+    Client-&gt;&gt;SDK: get_user_by_screen_name()
+    SDK-&gt;&gt;API: GET /twttr-api/users/lookup
+    API--&gt;&gt;SDK: User data + metadata
+    SDK--&gt;&gt;Client: Formatted user dict
+    Client--&gt;&gt;CLI: User profile
+    CLI-&gt;&gt;CLI: Format output (table/json/markdown)</code></pre>
+<br>
+<h3> Follower Pagination Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant CLI
+    participant Client
+    participant SDK
+    participant Cache
+    participant API
+    
+    CLI-&gt;&gt;Client: get_followers(handle, limit=1000)
+    Client-&gt;&gt;SDK: Pagination loop
+    loop Until limit reached
+        SDK-&gt;&gt;Cache: Check cache
+        alt Cache miss
+            SDK-&gt;&gt;API: GET /twttr-api/users/followers
+            API--&gt;&gt;SDK: Follower IDs + cursor
+            SDK-&gt;&gt;Cache: Store response
+        end
+        SDK-&gt;&gt;API: GET /twttr-api/users/lookup (batch)
+        API--&gt;&gt;SDK: Full user details
+    end
+    SDK--&gt;&gt;Client: All followers + metadata
+    Client--&gt;&gt;CLI: Formatted results</code></pre>
+<br>
+<h3> Tweet Search with Article Expansion</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant CLI
+    participant Client
+    participant SDK
+    participant FxAPI
+    participant API
+    
+    CLI-&gt;&gt;Client: search_tweets(query)
+    Client-&gt;&gt;SDK: search_tweets()
+    SDK-&gt;&gt;API: GET /twttr-api/tweets/search
+    API--&gt;&gt;SDK: Tweet results
+    SDK--&gt;&gt;Client: Raw tweets
+    Client-&gt;&gt;Client: Check for article URLs
+    alt Has article URL
+        Client-&gt;&gt;FxAPI: GET article content
+        FxAPI--&gt;&gt;Client: Article data
+        Client-&gt;&gt;Client: Merge article into tweet
+    end
+    Client--&gt;&gt;CLI: Enhanced tweets</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework with automatic help generation and type hints. Used throughout `cli.py` for command definitions, argument parsing, and option handling. Provides the main `@app.command()` decorators and `typer.Typer` application instance.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Rich text and formatting library for beautiful terminal output. Used in `cli.py` for colored console output (`Console()`), table formatting (`Table`), and styled text rendering. Handles progress indicators and styled output across all commands.</p>
+<br>
+<p>- <strong>httpx</strong> (>=0.28.1) [networking]: Modern async HTTP client library. Used in `client.py` for FxTwitter API calls and throughout `sdk/clients/synoptic.py` as the core HTTP transport. Provides connection pooling, timeout handling, and async/await support.</p>
+<br>
+<p>- <strong>tenacity</strong> (>=8.0.0) [async-runtime]: Retry library with exponential backoff and sophisticated retry logic. Used in `sdk/clients/synoptic.py` for handling rate limits, network timeouts, and server errors. Provides `@retry` decorators and retry configuration management.</p>
+<br>
+<p>- <strong>pydantic</strong> (>=2.0.0) [serialization]: Data validation and settings management using Python type annotations. Used in `sdk/config.py` for `SDKSettings` class and `sdk/models.py` for API response models like `Follower`, `Following`, and provider enums.</p>
+<br>
+<p>- <strong>pydantic-settings</strong> (>=2.0.0) [serialization]: Pydantic extension for loading settings from environment variables and .env files. Used in `sdk/config.py` for automatic configuration loading with `BaseSettings` and `SettingsConfigDict`.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [centaur]: Internal SDK providing `secret()` function for secure credential management and `Table` class for consistent table formatting. Used in `client.py` for API key retrieval and `cli.py` for table rendering.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The library exposes both programmatic and command-line interfaces:</p>
+<br>
+<h3> CLI Commands</h3>
+<p>- <strong>user</strong>: Get user profile by handle with follower counts and verification status</p>
+<p>- <strong>followers</strong>: List followers with pagination, supports IDs-only mode</p>
+<p>- <strong>following</strong>: List accounts a user follows with full user details</p>
+<p>- <strong>lookup</strong>: Batch user lookup by comma-separated IDs</p>
+<p>- <strong>search</strong>: Tweet search with query operators and result type selection</p>
+<p>- <strong>tweets</strong>: Tweet lookup by IDs with automatic article expansion</p>
+<p>- <strong>timeline</strong>: User timeline retrieval with pagination support</p>
+<p>- <strong>usage</strong>: API credit usage monitoring</p>
+<br>
+<h3> Programmatic API</h3>
+<pre><code class="language-python"># Async SDK usage
+async with TwitterClient(api_key=&quot;key&quot;) as client:
+    user = await client.get_user_by_screen_name(&quot;elonmusk&quot;)
+    followers, cursor, meta = await client.get_followers(&quot;elonmusk&quot;)
+    tweets, cursor, meta = await client.search_tweets(&quot;bitcoin&quot;)
+
+# Sync wrapper usage  
+client = PTwitterClient()
+user = client.get_user(&quot;elonmusk&quot;)
+followers, meta = client.get_followers(&quot;elonmusk&quot;, limit=100)</code></pre>
+<br>
+<h3> Output Formats</h3>
+<p>All CLI commands support multiple output formats:</p>
+<p>- <strong>Rich Tables</strong>: Colored, formatted terminal tables with proper alignment</p>
+<p>- <strong>JSON</strong>: Machine-readable structured output for integration</p>
+<p>- <strong>Markdown</strong>: Human-readable format suitable for documentation</p>
+<br>
+<p>The API provides comprehensive metadata including consumed API units, remaining credits, returned item counts, and pricing information for usage monitoring and budget management.</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Synoptic Twitter API</h3>
+<p>Primary data source providing Twitter/X API access through a unified interface. The component makes authenticated requests to endpoints like <code>/twttr-api/users/lookup</code>, <code>/twttr-api/users/followers</code>, and <code>/twttr-api/tweets/search</code>. Handles rate limiting, pagination cursors, and usage tracking.</p>
+<br>
+<h3> FxTwitter API</h3>
+<p>Secondary service used for expanding X article content embedded in tweets. Makes unauthenticated requests to <code>https://api.fxtwitter.com/{username}/status/{tweet_id}</code> to retrieve long-form article text and metadata. Used for enhancing tweet lookup results.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This library component has no direct interactions with other components in the centaur codebase. It operates as a standalone tool that:</p>
+<br>
+<p>- Imports utility functions from <code>centaur_sdk</code> for credential management and UI components</p>
+<li>Can be invoked independently via CLI or imported as a Python library</li>
+<li>Designed for integration into larger workflows through its programmatic API</li>
+<br>
+<p>The component follows the centaur pattern of self-contained tools that can be composed into larger systems while maintaining clear boundaries and minimal coupling.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

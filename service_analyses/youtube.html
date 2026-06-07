@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: youtube — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>youtube</h1>
+</header>
+<h1>YouTube Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The YouTube component follows a <strong>layered architecture</strong> pattern with clear separation between the CLI interface, HTTP client, and data processing layers. The design emphasizes modularity with a single `YouTubeClient` class handling all API interactions, while the CLI module provides command-line interfaces for different YouTube operations.</p>
+<br>
+<p>The architecture supports dual data sources: the official YouTube Data API v3 for metadata and search operations, and YouTube's internal InnerTube API for transcript access. This hybrid approach enables comprehensive functionality while maintaining reliability through the use of official APIs where available.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> YouTubeClient (client.py)</h3>
+<p>The core client class that handles all YouTube API interactions. It manages HTTP communication with both the YouTube Data API v3 and YouTube's internal transcript system. The client includes sophisticated URL normalization, consent wall handling, and automatic API key resolution through multiple sources (environment variables, 1Password CLI).</p>
+<br>
+<h3> CLI Commands (cli.py)</h3>
+<p>A Typer-based command-line interface providing five main commands: <code>search</code>, <code>video</code>, <code>channel</code>, <code>transcripts</code>, and <code>transcript</code>. Each command supports multiple output formats (rich console output, JSON, and Markdown) with intelligent formatting for human-readable displays.</p>
+<br>
+<h3> Transcript Processing System</h3>
+<p>A complex system for extracting and processing YouTube video transcripts, including XML parsing, time window slicing, and multi-language support. It handles both manual and auto-generated captions with fallback mechanisms for language selection.</p>
+<br>
+<h3> Data Formatting Utilities</h3>
+<p>Helper functions for presenting YouTube data in user-friendly formats, including number abbreviation (1.2M, 3.4K), duration parsing from ISO 8601 format, and timestamp formatting for transcript display.</p>
+<br>
+<h3> Authentication Management</h3>
+<p>Multi-layered authentication system that attempts to retrieve API keys from instance variables, environment variables (YOUTUBE_API_KEY, GOOGLE_API_KEY), and 1Password CLI as fallback options.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[YouTubeClient]
+    B --&gt; C{API Type}
+    C --&gt;|Search/Video/Channel| D[YouTube Data API v3]
+    C --&gt;|Transcripts| E[YouTube Watch Page]
+    E --&gt; F[Extract InnerTube API Key]
+    F --&gt; G[InnerTube Player API]
+    G --&gt; H[Caption Track URLs]
+    H --&gt; I[Download Transcript XML]
+    I --&gt; J[Parse &amp; Format]
+    D --&gt; K[Format Response]
+    J --&gt; K
+    K --&gt; L[Output Handler]
+    L --&gt; M{Format Type}
+    M --&gt;|Rich| N[Console Display]
+    M --&gt;|JSON| O[JSON Output]
+    M --&gt;|Markdown| P[Markdown Table]</code></pre>
+<br>
+<h3> Authentication Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[API Request] --&gt; B{API Key Available?}
+    B --&gt;|Yes| C[Use Provided Key]
+    B --&gt;|No| D[Check Environment Variables]
+    D --&gt; E{YOUTUBE_API_KEY Set?}
+    E --&gt;|Yes| F[Use Environment Key]
+    E --&gt;|No| G[Check GOOGLE_API_KEY]
+    G --&gt; H{GOOGLE_API_KEY Set?}
+    H --&gt;|Yes| I[Use Google API Key]
+    H --&gt;|No| J[Try 1Password CLI]
+    J --&gt; K{1Password Success?}
+    K --&gt;|Yes| L[Use 1Password Key]
+    K --&gt;|No| M[Raise Error]
+    C --&gt; N[Make API Request]
+    F --&gt; N
+    I --&gt; N
+    L --&gt; N</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library used for all API requests to YouTube services. Provides async support, connection pooling, and robust error handling. Used throughout the YouTubeClient class for both Data API and transcript requests. Imported in: `tools/research/youtube/client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework built on Click that provides type-safe command-line interfaces with automatic help generation and validation. Powers all CLI commands including search, video, channel, and transcript operations. Imported in: `tools/research/youtube/cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library that provides colored output, tables, and progress bars. Used for creating formatted console output including tables for search results and styled text for video information. Imported in: `tools/research/youtube/cli.py`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Loads environment variables from .env files for development convenience. Called at module import to automatically load API keys and configuration. Imported in: `tools/research/youtube/cli.py`.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk.secret</strong>: Internal SDK function for retrieving secrets from various sources including environment variables and secret management systems. Used in the `_get_api_key` method to resolve YouTube API credentials. Imported in: `tools/research/youtube/client.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Classes</h3>
+<br>
+<p><strong>YouTubeClient</strong>: The main client class exposing methods for YouTube API interaction:</p>
+<p>- <code>search(query, max_results, type, order)</code>: Search for videos, channels, or playlists</p>
+<p>- <code>get_video(video_id)</code>: Retrieve detailed video information including statistics</p>
+<p>- <code>get_channel(channel_id)</code>: Get channel details and statistics</p>
+<p>- <code>list_transcripts(video_id)</code>: List available caption tracks for a video</p>
+<p>- <code>get_transcript(video_id, language_codes, start_time, end_time)</code>: Download timestamped transcripts</p>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p><strong>search</strong>: Search YouTube content with filtering by type (video/channel/playlist) and customizable result limits</p>
+<p><strong>video</strong>: Get comprehensive video details including view counts, likes, and descriptions  </p>
+<p><strong>channel</strong>: Retrieve channel statistics and metadata</p>
+<p><strong>transcripts</strong>: List available caption tracks for any video</p>
+<p><strong>transcript</strong>: Download full transcripts with time-based slicing and language selection</p>
+<br>
+<h3> Data Formats</h3>
+<br>
+<p>All methods return structured dictionaries matching YouTube's API response format, with additional computed fields for convenience. The CLI supports three output formats: rich console display with colors and tables, raw JSON for programmatic use, and Markdown tables for documentation.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

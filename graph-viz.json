@@ -1,0 +1,2582 @@
+{
+  "nodes": [
+    {
+      "id": "centaur-sdk",
+      "name": "centaur-sdk",
+      "kind": "library",
+      "description": "Lightweight SDK for building Centaur-compatible tools",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "centaur-api",
+      "name": "centaur-api",
+      "kind": "library",
+      "description": "Centaur API server",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "ashby",
+      "name": "ashby",
+      "kind": "library",
+      "description": "Ashby ATS CLI for AI agents \u2014 query candidates, jobs, applications, interviews",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "attio",
+      "name": "attio",
+      "kind": "cli",
+      "description": "Attio CRM \u2014 objects, records, lists, notes, tasks",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "pylon",
+      "name": "pylon",
+      "kind": "library",
+      "description": "Pylon CLI for AI agents - support issues, accounts, contacts",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "telegram",
+      "name": "telegram",
+      "kind": "library",
+      "description": "Telegram CLI for AI agents - send messages, search chats, gather context",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "twitter",
+      "name": "twitter",
+      "kind": "library",
+      "description": "Twitter CLI for user profiles, followers, tweets, and search",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "alchemy",
+      "name": "alchemy",
+      "kind": "library",
+      "description": "Alchemy CLI for blockchain data, token balances, transfers, and prices",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "allium",
+      "name": "allium",
+      "kind": "cli",
+      "description": "Allium on-chain analytics \u2014 SQL queries, schema search, stablecoin analysis",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "arkham",
+      "name": "arkham",
+      "kind": "library",
+      "description": "Arkham Intelligence CLI for blockchain analytics and wallet tracking",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "coindesk",
+      "name": "coindesk",
+      "kind": "library",
+      "description": "CoinDesk CLI for crypto news",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "coingecko",
+      "name": "coingecko",
+      "kind": "cli",
+      "description": "CoinGecko Pro API \u2014 prices, markets, trending coins, exchanges",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "coinmetrics",
+      "name": "coinmetrics",
+      "kind": "cli",
+      "description": "Coin Metrics API \u2014 asset metrics, market data, timeseries, exchanges",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "databento",
+      "name": "databento",
+      "kind": "cli",
+      "description": "Databento Historical API \u2014 stock market OHLCV data",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "debank",
+      "name": "debank",
+      "kind": "library",
+      "description": "DeBank CLI for DeFi wallet data, token balances, and protocol positions",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "defillama",
+      "name": "defillama",
+      "kind": "cli",
+      "description": "DefiLlama DeFi analytics \u2014 TVL, stablecoins, DEX volumes, bridges, fees",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "dune",
+      "name": "dune",
+      "kind": "cli",
+      "description": "Dune Analytics \u2014 execute queries, fetch results, check status",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "eodhd",
+      "name": "eodhd",
+      "kind": "cli",
+      "description": "EODHD Financial API \u2014 real-time quotes and historical EOD prices",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "etherscan",
+      "name": "etherscan",
+      "kind": "library",
+      "description": "Etherscan \u2014 Ethereum block explorer, transactions, contracts, and tokens",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "kalshi",
+      "name": "kalshi",
+      "kind": "cli",
+      "description": "Kalshi prediction market data \u2014 markets, events, trades, price history",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "karma",
+      "name": "karma",
+      "kind": "library",
+      "description": "Karma \u2014 DAO delegate reputation, contributor scores, and governance analytics",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "messari",
+      "name": "messari",
+      "kind": "cli",
+      "description": "Messari crypto asset data \u2014 prices, metrics, profiles, markets, news",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "mpp",
+      "name": "mpp",
+      "kind": "library",
+      "description": "Market data via MPP (Machine Payments Protocol) \u2014 token prices, web search, on-chain data, trending tokens, wallet balances, and Dune SQL queries. Paid per-query with Tempo stablecoins.",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "nansen",
+      "name": "nansen",
+      "kind": "cli",
+      "description": "Nansen blockchain analytics \u2014 wallet labels, Smart Money, token data",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "polymarket",
+      "name": "polymarket",
+      "kind": "cli",
+      "description": "Polymarket prediction market data \u2014 markets, events, prices, orderbooks",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "snapshot",
+      "name": "snapshot",
+      "kind": "library",
+      "description": "Snapshot \u2014 off-chain governance voting, proposals, and spaces",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "standard-metrics",
+      "name": "standard-metrics",
+      "kind": "library",
+      "description": "Standard Metrics CLI for portfolio company data and analytics",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "tally",
+      "name": "tally",
+      "kind": "library",
+      "description": "Tally \u2014 on-chain governance proposals, voting, and delegates",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "theblock",
+      "name": "theblock",
+      "kind": "library",
+      "description": "The Block CLI for crypto news",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "token-terminal",
+      "name": "token-terminal",
+      "kind": "library",
+      "description": "Token Terminal \u2014 protocol revenue, fees, financial statements, and metrics",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "tokenomist",
+      "name": "tokenomist",
+      "kind": "library",
+      "description": "Tokenomist \u2014 token unlock schedules, vesting, emissions, and allocations",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "chart",
+      "name": "chart",
+      "kind": "library",
+      "description": "Chart generation for Centaur. Single render_chart method returns base64 PNG images ready for Slack upload.",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "cloudwatch",
+      "name": "cloudwatch",
+      "kind": "library",
+      "description": "AWS CloudWatch \u2014 Logs Insights queries, log events, metrics, and alarms (read-only)",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "demo",
+      "name": "demo",
+      "kind": "library",
+      "description": "Demo tool for testing CD hot-reload",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "grafana",
+      "name": "grafana",
+      "kind": "frontend",
+      "description": "Grafana observability \u2014 dashboards, VictoriaMetrics, VictoriaLogs, alerts, annotations",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "laminar",
+      "name": "laminar",
+      "kind": "library",
+      "description": "Laminar trace investigation for Centaur agent executions",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "posthog",
+      "name": "posthog",
+      "kind": "cli",
+      "description": "PostHog product analytics \u2014 HogQL queries, pageviews, breakdowns",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "profslice",
+      "name": "profslice",
+      "kind": "library",
+      "description": "Firefox Profiler data extraction for LLM analysis",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "reth",
+      "name": "reth",
+      "kind": "library",
+      "description": "Reth CLI for AI agents - execution timings, performance metrics",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "reth-log-analyzer",
+      "name": "reth-log-analyzer",
+      "kind": "library",
+      "description": "Parse reth logs and generate performance graphs",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "sentry",
+      "name": "sentry",
+      "kind": "library",
+      "description": "Sentry issues \u2014 list/search issues, issue details, events, stacktraces, and tag values (read-only)",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "vlogs",
+      "name": "vlogs",
+      "kind": "cli",
+      "description": "VictoriaLogs \u2014 LogsQL queries, field names, field values, and log streams",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "vmetrics",
+      "name": "vmetrics",
+      "kind": "library",
+      "description": "VictoriaMetrics \u2014 PromQL/MetricsQL queries for agent self-validation",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "nano-banana",
+      "name": "nano-banana",
+      "kind": "library",
+      "description": "Nano Banana CLI for Google Gemini image generation",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "transcriber",
+      "name": "transcriber",
+      "kind": "library",
+      "description": "Local-first voice transcription CLI using Whisper",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "veo3",
+      "name": "veo3",
+      "kind": "library",
+      "description": "Veo 3 CLI for Google",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "eng",
+      "name": "eng",
+      "kind": "library",
+      "description": "Engineering persona \u2014 code review, debugging, repo work",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "airtable",
+      "name": "airtable",
+      "kind": "cli",
+      "description": "Airtable API client for bases, schemas, views, and records",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "company_context",
+      "name": "company_context",
+      "kind": "library",
+      "description": "Search indexed company history across multiple sources. Prefer this over direct Slack search for historical queries. Current sources: Slack, Google Drive, Google Calendar, Linear.",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "centaur-composio-tool",
+      "name": "centaur-composio-tool",
+      "kind": "library",
+      "description": "Execute tools from 1000+ services via Composio (GitHub, Gmail, Slack, Notion, etc.)",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "figma",
+      "name": "figma",
+      "kind": "library",
+      "description": "Figma design system extraction and analysis",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "granola",
+      "name": "granola",
+      "kind": "library",
+      "description": "Granola meeting notes CLI for AI agents",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "gsuite",
+      "name": "gsuite",
+      "kind": "cli",
+      "description": "Gmail, Calendar, Drive, Docs, Sheets, Slides, Analytics",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "linear",
+      "name": "linear",
+      "kind": "cli",
+      "description": "Linear issue tracking \u2014 issues, projects, cycles, teams",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "notion",
+      "name": "notion",
+      "kind": "cli",
+      "description": "Notion pages, databases, blocks, comments",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "opentable",
+      "name": "opentable",
+      "kind": "library",
+      "description": "OpenTable CLI for searching restaurant reservations",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "slack",
+      "name": "slack",
+      "kind": "cli",
+      "description": "Search Slack messages, channels, threads, users",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "archiver",
+      "name": "archiver",
+      "kind": "library",
+      "description": "Document extraction via Reducto for investment materials",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "congress",
+      "name": "congress",
+      "kind": "library",
+      "description": "Congress.gov API CLI",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "crunchbase",
+      "name": "crunchbase",
+      "kind": "library",
+      "description": "Crunchbase Enterprise API CLI for company and funding data",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "docsend",
+      "name": "docsend",
+      "kind": "library",
+      "description": "DocSend document downloader \u2014 cloud browser + Playwright",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "fedreg",
+      "name": "fedreg",
+      "kind": "library",
+      "description": "Federal Register CLI for regulatory data",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "googlenews",
+      "name": "googlenews",
+      "kind": "library",
+      "description": "Google News RSS CLI for news search and headlines",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "harmonic",
+      "name": "harmonic",
+      "kind": "library",
+      "description": "Harmonic.AI API CLI for startup discovery and company/people enrichment",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "invest-intake",
+      "name": "invest-intake",
+      "kind": "library",
+      "description": "Normalize mixed raw invest inputs into a clean context pack",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "investmemos",
+      "name": "investmemos",
+      "kind": "library",
+      "description": "Postgres-backed investment memo search and retrieval",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "legistorm",
+      "name": "legistorm",
+      "kind": "library",
+      "description": "LegiStorm CLI for congressional data",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "listennotes",
+      "name": "listennotes",
+      "kind": "library",
+      "description": "Listen Notes CLI for podcast data",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "newsapi",
+      "name": "newsapi",
+      "kind": "library",
+      "description": "NewsAPI CLI for news search and headlines",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "openfec",
+      "name": "openfec",
+      "kind": "library",
+      "description": "OpenFEC CLI for federal election data",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "plural",
+      "name": "plural",
+      "kind": "library",
+      "description": "Plural (Open States) API \u2014 state legislation, legislators, committees, and events",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "sensortower",
+      "name": "sensortower",
+      "kind": "library",
+      "description": "SensorTower CLI for mobile app analytics",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "similarweb",
+      "name": "similarweb",
+      "kind": "cli",
+      "description": "SimilarWeb web traffic and market intelligence",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "websearch",
+      "name": "websearch",
+      "kind": "library",
+      "description": "Web search and deep research via Parallel (free MCP or paid REST); optional Claude synthesis",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "youtube",
+      "name": "youtube",
+      "kind": "library",
+      "description": "YouTube CLI for video data",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "centaur-docs",
+      "name": "centaur-docs",
+      "kind": "service",
+      "description": "",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "centaur",
+      "name": "centaur",
+      "kind": "library",
+      "description": "",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "@centaur/api-client",
+      "name": "@centaur/api-client",
+      "kind": "library",
+      "description": "",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "@centaur/harness-events",
+      "name": "@centaur/harness-events",
+      "kind": "library",
+      "description": "",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "slackbot",
+      "name": "slackbot",
+      "kind": "library",
+      "description": "",
+      "group": "internal",
+      "domain": "centaur"
+    },
+    {
+      "id": "typer",
+      "name": "typer",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 61
+    },
+    {
+      "id": "rich",
+      "name": "rich",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 60
+    },
+    {
+      "id": "httpx",
+      "name": "httpx",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 56
+    },
+    {
+      "id": "python-dotenv",
+      "name": "python-dotenv",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 37
+    },
+    {
+      "id": "asyncpg",
+      "name": "asyncpg",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 3
+    },
+    {
+      "id": "pydantic",
+      "name": "pydantic",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 3
+    },
+    {
+      "id": "feedparser",
+      "name": "feedparser",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 3
+    },
+    {
+      "id": "anthropic",
+      "name": "anthropic",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 2
+    },
+    {
+      "id": "pydantic-settings",
+      "name": "pydantic-settings",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 2
+    },
+    {
+      "id": "structlog",
+      "name": "structlog",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 2
+    },
+    {
+      "id": "tenacity",
+      "name": "tenacity",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 2
+    },
+    {
+      "id": "matplotlib",
+      "name": "matplotlib",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 2
+    },
+    {
+      "id": "pandas",
+      "name": "pandas",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 2
+    },
+    {
+      "id": "google-genai",
+      "name": "google-genai",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 2
+    },
+    {
+      "id": "slack-sdk",
+      "name": "slack-sdk",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 2
+    },
+    {
+      "id": "browser-use-sdk",
+      "name": "browser-use-sdk",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 2
+    },
+    {
+      "id": "pillow",
+      "name": "pillow",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 2
+    },
+    {
+      "id": "playwright",
+      "name": "playwright",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 2
+    },
+    {
+      "id": "pgvector",
+      "name": "pgvector",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "openai",
+      "name": "openai",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "fastapi",
+      "name": "fastapi",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "uvicorn",
+      "name": "uvicorn",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "pypdf",
+      "name": "pypdf",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "python-telegram-bot",
+      "name": "python-telegram-bot",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "telethon",
+      "name": "telethon",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "centaur_sdk",
+      "name": "centaur_sdk",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "boto3",
+      "name": "boto3",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "Pillow",
+      "name": "Pillow",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "composio",
+      "name": "composio",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "google-api-python-client",
+      "name": "google-api-python-client",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "google-analytics-data",
+      "name": "google-analytics-data",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "google-analytics-admin",
+      "name": "google-analytics-admin",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "google-auth-httplib2",
+      "name": "google-auth-httplib2",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "google-auth-oauthlib",
+      "name": "google-auth-oauthlib",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "httplib2",
+      "name": "httplib2",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "pysocks",
+      "name": "pysocks",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "browser-use",
+      "name": "browser-use",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "requests",
+      "name": "requests",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "parallel-web",
+      "name": "parallel-web",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "react",
+      "name": "react",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "react-dom",
+      "name": "react-dom",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "vocs",
+      "name": "vocs",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "waku",
+      "name": "waku",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "axios",
+      "name": "axios",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "eventsource-parser",
+      "name": "eventsource-parser",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "@opentelemetry/api",
+      "name": "@opentelemetry/api",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "@opentelemetry/exporter-trace-otlp-proto",
+      "name": "@opentelemetry/exporter-trace-otlp-proto",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "@opentelemetry/resources",
+      "name": "@opentelemetry/resources",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "@opentelemetry/sdk-trace-base",
+      "name": "@opentelemetry/sdk-trace-base",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "@opentelemetry/sdk-trace-node",
+      "name": "@opentelemetry/sdk-trace-node",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "@opentelemetry/semantic-conventions",
+      "name": "@opentelemetry/semantic-conventions",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "@slack/types",
+      "name": "@slack/types",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "@slack/web-api",
+      "name": "@slack/web-api",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "@std/ulid",
+      "name": "@std/ulid",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "hono",
+      "name": "hono",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    },
+    {
+      "id": "zod",
+      "name": "zod",
+      "kind": "external",
+      "description": "Python/JS library",
+      "group": "external",
+      "domain": "external",
+      "usage_count": 1
+    }
+  ],
+  "edges": [
+    {
+      "source": "centaur-sdk",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "centaur-api",
+      "target": "centaur-sdk",
+      "type": "internal"
+    },
+    {
+      "source": "centaur-api",
+      "target": "asyncpg",
+      "type": "external"
+    },
+    {
+      "source": "centaur-api",
+      "target": "anthropic",
+      "type": "external"
+    },
+    {
+      "source": "centaur-api",
+      "target": "pgvector",
+      "type": "external"
+    },
+    {
+      "source": "centaur-api",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "centaur-api",
+      "target": "openai",
+      "type": "external"
+    },
+    {
+      "source": "centaur-api",
+      "target": "pydantic",
+      "type": "external"
+    },
+    {
+      "source": "centaur-api",
+      "target": "pydantic-settings",
+      "type": "external"
+    },
+    {
+      "source": "centaur-api",
+      "target": "structlog",
+      "type": "external"
+    },
+    {
+      "source": "centaur-api",
+      "target": "tenacity",
+      "type": "external"
+    },
+    {
+      "source": "centaur-api",
+      "target": "fastapi",
+      "type": "external"
+    },
+    {
+      "source": "centaur-api",
+      "target": "uvicorn",
+      "type": "external"
+    },
+    {
+      "source": "ashby",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "ashby",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "ashby",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "ashby",
+      "target": "pypdf",
+      "type": "external"
+    },
+    {
+      "source": "attio",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "attio",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "attio",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "attio",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "pylon",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "pylon",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "pylon",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "telegram",
+      "target": "python-telegram-bot",
+      "type": "external"
+    },
+    {
+      "source": "telegram",
+      "target": "telethon",
+      "type": "external"
+    },
+    {
+      "source": "telegram",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "telegram",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "telegram",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "twitter",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "twitter",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "twitter",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "twitter",
+      "target": "tenacity",
+      "type": "external"
+    },
+    {
+      "source": "twitter",
+      "target": "pydantic",
+      "type": "external"
+    },
+    {
+      "source": "twitter",
+      "target": "pydantic-settings",
+      "type": "external"
+    },
+    {
+      "source": "alchemy",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "alchemy",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "alchemy",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "allium",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "allium",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "allium",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "allium",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "arkham",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "arkham",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "arkham",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "coindesk",
+      "target": "feedparser",
+      "type": "external"
+    },
+    {
+      "source": "coindesk",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "coindesk",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "coindesk",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "coingecko",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "coingecko",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "coingecko",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "coingecko",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "coinmetrics",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "coinmetrics",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "coinmetrics",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "coinmetrics",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "databento",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "databento",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "databento",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "databento",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "debank",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "debank",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "debank",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "defillama",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "defillama",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "defillama",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "defillama",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "dune",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "dune",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "dune",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "dune",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "eodhd",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "eodhd",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "eodhd",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "eodhd",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "etherscan",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "etherscan",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "etherscan",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "etherscan",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "kalshi",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "kalshi",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "kalshi",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "kalshi",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "karma",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "karma",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "karma",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "karma",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "messari",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "messari",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "messari",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "messari",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "mpp",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "mpp",
+      "target": "centaur_sdk",
+      "type": "external"
+    },
+    {
+      "source": "nansen",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "nansen",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "nansen",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "nansen",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "polymarket",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "polymarket",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "polymarket",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "polymarket",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "snapshot",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "snapshot",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "snapshot",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "snapshot",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "standard-metrics",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "standard-metrics",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "standard-metrics",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "tally",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "tally",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "tally",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "tally",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "theblock",
+      "target": "feedparser",
+      "type": "external"
+    },
+    {
+      "source": "theblock",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "theblock",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "theblock",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "token-terminal",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "token-terminal",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "token-terminal",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "token-terminal",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "tokenomist",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "tokenomist",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "tokenomist",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "tokenomist",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "chart",
+      "target": "matplotlib",
+      "type": "external"
+    },
+    {
+      "source": "chart",
+      "target": "pandas",
+      "type": "external"
+    },
+    {
+      "source": "cloudwatch",
+      "target": "boto3",
+      "type": "external"
+    },
+    {
+      "source": "grafana",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "grafana",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "grafana",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "grafana",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "laminar",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "posthog",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "posthog",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "posthog",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "posthog",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "profslice",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "profslice",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "profslice",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "profslice",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "reth",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "reth",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "reth",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "reth-log-analyzer",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "reth-log-analyzer",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "reth-log-analyzer",
+      "target": "pandas",
+      "type": "external"
+    },
+    {
+      "source": "reth-log-analyzer",
+      "target": "matplotlib",
+      "type": "external"
+    },
+    {
+      "source": "sentry",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "vlogs",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "vlogs",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "vlogs",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "vlogs",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "vmetrics",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "nano-banana",
+      "target": "google-genai",
+      "type": "external"
+    },
+    {
+      "source": "nano-banana",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "nano-banana",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "nano-banana",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "nano-banana",
+      "target": "Pillow",
+      "type": "external"
+    },
+    {
+      "source": "nano-banana",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "transcriber",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "transcriber",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "veo3",
+      "target": "google-genai",
+      "type": "external"
+    },
+    {
+      "source": "veo3",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "veo3",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "veo3",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "airtable",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "airtable",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "airtable",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "airtable",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "company_context",
+      "target": "asyncpg",
+      "type": "external"
+    },
+    {
+      "source": "company_context",
+      "target": "slack-sdk",
+      "type": "external"
+    },
+    {
+      "source": "centaur-composio-tool",
+      "target": "composio",
+      "type": "external"
+    },
+    {
+      "source": "figma",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "figma",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "figma",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "granola",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "granola",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "granola",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "gsuite",
+      "target": "google-api-python-client",
+      "type": "external"
+    },
+    {
+      "source": "gsuite",
+      "target": "google-analytics-data",
+      "type": "external"
+    },
+    {
+      "source": "gsuite",
+      "target": "google-analytics-admin",
+      "type": "external"
+    },
+    {
+      "source": "gsuite",
+      "target": "google-auth-httplib2",
+      "type": "external"
+    },
+    {
+      "source": "gsuite",
+      "target": "google-auth-oauthlib",
+      "type": "external"
+    },
+    {
+      "source": "gsuite",
+      "target": "httplib2",
+      "type": "external"
+    },
+    {
+      "source": "gsuite",
+      "target": "pysocks",
+      "type": "external"
+    },
+    {
+      "source": "gsuite",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "gsuite",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "gsuite",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "linear",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "linear",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "linear",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "linear",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "notion",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "notion",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "notion",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "notion",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "opentable",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "opentable",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "opentable",
+      "target": "browser-use",
+      "type": "external"
+    },
+    {
+      "source": "opentable",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "slack",
+      "target": "slack-sdk",
+      "type": "external"
+    },
+    {
+      "source": "slack",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "slack",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "slack",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "slack",
+      "target": "structlog",
+      "type": "external"
+    },
+    {
+      "source": "archiver",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "archiver",
+      "target": "browser-use-sdk",
+      "type": "external"
+    },
+    {
+      "source": "archiver",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "archiver",
+      "target": "pillow",
+      "type": "external"
+    },
+    {
+      "source": "archiver",
+      "target": "playwright",
+      "type": "external"
+    },
+    {
+      "source": "archiver",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "archiver",
+      "target": "requests",
+      "type": "external"
+    },
+    {
+      "source": "congress",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "congress",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "congress",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "crunchbase",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "crunchbase",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "crunchbase",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "docsend",
+      "target": "browser-use-sdk",
+      "type": "external"
+    },
+    {
+      "source": "docsend",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "docsend",
+      "target": "pillow",
+      "type": "external"
+    },
+    {
+      "source": "docsend",
+      "target": "playwright",
+      "type": "external"
+    },
+    {
+      "source": "fedreg",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "fedreg",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "fedreg",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "googlenews",
+      "target": "feedparser",
+      "type": "external"
+    },
+    {
+      "source": "googlenews",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "googlenews",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "harmonic",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "harmonic",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "harmonic",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "invest-intake",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "investmemos",
+      "target": "asyncpg",
+      "type": "external"
+    },
+    {
+      "source": "legistorm",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "legistorm",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "legistorm",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "listennotes",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "listennotes",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "listennotes",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "newsapi",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "newsapi",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "newsapi",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "openfec",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "openfec",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "openfec",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "plural",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "plural",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "plural",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "sensortower",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "sensortower",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "sensortower",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "similarweb",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "similarweb",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "similarweb",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "similarweb",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "websearch",
+      "target": "anthropic",
+      "type": "external"
+    },
+    {
+      "source": "websearch",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "websearch",
+      "target": "parallel-web",
+      "type": "external"
+    },
+    {
+      "source": "websearch",
+      "target": "pydantic",
+      "type": "external"
+    },
+    {
+      "source": "websearch",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "websearch",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "websearch",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "youtube",
+      "target": "httpx",
+      "type": "external"
+    },
+    {
+      "source": "youtube",
+      "target": "typer",
+      "type": "external"
+    },
+    {
+      "source": "youtube",
+      "target": "rich",
+      "type": "external"
+    },
+    {
+      "source": "youtube",
+      "target": "python-dotenv",
+      "type": "external"
+    },
+    {
+      "source": "centaur-docs",
+      "target": "react",
+      "type": "external"
+    },
+    {
+      "source": "centaur-docs",
+      "target": "react-dom",
+      "type": "external"
+    },
+    {
+      "source": "centaur-docs",
+      "target": "vocs",
+      "type": "external"
+    },
+    {
+      "source": "centaur-docs",
+      "target": "waku",
+      "type": "external"
+    },
+    {
+      "source": "@centaur/api-client",
+      "target": "@centaur/harness-events",
+      "type": "internal"
+    },
+    {
+      "source": "@centaur/api-client",
+      "target": "axios",
+      "type": "external"
+    },
+    {
+      "source": "@centaur/api-client",
+      "target": "eventsource-parser",
+      "type": "external"
+    },
+    {
+      "source": "slackbot",
+      "target": "@opentelemetry/api",
+      "type": "external"
+    },
+    {
+      "source": "slackbot",
+      "target": "@opentelemetry/exporter-trace-otlp-proto",
+      "type": "external"
+    },
+    {
+      "source": "slackbot",
+      "target": "@opentelemetry/resources",
+      "type": "external"
+    },
+    {
+      "source": "slackbot",
+      "target": "@opentelemetry/sdk-trace-base",
+      "type": "external"
+    },
+    {
+      "source": "slackbot",
+      "target": "@opentelemetry/sdk-trace-node",
+      "type": "external"
+    },
+    {
+      "source": "slackbot",
+      "target": "@opentelemetry/semantic-conventions",
+      "type": "external"
+    },
+    {
+      "source": "slackbot",
+      "target": "@slack/types",
+      "type": "external"
+    },
+    {
+      "source": "slackbot",
+      "target": "@slack/web-api",
+      "type": "external"
+    },
+    {
+      "source": "slackbot",
+      "target": "@std/ulid",
+      "type": "external"
+    },
+    {
+      "source": "slackbot",
+      "target": "hono",
+      "type": "external"
+    },
+    {
+      "source": "slackbot",
+      "target": "zod",
+      "type": "external"
+    }
+  ],
+  "stats": {
+    "internal_nodes": 80,
+    "external_nodes": 56,
+    "internal_edges": 2,
+    "external_edges": 283,
+    "total_edges": 285
+  }
+}

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: cloudwatch — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>cloudwatch</h1>
+</header>
+<h1>AWS CloudWatch Library</h1>
+<br>
+<p>The cloudwatch component is a read-only Python library that provides a comprehensive interface to AWS CloudWatch services including Logs, Metrics, and Alarms. It serves as a secure wrapper around boto3 with credential isolation through iron-proxy's AWS authentication transform.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>security-first client wrapper</strong> pattern, implementing credential isolation where boto3 signs requests with placeholder credentials, and iron-proxy re-signs them with real IAM keys resolved from a secrets backend. This ensures that actual AWS credentials never enter the tool process, maintaining security isolation while providing full CloudWatch functionality.</p>
+<br>
+<p>The architecture consists of:</p>
+<p>- A single <code>CloudWatchClient</code> class that encapsulates all AWS CloudWatch operations</p>
+<li>Lazy initialization of boto3 clients to avoid network calls during tool discovery</li>
+<li>Helper functions for time window resolution and response cleaning</li>
+<li>A comprehensive test suite with mock boto3 clients</li>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. CloudWatchClient Class</h3>
+<p>The main interface providing read-only access to CloudWatch services. Implements context manager protocol and lazy client initialization for logs and monitoring services.</p>
+<br>
+<h3> 2. Logs Operations</h3>
+<p>- <code>list_log_groups()</code>: Discovers available log groups with optional name prefix filtering</p>
+<p>- <code>filter_log_events()</code>: Searches log events within time windows using CloudWatch filter patterns</p>
+<p>- <code>start_query()</code>, <code>get_query_results()</code>, <code>stop_query()</code>: CloudWatch Logs Insights query lifecycle management</p>
+<br>
+<h3> 3. Metrics Operations  </h3>
+<p>- <code>list_metrics()</code>: Discovers available metrics by namespace and name</p>
+<p>- <code>get_metric_data()</code>: Retrieves time-series metric data with configurable statistics and periods</p>
+<br>
+<h3> 4. Alarms Operations</h3>
+<p>- <code>describe_alarms()</code>: Lists metric alarms with state and name filtering</p>
+<p>- <code>get_alarm_history()</code>: Retrieves alarm state change history</p>
+<br>
+<h3> 5. Credential Security System</h3>
+<p>- Placeholder credential injection for boto3 (<code>_PLACEHOLDER_CREDENTIAL</code>)</p>
+<li>Region resolution from environment variables (non-secret configuration)</li>
+<p>- AWS authentication delegation to iron-proxy's <code>aws_auth</code> transform</p>
+<br>
+<h3> 6. Response Processing</h3>
+<p>- <code>_clean()</code>: Sanitizes boto3 responses by removing metadata and converting datetimes to ISO-8601</p>
+<p>- <code>_to_epoch_ms()</code>: Flexible timestamp parsing supporting ISO-8601 strings and epoch values</p>
+<li>Time window resolution with sensible defaults (1-hour lookback)</li>
+<br>
+<h3> 7. Error Handling</h3>
+<p>- <code>_call()</code>: Wraps boto3 operations with consistent error handling and argument sanitization</p>
+<li>Parameter validation with limit clamping for API safety</li>
+<br>
+<h3> 8. Testing Infrastructure</h3>
+<p>- <code>FakeBotoClient</code>: Records boto3 calls without network access</p>
+<p>- <code>RecordingCloudWatchClient</code>: Test double for comprehensive unit testing</p>
+<li>Extensive test coverage for all operations and edge cases</li>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">flowchart TD
+    A[Client Request] --&gt; B[CloudWatchClient]
+    B --&gt; C{Service Type}
+    C --&gt;|Logs| D[_logs() Client]
+    C --&gt;|Metrics| E[_cw() Client] 
+    C --&gt;|Alarms| E
+    
+    D --&gt; F[boto3 Logs API]
+    E --&gt; G[boto3 CloudWatch API]
+    
+    F --&gt; H[iron-proxy]
+    G --&gt; H
+    
+    H --&gt; I[Credential Resolution]
+    I --&gt; J[Secrets Backend]
+    I --&gt; K[Real AWS API]
+    
+    K --&gt; L[Raw Response]
+    L --&gt; M[_clean() Processing]
+    M --&gt; N[Sanitized Response]
+    N --&gt; O[Client Response]
+    
+    subgraph &quot;Security Boundary&quot;
+        H
+        I
+        J
+    end</code></pre>
+<br>
+<h3> Authentication Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant C as CloudWatchClient
+    participant B as boto3
+    participant IP as iron-proxy
+    participant SB as Secrets Backend
+    participant AWS as AWS API
+    
+    C-&gt;&gt;B: Request with placeholder credentials
+    B-&gt;&gt;IP: Signed request (placeholder SigV4)
+    IP-&gt;&gt;SB: Resolve real AWS credentials
+    SB--&gt;&gt;IP: Real access keys
+    IP-&gt;&gt;AWS: Re-signed request (real SigV4)
+    AWS--&gt;&gt;IP: Response
+    IP--&gt;&gt;B: Response
+    B--&gt;&gt;C: boto3 response object
+    C-&gt;&gt;C: _clean() sanitization
+    C--&gt;&gt;C: JSON-serializable result</code></pre>
+<br>
+<h2>Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>boto3</strong> (>=1.34) [cloud-sdk]: AWS SDK for Python providing CloudWatch Logs and Metrics APIs. Used throughout the CloudWatchClient for all AWS service interactions. Imported lazily in `_session()` method to keep initialization lightweight. Integration points: `client.py` lines 55-72 for session and client creation.</p>
+<br>
+<h3> Development Dependencies</h3>
+<p>The component uses standard library modules and has minimal external dependencies, relying primarily on boto3 for AWS interactions. Testing uses the standard <code>importlib.util</code> for dynamic module loading to avoid circular imports.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The library exposes a single primary class <code>CloudWatchClient</code> with the following public interface:</p>
+<br>
+<h3> Log Management</h3>
+<p>- <code>list_log_groups(name_prefix=None, limit=50)</code>: List available log groups</p>
+<p>- <code>filter_log_events(log_group_name, filter_pattern=None, start_time=None, end_time=None, limit=100)</code>: Search log events</p>
+<p>- <code>start_query(log_group_names, query_string, start_time=None, end_time=None, limit=100)</code>: Begin Logs Insights query</p>
+<p>- <code>get_query_results(query_id)</code>: Poll query status and results</p>
+<p>- <code>stop_query(query_id)</code>: Cancel running query</p>
+<br>
+<h3> Metrics Access</h3>
+<p>- <code>list_metrics(namespace=None, metric_name=None, limit=100)</code>: Discover available metrics</p>
+<p>- <code>get_metric_data(namespace, metric_name, dimensions=None, stat="Average", period=300, start_time=None, end_time=None)</code>: Retrieve metric time series</p>
+<br>
+<h3> Alarm Monitoring</h3>
+<p>- <code>describe_alarms(state_value=None, alarm_name_prefix=None, limit=50)</code>: List metric alarms</p>
+<p>- <code>get_alarm_history(alarm_name=None, limit=50)</code>: Get alarm state change history</p>
+<br>
+<h3> Utility Functions</h3>
+<p>- <code>_client()</code>: Factory function returning a default CloudWatchClient instance</p>
+<p>- Context manager support (<code>__enter__</code>, <code>__exit__</code>) for resource cleanup</p>
+<br>
+<p>All methods return JSON-serializable dictionaries with AWS metadata stripped and timestamps normalized to ISO-8601 format. Time parameters accept flexible formats including ISO-8601 strings and epoch timestamps (seconds or milliseconds).</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: nano-banana — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>nano-banana</h1>
+</header>
+<p>Now I have comprehensive information about the nano-banana component. Let me write the analysis.</p>
+<br>
+<h1>Nano Banana - Google Gemini Image Generation CLI</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The nano-banana component implements a clean separation of concerns with a <strong>layered architecture</strong> pattern. It separates the core business logic (Google Gemini API client) from the command-line interface, following the principle of dependency inversion where the CLI depends on the client abstraction rather than concrete implementations.</p>
+<br>
+<p>The component provides both a Python library interface through <code>NanoBananaClient</code> and a command-line interface through Typer, making it accessible both programmatically and as a standalone tool. The architecture leverages the centaur-sdk for secure API key management while maintaining compatibility with standard environment variable configurations.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> NanoBananaClient (client.py)</h3>
+<p>The core client class that encapsulates all Google Gemini API interactions. It provides two primary capabilities: image generation from text prompts and image editing based on text instructions. The client supports both Gemini 2.5 Flash (fast) and Gemini 3 Pro (high quality) models with configurable aspect ratios and image sizes.</p>
+<br>
+<h3> CLI Interface (cli.py) </h3>
+<p>A comprehensive command-line interface built with Typer that exposes three main commands: <code>generate</code>, <code>edit</code>, and <code>models</code>. The CLI provides rich terminal output with status indicators, error handling, and a tabular display for available models. It includes extensive help text and examples for user guidance.</p>
+<br>
+<h3> Model Configuration</h3>
+<p>Static configuration defining the available Gemini models with human-readable aliases. The system maps "flash" to "gemini-2.5-flash-image" for fast generation and "pro" to "gemini-3-pro-image-preview" for high-quality output with 4K support.</p>
+<br>
+<h3> Image Processing Pipeline</h3>
+<p>Handles image I/O operations using PIL (Python Imaging Library) for loading, processing, and saving images in multiple formats (PNG, JPEG, GIF, WebP). The system automatically detects MIME types based on file extensions.</p>
+<br>
+<h3> Authentication Layer</h3>
+<p>Integrates with the centaur-sdk's secret management system for secure API key handling, with fallback to environment variables for development and standalone usage scenarios.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Image Generation Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Parse Arguments]
+    B --&gt; C[Get Client Instance]
+    C --&gt; D[Retrieve API Key]
+    D --&gt; E[Initialize Gemini Client]
+    E --&gt; F[Build Generation Config]
+    F --&gt; G[Call Gemini API]
+    G --&gt; H[Extract Image Data]
+    H --&gt; I[Convert to PIL Image]
+    I --&gt; J[Save to File]</code></pre>
+<br>
+<h3> Image Editing Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Edit Command] --&gt; B[Load Input Image]
+    B --&gt; C[Detect MIME Type]
+    C --&gt; D[Get Client Instance]
+    D --&gt; E[Build Edit Request]
+    E --&gt; F[Send Image + Prompt to API]
+    F --&gt; G[Process Response]
+    G --&gt; H[Extract Edited Image]
+    H --&gt; I[Save Result]</code></pre>
+<br>
+<h3> Error Handling Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[API Call] --&gt; B{Success?}
+    B --&gt;|Yes| C[Extract Image Data]
+    B --&gt;|No| D[Catch Exception]
+    D --&gt; E[Display Rich Error]
+    E --&gt; F[Exit with Code 1]
+    C --&gt; G[Return PIL Image]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> google-genai (>=1.0.0) [ai-sdk]</h3>
+<p>The official Google Generative AI Python SDK that provides access to Gemini models. Used throughout the client for API authentication, content generation requests, and response processing. Imported in client.py for the core genai.Client and types.GenerateContentConfig.</p>
+<br>
+<h3> typer (>=0.12.0) [cli]</h3>
+<p>Modern CLI framework that provides argument parsing, command routing, and help generation. Powers the entire command-line interface with decorators for commands and automatic help text generation. Used in cli.py for the main app, commands, and all argument/option definitions.</p>
+<br>
+<h3> rich (>=13.0.0) [cli]</h3>
+<p>Terminal formatting library that provides colored output, progress indicators, and table formatting. Used in cli.py for the Console, status displays during API calls, error formatting, and the models command table display.</p>
+<br>
+<h3> httpx (>=0.27.0) [networking]</h3>
+<p>HTTP client library used as a dependency by google-genai for making requests to the Gemini API endpoints. While not directly imported in the component code, it's required for the Google SDK functionality.</p>
+<br>
+<h3> Pillow (>=10.0.0) [image-processing]</h3>
+<p>Python Imaging Library for image manipulation and I/O operations. Used in client.py for opening image data from API responses, loading input images for editing, and handling various image formats (PNG, JPEG, GIF, WebP).</p>
+<br>
+<h3> python-dotenv (>=1.0.0) [configuration]</h3>
+<p>Environment variable management for loading .env files during development. Used in cli.py to automatically load environment variables, particularly for the GOOGLE_API_KEY configuration.</p>
+<br>
+<h3> centaur_sdk (internal) [secrets]</h3>
+<p>Internal Centaur framework SDK for secure secret management. Used in client.py for retrieving the GOOGLE_API_KEY through the secret() function, providing secure access to API credentials in production environments.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> NanoBananaClient Class</h3>
+<p>- <strong>`__init__(api_key: str | None = None)`</strong>: Initialize client with optional API key</p>
+<p>- <strong>`generate(prompt: str, model: str = "flash", aspect_ratio: str | None = None, image_size: str | None = None) -> Image.Image`</strong>: Generate image from text prompt</p>
+<p>- <strong>`edit(image_path: str | Path, prompt: str, model: str = "flash", aspect_ratio: str | None = None) -> Image.Image`</strong>: Edit existing image with text instructions</p>
+<p>- <strong>`list_models() -> dict[str, str]`</strong>: Get available model mappings</p>
+<br>
+<h3> CLI Commands</h3>
+<p>- <strong>`generate PROMPT [OPTIONS]`</strong>: Generate image from text description with model, output, aspect ratio, and size options</p>
+<p>- <strong>`edit IMAGE PROMPT [OPTIONS]`</strong>: Edit existing image with text prompt and configuration options</p>
+<p>- <strong>`models`</strong>: Display available models in formatted table</p>
+<br>
+<h3> Configuration Options</h3>
+<p>- <strong>Models</strong>: "flash" (fast) or "pro" (high quality/4K)</p>
+<p>- <strong>Aspect Ratios</strong>: 1:1, 3:4, 4:3, 9:16, 16:9</p>
+<p>- <strong>Image Sizes</strong>: 1K, 2K, 4K (pro model only)</p>
+<p>- <strong>Output Formats</strong>: PNG, JPEG, GIF, WebP</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Google Generative AI API</h3>
+<p>The component connects to Google's Generative Language API at <code>generativelanguage.googleapis.com</code> for image generation and editing services. Authentication is handled via API key in the <code>x-goog-api-key</code> header, as configured in the centaur tool secrets section.</p>
+<br>
+<h3> File System</h3>
+<p>Direct integration with the local file system for reading input images and writing generated/edited images. Supports standard image formats and handles path resolution through Python's pathlib.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component has no internal dependencies within the centaur-src codebase. It operates as a standalone library that integrates with the centaur-sdk for secret management but does not call other centaur components or services.</p>
+<br>
+<p>The component follows the centaur framework's secret management patterns by declaring HTTP-based secrets in pyproject.toml and using the centaur_sdk.secret() function for secure API key retrieval in production environments.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

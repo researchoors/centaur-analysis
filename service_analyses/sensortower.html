@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: sensortower — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>sensortower</h1>
+</header>
+<h1>SensorTower Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The SensorTower component is a Python library that provides both a client SDK and CLI interface for accessing SensorTower's mobile app analytics API. It enables developers and researchers to query app store data including download estimates, revenue figures, top charts, and publisher information for both iOS and Android platforms.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> pattern with clear separation of concerns:</p>
+<br>
+<p>- <strong>Client Layer</strong> (`client.py`): Core API client handling HTTP requests and authentication</p>
+<p>- <strong>CLI Layer</strong> (`cli.py`): Command-line interface built on top of the client</p>
+<p>- <strong>Configuration Layer</strong>: Environment-based configuration using the centaur SDK</p>
+<br>
+<p>The design emphasizes reusability, with the client being usable both programmatically and through CLI commands.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. SensorTowerClient Class</h3>
+<p>The primary API client class provides a comprehensive interface to SensorTower's REST API. It handles authentication via auth tokens and supports both iOS and Android platforms.</p>
+<br>
+<p><strong>Key Methods:</strong></p>
+<p>- <code>get_sales_estimates()</code>: Downloads and revenue data for specified apps</p>
+<p>- <code>get_top_charts()</code>: App rankings in various categories</p>
+<p>- <code>search_apps()</code>: App search functionality</p>
+<p>- <code>get_publisher()</code> / <code>get_publisher_apps()</code>: Publisher information and app catalogs</p>
+<p>- <code>get_app_info()</code>: Individual app metadata</p>
+<br>
+<h3> 2. CLI Commands</h3>
+<p>The CLI provides 7 main commands for different types of analytics queries:</p>
+<br>
+<p>- <code>downloads</code>: App download estimates over time</p>
+<p>- <code>revenue</code>: Revenue estimates with date ranges</p>
+<p>- <code>top-charts</code>: App store rankings by category</p>
+<p>- <code>publisher</code>: Publisher information and app listings</p>
+<p>- <code>search</code>: App search by name or keywords</p>
+<p>- <code>app-lookup</code>: Direct App Store/Play Store ID lookup</p>
+<p>- <code>raw</code>: Raw API endpoint access</p>
+<br>
+<h3> 3. Data Formatting Utilities</h3>
+<p>Helper functions for presenting data in user-friendly formats:</p>
+<li>Number formatting with K/M/B suffixes</li>
+<li>Currency formatting</li>
+<li>Markdown table output</li>
+<li>Rich console tables with styling</li>
+<br>
+<h3> 4. Authentication Management</h3>
+<p>Integrated with centaur SDK's secret management system, supporting multiple environment variable patterns (<code>SENSOR_TOWER_AUTH_TOKEN</code>, <code>SENSORTOWER_AUTH_TOKEN</code>).</p>
+<br>
+<h3> 5. Platform Abstraction</h3>
+<p>Consistent handling of iOS and Android differences through platform normalization and endpoint selection.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Parameter Parsing]
+    B --&gt; C[Client Creation]
+    C --&gt; D[Authentication Token Retrieval]
+    D --&gt; E[API Request Construction]
+    E --&gt; F[HTTP Request to SensorTower]
+    F --&gt; G[Response Processing]
+    G --&gt; H[Data Formatting]
+    H --&gt; I[Output Rendering]
+    
+    J[Direct Client Usage] --&gt; C
+    
+    K[centaur_sdk.secret] --&gt; D
+    L[Environment Variables] --&gt; K</code></pre>
+<br>
+<h3> Request Flow</h3>
+<p>1. <strong>Input Processing</strong>: CLI arguments or direct method calls are processed and validated</p>
+<p>2. <strong>Authentication</strong>: Auth tokens are retrieved from environment via centaur SDK</p>
+<p>3. <strong>API Communication</strong>: HTTP requests are made to SensorTower endpoints with proper parameters</p>
+<p>4. <strong>Data Processing</strong>: JSON responses are parsed and normalized across platforms</p>
+<p>5. <strong>Output Formatting</strong>: Data is formatted for console display, JSON output, or markdown tables</p>
+<br>
+<h3> Error Handling Flow</h3>
+<li>HTTP errors are caught and wrapped with descriptive messages</li>
+<li>Missing authentication triggers helpful error messages with token acquisition instructions</li>
+<li>Invalid parameters result in clear CLI error messages with suggestions</li>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client for making API requests to SensorTower. Provides async support, connection pooling, and comprehensive error handling. Used in: `tools/research/sensortower/client.py` for all API communications.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework for building command-line interfaces. Provides automatic help generation, type validation, and rich terminal output. Used in: `tools/research/sensortower/cli.py` for all command definitions and argument parsing.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Rich text and beautiful formatting for terminal output. Provides styled tables, progress bars, and colored console output. Used in: `tools/research/sensortower/cli.py` for table rendering and styled console messages.</p>
+<br>
+<h3> Development Dependencies</h3>
+<br>
+<p>- <strong>python-dotenv</strong> [build-tool]: Environment variable loading from `.env` files for development. Used in: `tools/research/sensortower/cli.py` for loading development environment configuration.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal]: Provides secret management functionality and table utilities. The `secret()` function retrieves authentication tokens from environment variables, while `Table` provides rich table formatting. Used in: `tools/research/sensortower/client.py` (secret management) and `tools/research/sensortower/cli.py` (table rendering).</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Client API (Programmatic Usage)</h3>
+<pre><code class="language-python">from sensortower import SensorTowerClient
+
+client = SensorTowerClient()
+# Get download estimates
+data = client.get_sales_estimates([&quot;123456&quot;], &quot;ios&quot;, start_date, end_date)
+# Search for apps
+apps = client.search_apps(&quot;Instagram&quot;, &quot;ios&quot;, limit=10)
+# Get top charts
+charts = client.get_top_charts(&quot;ios&quot;, category=&quot;6014&quot;, country=&quot;US&quot;)</code></pre>
+<br>
+<h3> CLI API (Command Line Usage)</h3>
+<pre><code class="language-bash"># Download estimates
+sensortower downloads 123456 --platform ios --start 2024-01-01 --end 2024-01-31
+
+# Revenue data with markdown output
+sensortower revenue com.instagram.android --platform android --markdown
+
+# Top charts
+sensortower top-charts --platform ios --category 6014 --type grossing --limit 50
+
+# App search
+sensortower search &quot;Instagram&quot; --platform ios --json</code></pre>
+<br>
+<h3> Configuration Requirements</h3>
+<p>- <code>SENSOR_TOWER_AUTH_TOKEN</code>: Required authentication token from SensorTower account</p>
+<p>- Optional <code>.env</code> file support for development environments</p>
+<br>
+<p>The component exposes a clean, consistent API for mobile app analytics across both programmatic and command-line interfaces, with comprehensive error handling and flexible output formatting options.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

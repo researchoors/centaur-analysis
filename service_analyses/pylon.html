@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: pylon — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>pylon</h1>
+</header>
+<p>Now I have comprehensive understanding of the pylon component. Let me write the analysis.</p>
+<br>
+<h1>Pylon Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The pylon component is a Python library that provides a comprehensive CLI interface for interacting with the Pylon support platform. It enables AI agents and users to manage support issues, accounts, and contacts through a well-structured command-line interface backed by a REST API client.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> with clear separation of concerns:</p>
+<br>
+<p>- <strong>CLI Layer</strong> (`cli.py`): Command-line interface using Typer framework for user interaction</p>
+<p>- <strong>Client Layer</strong> (`client.py`): HTTP API client handling authentication and REST API communication  </p>
+<p>- <strong>Configuration Layer</strong>: Environment-based configuration for API credentials</p>
+<br>
+<p>The architecture emphasizes modularity, with the client being reusable independently of the CLI, making it suitable for integration into other systems or direct programmatic use.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. PylonClient Class (`client.py`)</h3>
+<p>The core API client that handles all HTTP communication with the Pylon REST API at <code>api.usepylon.com</code>. Provides methods for CRUD operations on issues, accounts, contacts, users, teams, and tags.</p>
+<br>
+<h3> 2. CLI Application (`cli.py`)  </h3>
+<p>A Typer-based command-line application with 15 commands organized into functional groups:</p>
+<p>- <strong>Organization</strong>: `me` command for getting org details</p>
+<p>- <strong>Issues</strong>: `issues`, `issue`, `issue-create`, `issue-update`, `issue-search` </p>
+<p>- <strong>Accounts</strong>: `accounts`, `account`, `account-create`</p>
+<p>- <strong>Contacts</strong>: `contacts`, `contact`</p>
+<p>- <strong>Users & Teams</strong>: `users`, `teams`</p>
+<p>- <strong>Tags</strong>: `tags`</p>
+<br>
+<h3> 3. Authentication Handler</h3>
+<p>Centralized API key management using the centaur_sdk secret system, with fallback to environment variables and clear error messaging for missing credentials.</p>
+<br>
+<h3> 4. Request/Response Processing</h3>
+<p>Standardized HTTP request handling with proper error handling, timeout management, and JSON response parsing across all API endpoints.</p>
+<br>
+<h3> 5. Data Presentation Layer</h3>
+<p>Rich console formatting with tables for list views and detailed formatting for individual items, plus optional JSON output for programmatic consumption.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Command Handler]
+    B --&gt; C[_get_client()]
+    C --&gt; D[PylonClient]
+    D --&gt; E[_get_api_key()]
+    E --&gt; F[centaur_sdk.secret()]
+    D --&gt; G[_request()]
+    G --&gt; H[httpx.Client]
+    H --&gt; I[Pylon API]
+    I --&gt; J[JSON Response]
+    J --&gt; K[Response Processing]
+    K --&gt; L[Rich Console Output]</code></pre>
+<br>
+<h3> Primary Data Flow Patterns</h3>
+<br>
+<p>1. <strong>Command Execution Flow</strong>: User command → CLI handler → Client method → HTTP request → API response → Formatted output</p>
+<p>2. <strong>Authentication Flow</strong>: API call → Key retrieval → Bearer token header → Authenticated request</p>
+<p>3. <strong>Error Handling Flow</strong>: API error → Exception parsing → User-friendly error message → Exit code</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client for making async and sync HTTP requests to the Pylon API. Used in `PylonClient._request()` method for all API communication with timeout support and automatic connection management. Imported in: `tools/business/pylon/client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework for building command-line applications with automatic help generation and type validation. Provides the `@app.command()` decorators and argument/option parsing for all 15 CLI commands. Imported in: `tools/business/pylon/cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Library for rich text and beautiful formatting in the terminal. Used via `Console` class for colored output and error messages throughout the CLI. Imported in: `tools/business/pylon/cli.py`.</p>
+<br>
+<p>- <strong>centaur_sdk</strong> (implicit) [framework]: Centaur platform SDK providing `Table` class for tabular data display and `secret()` function for secure credential management. The `Table` class is used for formatting list outputs like issues, accounts, contacts. The `secret()` function retrieves the PYLON_API_KEY from the environment. Imported in: `tools/business/pylon/cli.py` and `tools/business/pylon/client.py`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (implicit via `load_dotenv()`) [configuration]: Loads environment variables from `.env` files. Called at module level in `cli.py` to ensure API keys are available from local development files. Imported in: `tools/business/pylon/cli.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Client Methods (PylonClient)</h3>
+<br>
+<p><strong>Organization</strong></p>
+<p>- <code>get_me()</code>: Get organization details for current API token</p>
+<br>
+<p><strong>Issues Management</strong></p>
+<p>- <code>list_issues(start_time, end_time, days)</code>: List issues within time range</p>
+<p>- <code>get_issue(issue_id)</code>: Get specific issue by ID/number</p>
+<p>- <code>search_issues(filter_obj, limit, cursor)</code>: Search issues with filters</p>
+<p>- `create_issue(title, body_html, **options)`: Create new issue</p>
+<p>- `update_issue(issue_id, **updates)`: Update existing issue</p>
+<p>- <code>delete_issue(issue_id)</code>: Delete issue</p>
+<br>
+<p><strong>Accounts Management</strong>  </p>
+<p>- <code>list_accounts(limit, cursor)</code>: List accounts with pagination</p>
+<p>- <code>get_account(account_id)</code>: Get specific account</p>
+<p>- <code>search_accounts(filter_obj, limit, cursor)</code>: Search accounts</p>
+<p>- `create_account(name, **options)`: Create new account</p>
+<p>- `update_account(account_id, **updates)`: Update account</p>
+<br>
+<p><strong>Contacts Management</strong></p>
+<p>- <code>list_contacts()</code>: Get all contacts</p>
+<p>- <code>get_contact(contact_id)</code>: Get specific contact  </p>
+<p>- <code>search_contacts(filter_obj, limit, cursor)</code>: Search contacts</p>
+<p>- <code>create_contact(name, email, account_id)</code>: Create new contact</p>
+<br>
+<p><strong>Users & Teams</strong></p>
+<p>- <code>list_users()</code>: Get organization users</p>
+<p>- <code>get_user(user_id)</code>: Get specific user</p>
+<p>- <code>list_teams()</code>: Get organization teams</p>
+<p>- <code>list_tags()</code>: Get all available tags</p>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p><strong>Core Commands</strong></p>
+<p>- <code>pylon me</code>: Show organization info</p>
+<p>- <code>pylon issues [options]</code>: List/filter recent issues</p>
+<p>- <code>pylon issue <id> [--json]</code>: Get issue details</p>
+<p>- <code>pylon issue-create <title> <body> [options]</code>: Create issue</p>
+<p>- <code>pylon issue-update <id> [options]</code>: Update issue  </p>
+<p>- <code>pylon issue-search <filter> [options]</code>: Search issues</p>
+<p>- <code>pylon accounts [options]</code>: List accounts</p>
+<p>- <code>pylon account <id> [--json]</code>: Get account details</p>
+<p>- <code>pylon account-create <name> [options]</code>: Create account</p>
+<p>- <code>pylon contacts [options]</code>: List contacts</p>
+<p>- <code>pylon contact <id> [--json]</code>: Get contact details</p>
+<p>- <code>pylon users [options]</code>: List users</p>
+<p>- <code>pylon teams</code>: List teams</p>
+<p>- <code>pylon tags [--type]</code>: List tags</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<p>- <strong>Pylon API</strong> (api.usepylon.com): Primary external service providing REST API for support ticket management, account management, and contact management. All HTTP requests use Bearer token authentication with the PYLON_API_KEY.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>The pylon component has no direct interactions with other components in the centaur-src codebase. It operates as a standalone library that depends only on the centaur_sdk for secret management and table formatting utilities.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

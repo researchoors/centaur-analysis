@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: websearch — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>websearch</h1>
+</header>
+<h1>Websearch Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The websearch component implements a <strong>layered architecture</strong> with a <strong>facade pattern</strong> for abstracted web search capabilities. The component provides a unified interface that routes requests through multiple backend providers based on available credentials:</p>
+<br>
+<p>1. <strong>Free MCP Path</strong>: Anonymous access via Parallel's hosted Model Context Protocol server</p>
+<p>2. <strong>Paid REST Path</strong>: Authenticated access via Parallel's REST API with advanced features  </p>
+<p>3. <strong>Synthesis Layer</strong>: Optional Claude-powered report generation and citation validation</p>
+<br>
+<p>The architecture follows a <strong>fallback pattern</strong> where the client automatically downgrades from REST to MCP when authentication fails, ensuring graceful degradation. The component maintains <strong>backward compatibility</strong> with the original Exa-based tool while transitioning to Parallel Web Systems as the provider.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. **WebSearchClient** (`client.py:66-262`)</h3>
+<p>The main facade class that orchestrates web search operations. Handles credential detection, backend routing, and optional synthesis pipeline integration. Provides two primary methods: <code>search()</code> for standard web search and <code>deep_research()</code> for comprehensive analysis.</p>
+<br>
+<h3> 2. **ParallelBackend** (`_parallel.py:112-871`)</h3>
+<p>Core backend implementation that manages interactions with Parallel's APIs. Handles both REST API calls via the official SDK and MCP protocol communication via raw HTTP. Implements request routing, error handling, and cost estimation.</p>
+<br>
+<h3> 3. **ClaudeSynthesisPipeline** (`client.py:264-504`)</h3>
+<p>Synthesis engine that processes raw search results through a three-stage pipeline: evidence review, report writing, and citation validation. Uses Anthropic's Claude API to generate structured, cited markdown reports from source documents.</p>
+<br>
+<h3> 4. **SourceDocument & Response Models** (`models.py:10-67`)</h3>
+<p>Pydantic data models defining the API contract. SourceDocument represents individual search results, while SearchResponse and DeepResearchResponse define output formats with metadata, attribution, and backward compatibility fields.</p>
+<br>
+<h3> 5. **CLI Interface** (`cli.py:16-187`)</h3>
+<p>Typer-based command-line interface providing <code>search</code> and <code>deep-research</code> commands. Includes pretty-printing modes, deprecation warnings for backward compatibility, and progress callbacks for long-running operations.</p>
+<br>
+<h3> 6. **System Prompts** (`prompts.py:1-69`)</h3>
+<p>Structured prompt templates for the Claude synthesis pipeline. Defines the reviewer, writer, and citation repair prompts with specific JSON schemas and behavioral constraints.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Search Request Flow</h3>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Client Request] --&gt; B{Has PARALLEL_API_KEY?}
+    B --&gt;|Yes| C[REST API Path]
+    B --&gt;|No| D[MCP Path]
+    C --&gt; E{Auth Success?}
+    E --&gt;|No| F[Fallback to MCP]
+    E --&gt;|Yes| G[Process REST Response]
+    D --&gt; H[Process MCP Response]
+    F --&gt; H
+    G --&gt; I{Synthesis Enabled?}
+    H --&gt; I
+    I --&gt;|Yes| J{Has ANTHROPIC_API_KEY?}
+    I --&gt;|No| K[Return Raw Results]
+    J --&gt;|Yes| L[Claude Synthesis Pipeline]
+    J --&gt;|No| M[Skip Synthesis, Flag Failure]
+    L --&gt; N[Evidence Review]
+    N --&gt; O[Report Writing]
+    O --&gt; P[Citation Validation]
+    P --&gt; Q[Return Synthesized Report]
+    M --&gt; K
+    K --&gt; R[SearchResponse]
+    Q --&gt; R</code></pre>
+<br>
+<h3> Deep Research Flow</h3>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Deep Research Request] --&gt; B{Has PARALLEL_API_KEY?}
+    B --&gt;|No| C[Raise Error - Key Required]
+    B --&gt;|Yes| D[Validate Processor]
+    D --&gt; E[Create Task API Run]
+    E --&gt; F[Stream Progress Updates]
+    F --&gt; G[Poll for Completion]
+    G --&gt; H[Process Auto Schema Result]
+    H --&gt; I[Render Structured JSON to Markdown]
+    I --&gt; J[Return DeepResearchResponse]</code></pre>
+<br>
+<h3> Synthesis Pipeline Flow</h3>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Raw Sources] --&gt; B[Trim for Budget]
+    B --&gt; C[Evidence Reviewer]
+    C --&gt; D[Extract Claims &amp; Contradictions]
+    D --&gt; E[Report Writer]
+    E --&gt; F[Generate Cited Markdown]
+    F --&gt; G[Citation Validator]
+    G --&gt; H{Citations Valid?}
+    H --&gt;|No| I[Citation Repair Loop]
+    I --&gt; J{Max Retries?}
+    J --&gt;|No| G
+    J --&gt;|Yes| K[Raise Validation Error]
+    H --&gt;|Yes| L[Return Final Report]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>anthropic</strong> (>=0.54.0) [ai-service]: Provides AsyncAnthropic client for Claude API integration. Used in ClaudeSynthesisPipeline for evidence review, report writing, and citation repair. Core to the synthesis feature when ANTHROPIC_API_KEY is configured. Imported in: `client.py:25`.</p>
+<br>
+<p>- <strong>httpx</strong> (>=0.28.0) [networking]: HTTP client library for async web requests. Used for direct MCP protocol communication with Parallel's search server when no API key is available. Handles JSON-RPC envelope construction and response parsing. Imported in: `_parallel.py:22`.</p>
+<br>
+<p>- <strong>parallel-web</strong> (>=0.6.0) [ai-service]: Official Parallel Web Systems Python SDK. Provides AsyncParallel client for REST API access to Search API and Task API. Enables authenticated access to advanced search features and deep research capabilities. Imported in: `_parallel.py:23`.</p>
+<br>
+<p>- <strong>pydantic</strong> (>=2.10.0) [serialization]: Data validation and serialization framework. Used to define all API response models (SourceDocument, SearchResponse, etc.) with type safety and validation. Provides model_dump() for JSON serialization. Imported in: `models.py:7`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loader for development. Used in CLI module to load .env files for credential configuration. Supports both root and component-local .env files. Imported in: `cli.py:9`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library for enhanced console output. Used in CLI module to provide colored, formatted output for search results and status messages. Handles pretty-printing mode and progress indicators. Imported in: `cli.py:10`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework built on Click. Provides the command-line interface with argument parsing, help generation, and option validation. Implements `search` and `deep-research` commands with comprehensive flag support. Imported in: `cli.py:8`.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong>: Framework-provided SDK for tool context and secret management. Used for credential detection and HTTP header injection via the StubBackend/firewall pattern. Critical for the `_is_configured()` routing logic. Imported in: `client.py:27`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Methods</h3>
+<br>
+<p><strong>WebSearchClient.search()</strong></p>
+<p>- <strong>Purpose</strong>: Primary web search interface supporting both free MCP and paid REST backends</p>
+<p>- <strong>Input</strong>: Query string, optional filters (domains, recency), synthesis controls</p>
+<p>- <strong>Output</strong>: SearchResponse dict with sources, optional synthesized answer, and metadata</p>
+<p>- <strong>Routing</strong>: Automatically selects MCP (free) or REST (paid) based on PARALLEL_API_KEY availability</p>
+<br>
+<p><strong>WebSearchClient.deep_research()</strong></p>
+<p>- <strong>Purpose</strong>: Comprehensive research using Parallel's Task API with structured output</p>
+<p>- <strong>Input</strong>: Research question, processor selection (pro/ultra family), timeout controls</p>
+<p>- <strong>Output</strong>: DeepResearchResponse dict with cited markdown report and source grounding</p>
+<p>- <strong>Requirements</strong>: Requires PARALLEL_API_KEY; supports processor-specific timeout and cost estimation</p>
+<br>
+<h3> Configuration Surface</h3>
+<br>
+<p><strong>Credential-Based Feature Gates</strong>:</p>
+<li>No credentials: Free MCP search with basic excerpts</li>
+<li>PARALLEL_API_KEY: REST search with filters + deep research capability  </li>
+<li>ANTHROPIC_API_KEY: Adds Claude synthesis pipeline on top of search results</li>
+<br>
+<p><strong>Constructor Parameters</strong>:</p>
+<li>API keys, base URLs, synthesis model selection, deep research processor defaults</li>
+<li>All parameters optional with sensible defaults for zero-config usage</li>
+<br>
+<h3> CLI Surface</h3>
+<br>
+<p><strong>Commands</strong>:</p>
+<p>- <code>search <query></code>: Web search with filtering options and pretty-printing</p>
+<p>- <code>deep-research <question></code>: Comprehensive research with processor selection</p>
+<li>Backward compatibility flags accepted but ignored with deprecation warnings</li>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

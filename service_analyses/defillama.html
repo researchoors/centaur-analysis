@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: defillama — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>defillama</h1>
+</header>
+<h1>DefiLlama CLI Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The DefiLlama component implements a command-line interface architecture following a separation of concerns pattern. It consists of a client layer that handles HTTP interactions with multiple DefiLlama API endpoints, and a CLI layer that provides user-friendly commands with rich formatting options. The architecture is designed around the command pattern where each CLI command corresponds to specific DeFi analytics functionality.</p>
+<br>
+<p>The component uses a modular design where the <code>DefiLlamaClient</code> class abstracts all API interactions, while the CLI module (<code>cli.py</code>) focuses purely on user interface concerns including argument parsing, data formatting, and output presentation. This separation allows for easy testing and potential reuse of the client in other contexts.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> DefiLlamaClient Class</h3>
+<p>The core client class manages HTTP communications with four distinct DefiLlama API endpoints: main API (<code>api.llama.fi</code>), stablecoins API, bridges API, and pro API. It handles authentication for premium endpoints, request construction, error handling, and response parsing. The client supports both free and premium API tiers with automatic API key management.</p>
+<br>
+<h3> CLI Commands</h3>
+<p>The component exposes 11 primary commands covering the full spectrum of DeFi analytics:</p>
+<p>- <code>stablecoins</code> and <code>stablecoin</code> for stablecoin market cap analysis</p>
+<p>- <code>stablecoin-flows</code> for tracking capital movements</p>
+<p>- <code>protocols</code> and <code>protocol</code> for TVL and protocol analysis  </p>
+<p>- <code>chains</code> and <code>chain-tvl</code> for blockchain ecosystem metrics</p>
+<p>- <code>dex-volume</code> for spot trading analytics</p>
+<p>- <code>bridges</code> for cross-chain bridge statistics</p>
+<p>- <code>fees</code> for protocol revenue analysis</p>
+<p>- <code>raw</code> for direct API access</p>
+<br>
+<h3> Output Formatters</h3>
+<p>Multiple output formatting utilities support different use cases: <code>format_number()</code> for human-readable financial values, <code>print_markdown_table()</code> for documentation integration, and Rich console tables for interactive terminal usage. Each command supports JSON, markdown, and rich console output modes.</p>
+<br>
+<h3> API Request Handler</h3>
+<p>The <code>_request()</code> method centralizes HTTP handling with support for different base URLs, query parameters, and authentication schemes. It includes comprehensive error handling with context-specific error messages and intelligent fallback suggestions for common user mistakes.</p>
+<br>
+<h3> Perpetuals Detection System</h3>
+<p>A specialized heuristic system (<code>_looks_like_perps()</code>) helps users navigate DefiLlama's API separation between spot DEX volumes and perpetuals trading data, providing helpful error messages when users query perpetuals venues through the wrong endpoint.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Argument Parsing]
+    B --&gt; C[Client Factory]
+    C --&gt; D[DefiLlamaClient]
+    D --&gt; E{API Type}
+    E --&gt;|Free| F[Public Endpoint]
+    E --&gt;|Pro| G[Authenticated Endpoint]
+    F --&gt; H[HTTP Request]
+    G --&gt; I[HTTP Request + API Key]
+    H --&gt; J[Response Processing]
+    I --&gt; J
+    J --&gt; K{Output Format}
+    K --&gt;|JSON| L[Raw JSON Output]
+    K --&gt;|Markdown| M[Table Formatting]
+    K --&gt;|Rich| N[Console Display]</code></pre>
+<br>
+<h3> Request Flow</h3>
+<p>User commands flow through Typer's argument parsing into command-specific handlers. Each handler instantiates a <code>DefiLlamaClient</code> and calls appropriate methods. The client determines the correct API endpoint, constructs the HTTP request with proper authentication if needed, and handles the response. Data flows back through formatters based on user-specified output preferences.</p>
+<br>
+<h3> Authentication Flow</h3>
+<p>The client checks for API keys in two locations: constructor parameters and environment variables via the centaur SDK's <code>secret()</code> function. For premium endpoints, it automatically appends authentication either as URL parameters or in the request path depending on the endpoint structure.</p>
+<br>
+<h3> Error Handling Flow</h3>
+<p>Errors propagate through multiple layers with context enrichment. HTTP errors are caught and wrapped with user-friendly messages. Special handling exists for perpetuals venues where users might query the wrong endpoint, providing intelligent suggestions for the correct API path.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Provides async-capable HTTP client functionality. Used throughout `DefiLlamaClient` for all API communications including connection pooling, timeout management, and error handling. Imported in: `client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework providing decorative command definition, automatic help generation, and type-safe argument parsing. Used extensively in `cli.py` for all command definitions, options, and arguments. Imported in: `cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library providing styled console output, tables, and progress indicators. Used in `cli.py` for creating formatted tables and colored console output through the `Console` class. Imported in: `cli.py`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [build-tool]: Environment variable loader for development configuration. Used in `cli.py` via `load_dotenv()` to automatically load `.env` files for API key configuration. Imported in: `cli.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Commands</h3>
+<p>The CLI exposes 11 commands accessible via the <code>defillama</code> executable:</p>
+<p>- <code>stablecoins</code>: List stablecoins by market cap with filtering options</p>
+<p>- <code>stablecoin <asset></code>: Get detailed information for a specific stablecoin</p>
+<p>- <code>stablecoin-flows <chain></code>: Analyze stablecoin inflows/outflows for a blockchain</p>
+<p>- <code>protocols</code>: List DeFi protocols by TVL with category and chain filters</p>
+<p>- <code>protocol <slug></code>: Get comprehensive protocol details and historical data</p>
+<p>- <code>chains</code>: List all blockchains by total value locked</p>
+<p>- <code>chain-tvl <chain></code>: Historical TVL analysis for a specific blockchain</p>
+<p>- <code>dex-volume</code>: DEX trading volume analytics across protocols</p>
+<p>- <code>bridges</code>: Cross-chain bridge volume and statistics</p>
+<p>- <code>fees</code>: Protocol fee and revenue analysis</p>
+<p>- <code>raw <endpoint></code>: Direct API access for advanced users</p>
+<br>
+<h3> Client API</h3>
+<p>The <code>DefiLlamaClient</code> class provides a programmatic Python API with 25+ methods organized by data category:</p>
+<p>- Stablecoins: <code>list_stablecoins()</code>, <code>get_stablecoin()</code>, <code>get_stablecoin_charts()</code></p>
+<p>- TVL & Protocols: <code>list_protocols()</code>, <code>get_protocol()</code>, <code>list_chains()</code></p>
+<p>- DEX Volumes: <code>get_dex_volumes()</code>, <code>get_dex_summary()</code></p>
+<p>- Derivatives: <code>get_derivatives_volumes()</code>, <code>get_derivatives_summary()</code>  </p>
+<p>- Bridges: <code>list_bridges()</code>, <code>get_bridge_volumes()</code></p>
+<p>- Fees: <code>get_fees()</code>, <code>get_protocol_fees()</code></p>
+<br>
+<h3> Output Formats</h3>
+<p>All commands support three output formats controlled by command-line flags:</p>
+<li>Rich console tables (default) with styling and automatic formatting</li>
+<p>- JSON output (<code>--json</code>) for programmatic consumption</p>
+<p>- Markdown tables (<code>--markdown</code>) for documentation integration</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<p>The component integrates with the DefiLlama API ecosystem through four distinct endpoints:</p>
+<p>- <strong>Main API</strong> (`api.llama.fi`): Core TVL, protocol, and chain data</p>
+<p>- <strong>Stablecoins API</strong> (`stablecoins.llama.fi`): Stablecoin market cap and flow data</p>
+<p>- <strong>Bridges API</strong> (`bridges.llama.fi`): Cross-chain bridge volume and statistics</p>
+<p>- <strong>Pro API</strong> (`pro-api.llama.fi`): Premium endpoints requiring authentication</p>
+<br>
+<p>Authentication is managed through API keys configured via environment variables or the centaur SDK's secret management system. The component handles rate limiting gracefully and provides fallback behavior for quota-exceeded scenarios.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

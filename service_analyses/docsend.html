@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: docsend — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>docsend</h1>
+</header>
+<h1>DocSend Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The DocSend component implements a browser automation-based document downloader that extracts PDF documents from DocSend's protected document sharing platform. The architecture follows a multi-strategy approach combining cloud browser automation with DOM extraction and API fallbacks.</p>
+<br>
+<p>The component uses a layered approach:</p>
+<p>1. <strong>Browser Management Layer</strong>: Handles cloud browser connection via Browser-use service and Playwright</p>
+<p>2. <strong>Authentication Layer</strong>: Manages DocSend's various authentication mechanisms (email, passcode, verification)</p>
+<p>3. <strong>State Detection Layer</strong>: Identifies document access requirements and blockers</p>
+<p>4. <strong>Content Extraction Layer</strong>: Multiple strategies for slide/page extraction</p>
+<p>5. <strong>Image Processing Layer</strong>: Downloads and assembles images into PDF format</p>
+<br>
+<p>The design mirrors successful browser extension approaches, providing fallback mechanisms when primary extraction methods fail. The component integrates with Centaur's secret management system for API key handling.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> DocsendClient Class</h3>
+<p>The main interface providing a synchronous <code>download()</code> method that internally coordinates asynchronous operations. Handles both running and non-running event loops through thread pool execution.</p>
+<br>
+<h3> Authentication System</h3>
+<p>- <code>_detect_state()</code>: Identifies document protection state (expired, blocked, passcode required, email required, ready)</p>
+<p>- <code>_enter_email()</code>: Handles email-gated document access with multiple selector strategies</p>
+<p>- <code>_enter_passcode()</code>: Manages password-protected documents with email + passcode combination</p>
+<p>- <code>_has_verification_wall()</code>: Detects email verification requirements after submission</p>
+<br>
+<h3> Content Extraction Engine</h3>
+<p>- <code>_navigate_all_slides()</code>: Forces rendering by navigating through all slides using keyboard events</p>
+<p>- <code>_extract_dom_image_urls()</code>: Primary strategy extracting URLs from rendered DOM elements</p>
+<p>- <code>_fetch_slide_urls()</code>: Fallback API strategy using DocSend's internal <code>/page_data/</code> endpoints</p>
+<p>- <code>_download_images()</code>: Parallel image download and RGBA to RGB conversion</p>
+<br>
+<h3> Browser Management</h3>
+<p>- <code>_browser_use_ws_url()</code>: Constructs WebSocket connection URLs with proxy and profile configuration</p>
+<p>- <code>_prepare_playwright_tls()</code>: Configures TLS certificates for corporate firewall environments</p>
+<p>- <code>_browser_use_api_key()</code>: Retrieves API keys via Centaur SDK secret management</p>
+<br>
+<h3> Utility Functions</h3>
+<p>- <code>_slide_count()</code>: Determines total document pages through multiple detection methods</p>
+<p>- <code>_dismiss_cookies()</code>: Handles cookie consent dialogs</p>
+<p>- <code>_click_submit()</code>: Robust form submission across different button types</p>
+<p>- <code>_redact_browser_use_secret()</code>: Security function removing API keys from error messages</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Primary Download Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[Download Request] --&gt; B[API Key Validation]
+    B --&gt; C[Browser Connection]
+    C --&gt; D[Navigate to DocSend URL]
+    D --&gt; E[State Detection]
+    E --&gt; F{Authentication Required?}
+    F --&gt;|Email| G[Enter Email]
+    F --&gt;|Passcode| H[Enter Passcode]
+    F --&gt;|Verification| I[Handle Verification Link]
+    F --&gt;|Ready| J[Slide Count Detection]
+    G --&gt; K{Verification Wall?}
+    K --&gt;|Yes| L[Return Verification Required]
+    K --&gt;|No| J
+    H --&gt; J
+    I --&gt; J
+    J --&gt; M[Navigate All Slides]
+    M --&gt; N[DOM Image Extraction]
+    N --&gt; O{Images Found?}
+    O --&gt;|Yes| P[Download Images]
+    O --&gt;|No| Q[API Fallback]
+    Q --&gt; R{API Success?}
+    R --&gt;|Yes| P
+    R --&gt;|No| S[Return Error]
+    P --&gt; T[Assemble PDF]
+    T --&gt; U[Return Result]</code></pre>
+<br>
+<h3> Authentication Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[State Detection] --&gt; B{State Type}
+    B --&gt;|expired| C[Return Expired Error]
+    B --&gt;|blocked| D[Return Blocked Error]
+    B --&gt;|passcode_required| E{Passcode Provided?}
+    B --&gt;|email_required| F{Email Provided?}
+    B --&gt;|ready| G[Proceed to Extraction]
+    E --&gt;|No| H[Return Passcode Required]
+    E --&gt;|Yes| I[Enter Email + Passcode]
+    F --&gt;|No| J[Return Email Required]
+    F --&gt;|Yes| K[Enter Email]
+    I --&gt; L{Auth Success?}
+    K --&gt; M{Verification Wall?}
+    L --&gt;|Yes| G
+    L --&gt;|No| N[Return Auth Failed]
+    M --&gt;|Yes| O[Return Verification Required]
+    M --&gt;|No| G</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>browser-use-sdk</strong> (>=2.0.14) [cloud-browser]: Cloud browser automation service providing managed Chromium instances. Used for connecting to remote browsers via WebSocket. Imported indirectly through API key configuration and WebSocket URL construction.</p>
+<br>
+<p>- <strong>httpx</strong> (>=0.28.0) [networking]: Async HTTP client for downloading slide images from DocSend's CloudFront URLs. Used in `_download_images()` for parallel image fetching with proper timeout handling. Imported in: `client.py:22`.</p>
+<br>
+<p>- <strong>pillow</strong> (>=12.0.0) [image-processing]: Python Imaging Library for image manipulation and PDF generation. Handles RGBA to RGB conversion and multi-page PDF assembly. Used extensively in `_download_images()` and PDF creation. Imported in: `client.py:23`.</p>
+<br>
+<p>- <strong>playwright</strong> (>=1.50.0) [browser-automation]: Browser automation framework providing CDP connection capabilities. Dynamically imported for connecting to cloud browsers and DOM manipulation. Imported in: `client.py:116`.</p>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal]: Centaur platform SDK providing secret management functionality. Used for secure API key retrieval via `secret()` function. Imported in: `client.py:25`.</p>
+<br>
+<h3> System Dependencies</h3>
+<br>
+<p>- <strong>Node.js</strong>: Required by Playwright for browser automation. Component configures Node.js CA certificates and options for corporate environments.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Interface</h3>
+<br>
+<p>The component exposes a single public class <code>DocsendClient</code> with one primary method:</p>
+<br>
+<pre><code class="language-python">def download(
+    url: str,
+    email: str = &quot;&quot;,
+    passcode: str | None = None,
+    verification_link: str | None = None,
+) -&gt; dict</code></pre>
+<br>
+<p><strong>Parameters:</strong></p>
+<p>- <code>url</code>: DocSend document URL (e.g., https://docsend.com/view/abc123)</p>
+<p>- <code>email</code>: Email address for email-gated documents</p>
+<p>- <code>passcode</code>: Password for password-protected documents  </p>
+<p>- <code>verification_link</code>: Email verification URL when required by DocSend</p>
+<br>
+<p><strong>Return Format:</strong></p>
+<pre><code class="language-python">{
+    &quot;status&quot;: &quot;ok&quot; | &quot;error&quot; | &quot;expired&quot; | &quot;blocked&quot; | &quot;passcode_required&quot; | &quot;email_required&quot; | &quot;verification_link_required&quot;,
+    &quot;filename&quot;: &quot;docsend_{slug}.pdf&quot;,
+    &quot;data&quot;: &quot;base64_encoded_pdf_content&quot;,
+    &quot;mime_type&quot;: &quot;application/pdf&quot;,
+    &quot;page_count&quot;: int,
+    &quot;downloaded&quot;: int,
+    &quot;error&quot;: str | None
+}</code></pre>
+<br>
+<h3> Factory Function</h3>
+<br>
+<p>- <code>_client() -> DocsendClient</code>: Factory function returning a configured client instance</p>
+<br>
+<h3> Configuration</h3>
+<br>
+<p>The component uses environment variables and Centaur secrets:</p>
+<p>- <code>BROWSER_USE_API_KEY</code>: API key for cloud browser service (via Centaur SDK)</p>
+<p>- <code>BROWSER_USE_PROXY_COUNTRY</code>: Optional proxy country code</p>
+<p>- <code>BROWSER_USE_PROFILE_ID</code>: Optional browser profile identifier</p>
+<p>- <code>NODE_EXTRA_CA_CERTS</code>: TLS certificate path for corporate environments</p>
+<p>- <code>NODE_OPTIONS</code>: Node.js runtime options</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Browser-use Cloud Service</h3>
+<p>The component connects to <code>connect.browser-use.com</code> via WebSocket for managed browser instances. Requires API authentication and supports proxy configuration and browser profiles.</p>
+<br>
+<h3> DocSend Platform</h3>
+<p>- <strong>Main Service</strong>: Accesses DocSend document viewer at `docsend.com/view/*` URLs</p>
+<p>- <strong>API Endpoints</strong>: Uses internal `/page_data/{page_number}` API for slide URL extraction</p>
+<p>- <strong>CDN</strong>: Downloads slide images from DocSend's CloudFront distribution</p>
+<br>
+<h3> Corporate Infrastructure</h3>
+<p>- <strong>TLS/Firewall</strong>: Configures Node.js CA certificates for corporate firewall environments</p>
+<p>- <strong>Proxy Support</strong>: Optional proxy routing through specified country codes</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component has no internal dependencies on other Centaur components. It integrates only with:</p>
+<p>- <strong>centaur_sdk</strong>: For secure secret management and API key retrieval</p>
+<p>- <strong>External Browser Service</strong>: Cloud browser automation via Browser-use platform</p>
+<p>- <strong>DocSend Platform</strong>: Target document extraction service</p>
+<br>
+<p>The component is designed as a self-contained library that other Centaur components can import and use for DocSend document extraction functionality.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

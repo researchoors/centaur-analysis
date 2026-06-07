@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: newsapi — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>newsapi</h1>
+</header>
+<p>Now I have thoroughly explored the newsapi component. Let me write the comprehensive analysis.</p>
+<br>
+<h1>NewsAPI Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The NewsAPI component is a Python library that provides both a programmatic client and CLI interface for accessing NewsAPI.org's news aggregation service. It implements a clean separation between the HTTP client logic and CLI interface, with robust error handling and multiple output formats for news headlines, article search, and source listings.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> pattern with clear separation of concerns:</p>
+<br>
+<p>- <strong>Client Layer</strong> (`client.py`): Handles HTTP communication with NewsAPI.org</p>
+<p>- <strong>CLI Layer</strong> (`cli.py`): Provides command-line interface with multiple output formats</p>
+<p>- <strong>Configuration Layer</strong>: Integrates with centaur-sdk for secret management</p>
+<br>
+<p>The design emphasizes reusability, with the client class (<code>NewsAPIClient</code>) being fully usable as a library component independent of the CLI interface.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> NewsAPIClient Class</h3>
+<p><strong>Location</strong>: `tools/research/newsapi/client.py`  </p>
+<p><strong>Purpose</strong>: Core HTTP client that wraps the NewsAPI.org REST API</p>
+<br>
+<p>The client provides three main API methods:</p>
+<p>- <code>headlines()</code>: Fetches top headlines with country/category/source filtering</p>
+<p>- <code>search()</code>: Full-text search across all articles with date ranges and sorting</p>
+<p>- <code>sources()</code>: Lists available news sources with filtering capabilities</p>
+<br>
+<p>The client implements automatic API key resolution through multiple sources (instance variable, centaur-sdk secrets, 1Password CLI) and includes comprehensive error handling for HTTP and API-level errors.</p>
+<br>
+<h3> CLI Command Interface</h3>
+<p><strong>Location</strong>: `tools/research/newsapi/cli.py`  </p>
+<p><strong>Purpose</strong>: Typer-based CLI providing three main commands</p>
+<br>
+<p>- <strong>headlines</strong>: Retrieves top headlines with filtering options</p>
+<p>- <strong>search</strong>: Performs article search with comprehensive query parameters  </p>
+<p>- <strong>sources</strong>: Lists available news sources with filtering</p>
+<br>
+<p>Each command supports multiple output formats: rich tables (default), JSON, and markdown tables.</p>
+<br>
+<h3> Output Formatting System</h3>
+<p>The CLI includes utility functions for consistent data presentation:</p>
+<p>- <code>print_markdown_table()</code>: Generates markdown-formatted tables</p>
+<p>- <code>truncate()</code>: Handles text truncation for display purposes</p>
+<li>Integration with Rich library for enhanced terminal output</li>
+<br>
+<h3> Secret Management Integration  </h3>
+<p>The component integrates with the centaur-sdk for secure API key management, supporting environment variables and 1Password CLI as fallback mechanisms.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">flowchart TD
+    A[CLI Command] --&gt; B[get_client]
+    B --&gt; C[NewsAPIClient.__init__]
+    C --&gt; D[_get_api_key]
+    D --&gt; E{API Key Source}
+    E --&gt;|Instance| F[Use provided key]
+    E --&gt;|centaur-sdk| G[secret function]
+    E --&gt;|1Password| H[op CLI command]
+    F --&gt; I[_request method]
+    G --&gt; I
+    H --&gt; I
+    I --&gt; J[httpx.Client.get]
+    J --&gt; K[NewsAPI.org]
+    K --&gt; L[JSON Response]
+    L --&gt; M[CLI Output Formatter]
+    M --&gt; N{Output Format}
+    N --&gt;|Rich Table| O[Rich Console]
+    N --&gt;|JSON| P[json.dumps]
+    N --&gt;|Markdown| Q[print_markdown_table]</code></pre>
+<br>
+<p>The primary data flow starts with CLI commands that instantiate the NewsAPIClient, which handles API key resolution through multiple sources. HTTP requests flow through httpx to NewsAPI.org, with responses processed and formatted according to user preferences.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: HTTP client library for making API requests to NewsAPI.org. Provides async/sync support and robust error handling. Used in: `client.py` for all API communication.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework built on Click. Provides command parsing, argument validation, and help generation. Used in: `cli.py` for all command definitions and parameter handling.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Library for rich text and beautiful formatting in terminals. Provides table formatting and styled console output. Used in: `cli.py` for creating formatted tables and console output.</p>
+<br>
+<h3> Development Dependencies</h3>
+<br>
+<p>- <strong>python-dotenv</strong>: Environment variable loading from .env files. Used in: `cli.py` for loading environment configuration.</p>
+<br>
+<h3> Internal SDK Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong>: Provides `secret()` function for secure credential management and `Table` class for rich table formatting. Used in: `client.py` for API key retrieval and `cli.py` for table display.</p>
+<br>
+<h3> External Tool Dependencies</h3>
+<br>
+<p>- <strong>1Password CLI</strong> (op): Optional fallback for API key retrieval when other methods fail. Used in: `client.py` through subprocess calls.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Client Interface</h3>
+<br>
+<pre><code class="language-python">class NewsAPIClient:
+    def __init__(self, api_key: str | None = None, timeout: float = 30.0)
+    def headlines(self, country: str | None = None, category: str | None = None, 
+                 sources: str | None = None, q: str | None = None, 
+                 page_size: int = 20, page: int = 1) -&gt; dict
+    def search(self, q: str, sources: str | None = None, domains: str | None = None,
+              from_date: str | None = None, to_date: str | None = None,
+              language: str | None = None, sort_by: str = &quot;publishedAt&quot;,
+              page_size: int = 20, page: int = 1) -&gt; dict
+    def sources(self, category: str | None = None, language: str | None = None,
+               country: str | None = None) -&gt; dict
+    def close(self)</code></pre>
+<br>
+<h3> CLI Interface</h3>
+<br>
+<p>- <strong>newsapi headlines</strong> - Get top headlines with country/category/source filtering</p>
+<p>- <strong>newsapi search</strong> - Search articles with full-text query and advanced filtering  </p>
+<p>- <strong>newsapi sources</strong> - List available news sources with filtering options</p>
+<br>
+<p>All commands support <code>--json</code>, <code>--markdown</code>, and <code>--limit</code> flags for output customization.</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> NewsAPI.org Integration</h3>
+<p>- <strong>Base URL</strong>: `https://newsapi.org/v2`</p>
+<p>- <strong>Authentication</strong>: API key via X-Api-Key header</p>
+<p>- <strong>Endpoints Used</strong>:</p>
+<p>  - <code>/top-headlines</code> - Top headlines by country/category/source</p>
+<p>  - <code>/everything</code> - Full article search with advanced parameters</p>
+<p>  - <code>/top-headlines/sources</code> - Available news sources listing</p>
+<p>- <strong>Rate Limits</strong>: Handled by API key tier (not enforced in client)</p>
+<br>
+<h3> Secret Management Systems</h3>
+<p>- <strong>centaur-sdk</strong>: Primary secret resolution mechanism</p>
+<p>- <strong>1Password CLI</strong>: Fallback secret retrieval via `op://ai-agents/NewsAPI Key/credential`</p>
+<p>- <strong>Environment Variables</strong>: NEWSAPI_KEY as fallback option</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

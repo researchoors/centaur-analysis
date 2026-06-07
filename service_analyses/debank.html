@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: debank — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>debank</h1>
+</header>
+<h1>DeBank Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The DeBank component follows a clean separation between client library and command-line interface patterns. It implements a <strong>client-facade</strong> architecture where the `DeBankClient` class encapsulates all API interactions with DeBank's Pro API, while the CLI layer provides user-friendly commands with rich formatting options. The component uses dependency injection through the `get_client()` factory function and follows REST API client patterns with comprehensive error handling.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> DeBankClient (client.py)</h3>
+<p>The core API client class that handles HTTP communication with DeBank's Pro API. Implements a comprehensive set of methods covering user portfolios, token data, protocol positions, NFTs, and chain information. Uses httpx for HTTP requests with proper timeout handling and authentication via API keys retrieved from secrets management.</p>
+<br>
+<h3> CLI Command Interface (cli.py)</h3>
+<p>A Typer-based command-line application providing 11 distinct commands for various DeBank operations. Implements consistent output formatting with support for JSON, rich tables, and markdown formats. Commands are organized into logical groups: user data (<code>balance</code>, <code>tokens</code>, <code>protocols</code>, <code>positions</code>), chain information (<code>chains</code>), protocol discovery (<code>protocol-list</code>, <code>protocol-info</code>), token lookup (<code>token</code>), NFT viewing (<code>nfts</code>), and raw API access (<code>raw</code>).</p>
+<br>
+<h3> Output Formatting System</h3>
+<p>Provides three output modes across all commands: rich console tables with colors and styling, markdown tables for documentation, and raw JSON for programmatic consumption. Includes utility functions <code>format_number()</code> and <code>format_amount()</code> for consistent numerical formatting with K/M/B/T suffixes.</p>
+<br>
+<h3> Authentication & Configuration</h3>
+<p>Integrates with the Centaur SDK's secret management system to retrieve the DEBANK_API_KEY from environment variables or secure storage. The client gracefully handles missing API keys with descriptive error messages.</p>
+<br>
+<h3> HTTP Client Management</h3>
+<p>Implements proper resource management with context manager support (<code>__enter__</code>/<code>__exit__</code>) and lazy initialization of the httpx client. Provides comprehensive error handling for HTTP status errors and request failures.</p>
+<br>
+<h3> API Method Coverage</h3>
+<p>Exposes 19 distinct API endpoints covering:</p>
+<li>User balance and portfolio data (5 methods)</li>
+<li>Protocol position analysis (6 methods) </li>
+<li>Token information and discovery (3 methods)</li>
+<li>NFT portfolio viewing (1 method)</li>
+<li>Chain and protocol metadata (4 methods)</li>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> User Portfolio Query Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[get_client Factory]
+    B --&gt; C[DeBankClient Instance]
+    C --&gt; D[API Key Retrieval]
+    D --&gt; E[HTTPX Request]
+    E --&gt; F[DeBank Pro API]
+    F --&gt; G[JSON Response]
+    G --&gt; H[Format Selection]
+    H --&gt; I[Rich Table Output]
+    H --&gt; J[Markdown Table Output]  
+    H --&gt; K[Raw JSON Output]</code></pre>
+<br>
+<h3> Authentication Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[DeBankClient Init] --&gt; B[_get_api_key Method]
+    B --&gt; C[Instance API Key Check]
+    C --&gt; D{API Key Present?}
+    D --&gt;|No| E[Centaur SDK Secret Lookup]
+    D --&gt;|Yes| F[Use Instance Key]
+    E --&gt; G[DEBANK_API_KEY Environment]
+    F --&gt; H[API Request Headers]
+    G --&gt; H
+    H --&gt; I[AccessKey Header Set]</code></pre>
+<br>
+<h3> Error Handling Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[API Request] --&gt; B{HTTP Status OK?}
+    B --&gt;|No| C[HTTPStatusError]
+    B --&gt;|Yes| D[JSON Parse]
+    C --&gt; E[RuntimeError with Status]
+    D --&gt; F{Request Success?}
+    F --&gt;|No| G[RequestError]
+    F --&gt;|Yes| H[Return Data]
+    G --&gt; I[RuntimeError with Message]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client library for making requests to the DeBank Pro API. Used throughout `DeBankClient` class for all API communications with proper timeout handling and connection pooling. Imported in: `tools/crypto/debank/client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Command-line interface framework providing argument parsing, help generation, and command organization. Powers the entire CLI interface with 11 commands and consistent option handling. Imported in: `tools/crypto/debank/cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library providing colored tables, progress bars, and styled console output. Used for all rich table formatting and console output throughout the CLI commands. Imported in: `tools/crypto/debank/cli.py`.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal]: Provides the `secret()` function for secure API key retrieval from environment variables or secret management systems. Used in `DeBankClient._get_api_key()` method for authentication. Imported in: `tools/crypto/debank/client.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Library Interface</h3>
+<p>The component exposes <code>DeBankClient</code> as its primary public interface, providing methods for:</p>
+<p>- User portfolio queries: <code>get_user_total_balance()</code>, <code>get_user_all_token_list()</code>, <code>get_user_all_simple_protocol_list()</code></p>
+<p>- Protocol analysis: <code>get_user_protocol()</code>, <code>get_user_complex_protocol_list()</code></p>
+<p>- Token discovery: <code>get_token()</code>, <code>get_token_list_by_ids()</code></p>
+<p>- Chain metadata: <code>get_chain_list()</code>, <code>get_protocol_list()</code></p>
+<p>- NFT portfolio: <code>get_user_nft_list()</code></p>
+<br>
+<h3> Command-Line Interface</h3>
+<p>Provides 11 commands accessible via the <code>debank</code> CLI:</p>
+<p>- <strong>balance</strong> - Total wallet balance across all chains</p>
+<p>- <strong>tokens</strong> - Token holdings with filtering and limits</p>
+<p>- <strong>protocols</strong> - DeFi protocol positions (simple view)</p>
+<p>- <strong>positions</strong> - Detailed protocol positions (complex view)</p>
+<p>- <strong>protocol</strong> - Specific protocol position details</p>
+<p>- <strong>chains</strong> - List supported blockchain networks</p>
+<p>- <strong>protocol-info</strong> - Protocol metadata and TVL</p>
+<p>- <strong>protocol-list</strong> - Protocols available on a chain</p>
+<p>- <strong>token</strong> - Individual token information</p>
+<p>- <strong>nfts</strong> - NFT portfolio viewing</p>
+<p>- <strong>raw</strong> - Direct API endpoint access</p>
+<br>
+<p>All commands support <code>--json</code>, <code>--markdown</code>, and rich console output modes for flexible integration.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

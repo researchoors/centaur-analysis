@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: messari — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>messari</h1>
+</header>
+<p>Now I have all the necessary information to write a comprehensive analysis of the messari component.</p>
+<br>
+<h1>Messari Component Analysis</h1>
+<br>
+<p>The messari component is a Python CLI tool that provides access to cryptocurrency asset data through the Messari API. It offers a command-line interface for retrieving prices, metrics, profiles, market data, and news about digital assets, with multiple output formats including rich terminal displays, JSON, and markdown tables.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> pattern with clear separation of concerns:</p>
+<br>
+<p>- <strong>CLI Layer</strong> (`cli.py`): Command definitions, argument parsing, and output formatting</p>
+<p>- <strong>Client Layer</strong> (`client.py`): HTTP API client with request handling and authentication  </p>
+<p>- <strong>Configuration</strong>: Environment variable management for API key authentication</p>
+<br>
+<p>The architecture enables clean separation between user interface concerns and API communication, making the component easy to extend with new commands or modify output formats.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> MessariClient Class</h3>
+<p>The core API client that handles all communication with the Messari data API. It manages authentication via API keys, constructs HTTP requests, and handles error responses. The client supports both v1 and v2 API endpoints and provides context manager functionality for resource cleanup.</p>
+<br>
+<h3> CLI Command Structure</h3>
+<p>Eight distinct commands provide comprehensive crypto data access:</p>
+<p>- <code>assets</code>: Lists cryptocurrency assets with basic information</p>
+<p>- <code>asset</code>: Retrieves detailed information for a specific asset</p>
+<p>- <code>metrics</code>: Displays price, volume, and market capitalization data</p>
+<p>- <code>profile</code>: Shows asset descriptions and project details</p>
+<p>- <code>markets</code>: Lists trading markets and exchanges for an asset</p>
+<p>- <code>news</code>: Retrieves latest cryptocurrency news (fallback implementation)</p>
+<p>- <code>timeseries</code>: Fetches historical data for specific metrics</p>
+<p>- <code>raw</code>: Enables direct API endpoint access for power users</p>
+<br>
+<h3> Output Formatting System</h3>
+<p>Three distinct output formats accommodate different use cases:</p>
+<p>- <strong>Rich Terminal</strong>: Colored, formatted tables using the rich library for interactive use</p>
+<p>- <strong>JSON</strong>: Machine-readable output for programmatic consumption</p>
+<p>- <strong>Markdown</strong>: Documentation-friendly tables for reports and sharing</p>
+<br>
+<h3> Utility Functions</h3>
+<p>Helper functions provide consistent data presentation:</p>
+<p>- <code>format_number()</code>: Formats large numbers with B/M/K suffixes for readability</p>
+<p>- <code>print_markdown_table()</code>: Generates markdown table output</p>
+<p>- <code>get_client()</code>: Factory function for creating authenticated client instances</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Argument Parsing]
+    B --&gt; C[Get Client Instance]
+    C --&gt; D[API Authentication]
+    D --&gt; E[HTTP Request to Messari]
+    E --&gt; F[Response Processing]
+    F --&gt; G{Output Format?}
+    G --&gt;|JSON| H[JSON Output]
+    G --&gt;|Markdown| I[Markdown Table]
+    G --&gt;|Default| J[Rich Terminal Display]
+    
+    K[Environment Variables] --&gt; D
+    L[API Key Secret] --&gt; D</code></pre>
+<br>
+<h3> Request Flow</h3>
+<p>1. User executes CLI command with arguments</p>
+<p>2. Typer parses arguments and validates options</p>
+<p>3. Client factory creates authenticated MessariClient instance</p>
+<p>4. Client constructs HTTP request with proper headers and parameters</p>
+<p>5. HTTPX sends request to Messari API endpoints</p>
+<p>6. Response data is parsed and returned to command handler</p>
+<p>7. Output formatter renders data according to selected format</p>
+<p>8. Results are displayed to user via console or stdout</p>
+<br>
+<h3> Error Handling Flow</h3>
+<li>Invalid API responses trigger RuntimeError exceptions with detailed messages</li>
+<li>Missing API keys cause initialization failures with clear error messages</li>
+<li>HTTP errors are captured and presented with status codes and API error details</li>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library for making API requests to Messari endpoints. Provides async/sync support, timeout handling, and connection pooling. Used in `client.py` for all API communication with automatic request/response handling.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework built on Click that provides type hints, automatic help generation, and command parsing. Used throughout `cli.py` to define all eight commands with their arguments, options, and help text. Handles argument validation and command routing.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library that provides colored output, progress bars, and formatted tables. Used in `cli.py` for the default output format, creating styled tables with colored columns and console output for better user experience.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loading from .env files. Used in `cli.py` via `load_dotenv()` to automatically load API keys and other configuration from environment files during CLI initialization.</p>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal]: Internal SDK providing shared utilities including the `Table` class for rich terminal output and the `secret()` function for secure credential management. Used in both `cli.py` and `client.py` for consistent formatting and authentication patterns.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>The component exposes eight public commands through the <code>messari</code> CLI executable:</p>
+<br>
+<p>- <strong>messari assets</strong> `[--limit N] [--fields FIELDS] [--json] [--markdown]`: Lists crypto assets with optional filtering and output format selection</p>
+<p>- <strong>messari asset</strong> `ASSET_KEY [--json] [--markdown]`: Retrieves detailed information for a specific cryptocurrency </p>
+<p>- <strong>messari metrics</strong> `ASSET_KEY [--json] [--markdown]`: Displays price, volume, and market cap metrics</p>
+<p>- <strong>messari profile</strong> `ASSET_KEY [--json] [--markdown]`: Shows asset description and project details</p>
+<p>- <strong>messari markets</strong> `ASSET_KEY [--limit N] [--json] [--markdown]`: Lists trading markets and exchanges</p>
+<p>- <strong>messari news</strong> `[--limit N] [--json] [--markdown]`: Retrieves cryptocurrency news (limited functionality)</p>
+<p>- <strong>messari timeseries</strong> `ASSET_KEY METRIC [--start DATE] [--end DATE] [--json] [--markdown]`: Fetches historical metric data</p>
+<p>- <strong>messari raw</strong> `ENDPOINT [--version V] [--params PARAMS]`: Direct API access for advanced users</p>
+<br>
+<h3> Python API</h3>
+<br>
+<p>The MessariClient class provides programmatic access:</p>
+<br>
+<pre><code class="language-python">from messari.client import MessariClient
+
+client = MessariClient(api_key=&quot;your_key&quot;)
+data = client.get_asset_metrics(&quot;bitcoin&quot;)
+timeseries = client.get_timeseries(&quot;ethereum&quot;, &quot;price&quot;, start=&quot;2024-01-01&quot;)</code></pre>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Messari API Integration</h3>
+<p>The component integrates with the Messari data API at <code>data.messari.io</code> using REST endpoints. It requires API key authentication passed via the <code>x-messari-api-key</code> header. The client supports both v1 and v2 API versions, with v1 being the primary version used for most operations.</p>
+<br>
+<p><strong>API Limitations</strong>: Several endpoints mentioned in the CLI commands have been deprecated or disabled by Messari, including the assets list endpoint, profile endpoint, markets endpoint, and news endpoint. The client implements fallback behavior by using the metrics endpoint as a substitute, which limits the full functionality described in the command help text.</p>
+<br>
+<h3> Configuration Management</h3>
+<p>The component relies on environment variable configuration for the <code>MESSARI_API_KEY</code>, which can be loaded from <code>.env</code> files via python-dotenv or set directly in the environment. The centaur_sdk secret management system provides secure credential handling.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component operates independently with no direct dependencies on other components in the centaur-src codebase. It integrates with:</p>
+<br>
+<p>- <strong>centaur_sdk</strong>: Uses shared utilities for table formatting and secret management</p>
+<p>- <strong>Environment</strong>: Loads configuration from environment variables and .env files</p>
+<p>- <strong>External API</strong>: Communicates with Messari's REST API over HTTPS</p>
+<br>
+<p>The component is designed as a standalone tool that can be used independently or as part of larger cryptocurrency analysis workflows.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

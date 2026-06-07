@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: alchemy — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>alchemy</h1>
+</header>
+<p>Now I'll analyze the data flows and create a comprehensive analysis.</p>
+<br>
+<h1>Alchemy Component Analysis</h1>
+<br>
+<p>The Alchemy component is a Python library that provides both a programmatic client and a command-line interface for interacting with Alchemy's blockchain APIs. It enables querying blockchain data, token balances, transaction information, and token prices across multiple chains.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> with clear separation between the API client logic and the CLI interface:</p>
+<br>
+<p>- <strong>Client Layer</strong> (`client.py`): Core `AlchemyClient` class that handles HTTP communication with Alchemy's JSON-RPC and Prices APIs</p>
+<p>- <strong>CLI Layer</strong> (`cli.py`): Typer-based command-line interface that wraps client functionality with user-friendly commands</p>
+<p>- <strong>Configuration</strong>: Environment-based API key management through the centaur-sdk secret system</p>
+<br>
+<p>The architecture supports multiple output formats (table, JSON, CSV, markdown) and provides consistent error handling across all operations.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. AlchemyClient Class (`client.py`)</h3>
+<p>The main API client that manages HTTP connections to Alchemy's services. It maintains separate HTTP clients for RPC calls and Prices API calls, with proper resource management through context manager support.</p>
+<br>
+<h3> 2. Chain Support System (`client.py`)</h3>
+<p>A comprehensive mapping system supporting 17+ blockchain networks including Ethereum, Polygon, Arbitrum, Optimism, Base, Solana, and others. The <code>get_chain_url()</code> function normalizes chain names to Alchemy's URL format.</p>
+<br>
+<h3> 3. RPC Methods (`client.py`)</h3>
+<p>Implements standard Ethereum JSON-RPC methods including:</p>
+<p>- Balance queries (<code>eth_getBalance</code>)</p>
+<p>- Token operations (<code>alchemy_getTokenBalances</code>, <code>alchemy_getTokenMetadata</code>)</p>
+<p>- Transfer tracking (<code>alchemy_getAssetTransfers</code>)</p>
+<p>- Transaction details (<code>eth_getTransactionByHash</code>, <code>eth_getTransactionReceipt</code>)</p>
+<p>- Network status (<code>eth_blockNumber</code>, <code>eth_gasPrice</code>)</p>
+<br>
+<h3> 4. Prices API Integration (`client.py`)</h3>
+<p>Dedicated client for Alchemy's Prices API with support for:</p>
+<li>Symbol-based price lookups</li>
+<li>Address-based price queries</li>
+<li>Historical price data retrieval</li>
+<br>
+<h3> 5. CLI Command System (`cli.py`)</h3>
+<p>Typer-based CLI with 10 main commands organized around common blockchain use cases:</p>
+<p>- Account queries (<code>balance</code>, <code>token-balances</code>)</p>
+<p>- Token information (<code>token-metadata</code>, <code>price</code>, <code>price-address</code>)</p>
+<p>- Transaction analysis (<code>transfers</code>, <code>tx</code>)</p>
+<p>- Network status (<code>chains</code>, <code>block-number</code>, <code>gas-price</code>)</p>
+<br>
+<h3> 6. Output Formatting (`cli.py`)</h3>
+<p>Unified formatting system supporting table (Rich), JSON, CSV, and markdown output formats with consistent data presentation across all commands.</p>
+<br>
+<h3> 7. Utility Functions (`client.py`)</h3>
+<p>Helper functions for blockchain data formatting:</p>
+<p>- <code>format_wei()</code>: Converts wei amounts to human-readable format</p>
+<p>- <code>format_gwei()</code>: Formats gas prices in gwei</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> 1. Balance Query Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[AlchemyClient.get_balance]
+    B --&gt; C[_rpc_call method]
+    C --&gt; D[HTTP POST to RPC URL]
+    D --&gt; E[JSON-RPC eth_getBalance]
+    E --&gt; F[Parse hex result to int]
+    F --&gt; G[format_wei for display]
+    G --&gt; H[Output formatting]</code></pre>
+<br>
+<h3> 2. Token Balances Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[CLI token-balances] --&gt; B[get_token_balances]
+    B --&gt; C[alchemy_getTokenBalances RPC]
+    C --&gt; D[Filter non-zero balances]
+    D --&gt; E[get_token_metadata for each]
+    E --&gt; F[Format with decimals]
+    F --&gt; G[Rich table or JSON output]</code></pre>
+<br>
+<h3> 3. Price Query Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[CLI price command] --&gt; B[AlchemyClient.get_prices_by_symbol]
+    B --&gt; C[HTTP GET to Prices API]
+    C --&gt; D[/tokens/by-symbol endpoint]
+    D --&gt; E[Parse price data]
+    E --&gt; F[Format currency values]
+    F --&gt; G[Output with timestamps]</code></pre>
+<br>
+<h3> 4. Transfer Analysis Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[CLI transfers] --&gt; B[Direction routing]
+    B --&gt; C[get_asset_transfers calls]
+    C --&gt; D[alchemy_getAssetTransfers RPC]
+    D --&gt; E[Combine from/to results]
+    E --&gt; F[Sort by block number]
+    F --&gt; G[Format addresses/values]
+    G --&gt; H[Paginated output]</code></pre>
+<br>
+<h2>Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client for making API requests to Alchemy's RPC and Prices endpoints. Used for all blockchain data queries with proper async support and connection pooling. Imported in: `client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Framework for building the command-line interface with automatic help generation, type hints, and argument parsing. Provides all CLI commands and option handling. Imported in: `cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library for colorized output, tables, and progress indicators. Used for all non-JSON output formatting including balance displays and transfer tables. Imported in: `cli.py` via Console and Table classes.</p>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal-sdk]: Centaur framework SDK providing the `secret()` function for secure API key management from environment variables. Used for ALCHEMY_API_KEY retrieval. Imported in: `client.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Client Interface</h3>
+<br>
+<p>The <code>AlchemyClient</code> class exposes the following public methods:</p>
+<br>
+<p><strong>Account & Balance Methods:</strong></p>
+<p>- <code>get_balance(address, chain=None) -> int</code>: Native token balance in wei</p>
+<p>- <code>get_token_balances(address, token_addresses=None, chain=None) -> dict</code>: ERC-20 token balances</p>
+<p>- <code>get_token_metadata(token_address, chain=None) -> dict</code>: Token name, symbol, decimals</p>
+<br>
+<p><strong>Transaction Methods:</strong></p>
+<p>- <code>get_asset_transfers(from_address=None, to_address=None, ...) -> dict</code>: Historical transfers</p>
+<p>- <code>get_transaction(tx_hash, chain=None) -> dict</code>: Transaction details</p>
+<p>- <code>get_transaction_receipt(tx_hash, chain=None) -> dict</code>: Transaction receipt</p>
+<br>
+<p><strong>Network Methods:</strong></p>
+<p>- <code>get_block_number(chain=None) -> int</code>: Current block height</p>
+<p>- <code>get_gas_price(chain=None) -> int</code>: Current gas price in wei</p>
+<p>- <code>get_logs(address=None, topics=None, ...) -> list[dict]</code>: Event logs</p>
+<br>
+<p><strong>Prices Methods:</strong></p>
+<p>- <code>get_prices_by_symbol(symbols) -> dict</code>: Current token prices by symbol</p>
+<p>- <code>get_prices_by_address(addresses) -> dict</code>: Prices by contract address</p>
+<p>- <code>get_historical_prices(symbol=None, address=None, ...) -> dict</code>: Historical price data</p>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p><strong>Account Commands:</strong></p>
+<p>- <code>alchemy balance <address></code>: Native token balance</p>
+<p>- <code>alchemy token-balances <address></code>: ERC-20 token holdings</p>
+<p>- <code>alchemy token-metadata <address></code>: Token information</p>
+<br>
+<p><strong>Transaction Commands:</strong></p>
+<p>- <code>alchemy transfers <address></code>: Transfer history</p>
+<p>- <code>alchemy tx <hash></code>: Transaction details</p>
+<br>
+<p><strong>Network Commands:</strong></p>
+<p>- <code>alchemy chains</code>: List supported chains</p>
+<p>- <code>alchemy block-number</code>: Current block height</p>
+<p>- <code>alchemy gas-price</code>: Current gas cost</p>
+<br>
+<p><strong>Price Commands:</strong></p>
+<p>- <code>alchemy price <symbols></code>: Token prices by symbol</p>
+<p>- <code>alchemy price-address <address></code>: Price by contract address</p>
+<br>
+<p>All CLI commands support <code>--chain</code>, <code>--output</code> (table/json/csv), and <code>--markdown</code> options.</p>
+<br>
+<h3> Utility Functions</h3>
+<br>
+<p>- <code>format_wei(wei, decimals=18) -> str</code>: Convert wei amounts to readable format</p>
+<p>- <code>format_gwei(wei) -> str</code>: Convert wei to gwei for gas prices</p>
+<p>- <code>get_chain_url(chain) -> str</code>: Normalize chain names to Alchemy URL format</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

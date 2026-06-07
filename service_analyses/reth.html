@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: reth — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>reth</h1>
+</header>
+<h1>Reth Component Analysis</h1>
+<br>
+<p>The reth component is a Python library that provides a command-line interface for analyzing execution client performance metrics from the ethPandaOps monitoring infrastructure. This tool is specifically designed to monitor and compare Ethereum execution layer (EL) client performance, with a particular focus on tracking Reth's performance relative to other clients like Geth, Nethermind, and Besu.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a simple client-service architecture pattern with a clear separation of concerns:</p>
+<br>
+<p>- <strong>CLI Layer</strong>: Provides user-facing commands with rich formatting options</p>
+<p>- <strong>Client Layer</strong>: Handles API communication with ethPandaOps infrastructure  </p>
+<p>- <strong>Data Processing Layer</strong>: Aggregates and analyzes execution timing metrics</p>
+<br>
+<p>The architecture is designed for simplicity and efficiency, focusing on data retrieval, aggregation, and presentation rather than complex business logic.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> RethClient (client.py)</h3>
+<p>The core API client that interfaces with ethPandaOps monitoring infrastructure. It handles HTTP requests to fetch execution payload timing data and provides statistical aggregation capabilities.</p>
+<br>
+<p>Key methods:</p>
+<p>- <code>get_execution_timings()</code>: Fetches raw timing data from ethPandaOps API</p>
+<p>- <code>aggregate_timings()</code>: Computes statistical metrics (avg, percentiles) by client</p>
+<p>- <code>parse_duration()</code>: Converts human-readable time strings to seconds</p>
+<br>
+<h3> CLI Commands (cli.py)</h3>
+<p>Two primary commands expose the functionality:</p>
+<br>
+<p><strong>timings command</strong>: Displays execution timing statistics in a ranked table format, with options for JSON output and Slack-formatted messages. Highlights Reth's performance with special styling.</p>
+<br>
+<p><strong>slow command</strong>: Identifies and displays the slowest execution payloads above a configurable threshold, useful for performance debugging and outlier analysis.</p>
+<br>
+<h3> Table Presentation</h3>
+<p>Uses the centaur_sdk Table component for rich console output with color coding and structured formatting.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[RethClient]
+    B --&gt; C[ethPandaOps API]
+    C --&gt; D[Raw Payload Data]
+    D --&gt; E[Statistical Aggregation]
+    E --&gt; F[Formatted Output]
+    F --&gt; G[Console/JSON/Slack]
+    
+    subgraph &quot;Data Processing&quot;
+        D --&gt; H[Filter by Client]
+        H --&gt; I[Calculate Percentiles]
+        I --&gt; J[Sort by Performance]
+    end</code></pre>
+<br>
+<p>The data flow starts with user commands that trigger API requests to ethPandaOps. Raw execution payload data is fetched, aggregated by client implementation, and statistical metrics are calculated. The results are then formatted and presented through various output formats.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: HTTP client library for making requests to the ethPandaOps API. Provides async/sync HTTP capabilities with timeout handling. Used in `client.py` for all API communication with the ethPandaOps monitoring infrastructure.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework that provides argument parsing, command routing, and help generation. Used in `cli.py` to define the command structure with decorators and automatic help text generation.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library for colored output, progress bars, and rich text rendering. Used via `rich.console.Console` for colored terminal output and status messages.</p>
+<br>
+<p>- <strong>dotenv</strong> (dev dependency) [configuration]: Loads environment variables from .env files. Called at module import time in `cli.py` to configure the runtime environment.</p>
+<br>
+<p>- <strong>centaur_sdk</strong> (internal): Provides the `Table` class used for structured console output formatting. This appears to be an internal SDK rather than an external dependency.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes its functionality through two primary interfaces:</p>
+<br>
+<h3> Command Line Interface</h3>
+<p>- <code>reth timings [duration] [--json] [--slack]</code>: Display execution timing statistics</p>
+<p>- <code>reth slow [duration] [--threshold] [--limit]</code>: Show slow execution payloads</p>
+<br>
+<h3> Python API</h3>
+<p>- <code>RethClient</code>: Main client class for programmatic access</p>
+<p>- <code>get_execution_timings()</code>: Fetch raw timing data</p>
+<p>- <code>aggregate_timings()</code>: Statistical analysis functions</p>
+<br>
+<p>The CLI commands provide flexible output formats (table, JSON, Slack) making the tool suitable for both interactive use and integration into monitoring workflows.</p>
+<br>
+<h3> External Systems</h3>
+<br>
+<p>The component integrates with:</p>
+<br>
+<p>- <strong>ethPandaOps API</strong> (lab.ethpandaops.io): Public monitoring infrastructure that collects execution client performance metrics from Ethereum mainnet. The component queries the `/api/v1/mainnet/int_engine_new_payload` endpoint to retrieve execution timing data.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

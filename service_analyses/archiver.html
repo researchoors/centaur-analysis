@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: archiver — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>archiver</h1>
+</header>
+<p>Now I have comprehensive understanding of the archiver component. Let me write the analysis.</p>
+<br>
+<h1>Archiver Component Analysis</h1>
+<br>
+<p>The archiver component is a sophisticated document extraction library designed for processing investment materials using Reducto AI and multiple document source adapters. It serves as a unified interface for downloading documents from DocSend and Google Drive sources, then extracting structured metadata and content using Reducto's AI parsing capabilities.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> with clear separation between download, ingestion, and client abstraction layers:</p>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Client Layer] --&gt; B[Download Orchestrator]
+    A --&gt; C[Ingest Parser]
+    B --&gt; D[DocSend Adapter]
+    B --&gt; E[Google Drive Adapter]
+    C --&gt; F[Reducto API]
+    D --&gt; G[Browser-Use Cloud]
+    D --&gt; H[Playwright Automation]
+    E --&gt; I[gog CLI Tool]
+    
+    A --&gt; J[CLI Interface]
+    A --&gt; K[Centaur SDK Integration]</code></pre>
+<br>
+<p>The architecture employs a <strong>facade pattern</strong> through `ArchiverClient`, providing simplified methods that orchestrate complex multi-stage workflows involving document downloading, parsing, and metadata extraction.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. ArchiverClient (`client.py`)</h3>
+<p>The primary interface providing high-level methods for document extraction workflows. Key methods include:</p>
+<p>- <code>download()</code> - Downloads from DocSend/Google sources to local files</p>
+<p>- <code>extract_source()</code> - One-shot download and extraction pipeline</p>
+<p>- <code>extract_files()</code> - Direct extraction from local files</p>
+<p>- <code>parse()</code> - Reducto parsing from existing manifest files</p>
+<br>
+<h3> 2. Download Orchestrator (`download/orchestrator.py`)</h3>
+<p>Central dispatcher routing download requests to appropriate adapters based on URL patterns:</p>
+<li>Detects source type (DocSend vs Google Drive) from URL structure</li>
+<li>Handles fallback strategies for DocSend downloads</li>
+<li>Manages file record creation and ZIP expansion</li>
+<li>Implements error recovery and manual download suggestions</li>
+<br>
+<h3> 3. DocSend Adapter (`download/docsend.py`)</h3>
+<p>Sophisticated DocSend document scraping system using browser automation:</p>
+<p>- <strong>State Detection</strong>: Identifies password protection, email gates, download availability</p>
+<p>- <strong>Browser-Use Integration</strong>: Leverages cloud browsers to avoid headless detection</p>
+<p>- <strong>Playwright Control</strong>: Deterministic automation for slide extraction</p>
+<p>- <strong>PDF Generation</strong>: Compiles scraped slides into searchable PDFs</p>
+<br>
+<h3> 4. Google Drive Adapter (`download/google.py`)</h3>
+<p>Handles Google Workspace document downloads via multiple strategies:</p>
+<li>Direct HTTP exports for public documents</li>
+<li>gog CLI tool integration for authenticated access</li>
+<li>Support for Docs, Sheets, Slides, and Drive files/folders</li>
+<li>Recursive folder traversal with configurable depth limits</li>
+<br>
+<h3> 5. Reducto Parser (`ingest/parse.py`)</h3>
+<p>Manages document parsing and metadata extraction through Reducto AI:</p>
+<p>- <strong>Parallel Processing</strong>: Concurrent upload and job submission for multiple files</p>
+<p>- <strong>Structured Extraction</strong>: Uses JSON schema for consistent investment document metadata</p>
+<p>- <strong>Content Chunking</strong>: Breaks documents into indexed chunks for search</p>
+<p>- <strong>Job Polling</strong>: Asynchronous monitoring of Reducto processing jobs</p>
+<br>
+<h3> 6. CLI Interface (`cli.py`)</h3>
+<p>Typer-based command-line interface with commands:</p>
+<p>- <code>download</code> - Download sources to local directory</p>
+<p>- <code>parse</code> - Parse from existing manifest</p>
+<p>- <code>extract</code> - Unified extraction command supporting multiple input modes</p>
+<li>Interactive prompts for missing authentication credentials</li>
+<br>
+<h3> 7. Utilities (`utils.py`)</h3>
+<p>Common data structures and helper functions:</p>
+<p>- <code>FileRecord</code> dataclass for standardized file metadata</p>
+<li>Hash computation, MIME type detection, URL normalization</li>
+<li>JSON serialization with datetime support</li>
+<br>
+<h3> 8. DocSend Playwright Module (`docsend/playwright.py`)</h3>
+<p>Low-level DocSend automation primitives:</p>
+<li>Browser session management via Browser-Use cloud API</li>
+<li>Password and email form handling</li>
+<li>Slide URL extraction via DocSend's internal APIs</li>
+<li>Image downloading and PDF compilation</li>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Primary Extraction Flow</h3>
+<br>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Client
+    participant Orchestrator
+    participant Adapter
+    participant Reducto
+    participant Storage
+
+    Client-&gt;&gt;Orchestrator: extract_source(url)
+    Orchestrator-&gt;&gt;Adapter: download(url)
+    Adapter-&gt;&gt;Adapter: authenticate &amp; scrape
+    Adapter-&gt;&gt;Storage: save files
+    Orchestrator-&gt;&gt;Reducto: upload files
+    Reducto-&gt;&gt;Reducto: parse &amp; extract
+    Reducto--&gt;&gt;Orchestrator: structured data
+    Orchestrator--&gt;&gt;Client: extraction results</code></pre>
+<br>
+<h3> DocSend Scraping Flow</h3>
+<br>
+<pre><code class="language-mermaid">graph LR
+    A[DocSend URL] --&gt; B[State Detection]
+    B --&gt; C{Auth Required?}
+    C --&gt;|Yes| D[Handle Auth]
+    C --&gt;|No| E[Extract Slides]
+    D --&gt; E
+    E --&gt; F[Download Images]
+    F --&gt; G[Compile PDF]
+    G --&gt; H[Return FileRecord]</code></pre>
+<br>
+<h3> Reducto Processing Pipeline</h3>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Local Files] --&gt; B[Upload to Reducto]
+    B --&gt; C[Submit Parse Job]
+    B --&gt; D[Submit Extract Job]
+    C --&gt; E[Poll Parse Status]
+    D --&gt; F[Poll Extract Status]
+    E --&gt; G[Retrieve Chunks]
+    F --&gt; H[Retrieve Metadata]
+    G --&gt; I[Normalize Results]
+    H --&gt; I
+    I --&gt; J[Return Structured Data]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Libraries</h3>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern Python CLI framework providing command parsing, option handling, and interactive prompts. Used in `cli.py` for the main application interface.</p>
+<br>
+<p>- <strong>browser-use-sdk</strong> (>=2.0.14) [automation]: Cloud browser automation service providing headless browsers via WebSocket. Used in `docsend/playwright.py` and `download/docsend.py` for DocSend scraping to avoid anti-bot detection.</p>
+<br>
+<p>- <strong>httpx</strong> (>=0.28.1) [networking]: Modern async HTTP client for API calls and direct downloads. Used extensively in `ingest/parse.py` for Reducto API integration and `download/google.py` for Google Drive direct exports.</p>
+<br>
+<p>- <strong>pillow</strong> (>=12.1.0) [image]: Python Imaging Library for image processing and PDF creation. Used in `docsend/playwright.py` for compiling scraped slide images into searchable PDFs.</p>
+<br>
+<p>- <strong>playwright</strong> (>=1.58.0) [automation]: Browser automation framework providing programmatic control over Chromium/Firefox. Used in `docsend/` modules for deterministic DocSend interaction and slide extraction.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.2.1) [config]: Environment variable management from .env files. Used for configuration loading across multiple modules.</p>
+<br>
+<p>- <strong>requests</strong> (>=2.32.5) [networking]: HTTP library for simple synchronous requests. Used as fallback HTTP client in some download scenarios.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong>: Internal SDK providing `secret()` function for secure credential management and `save_attachment_from_path()` for file attachment handling. Used in `client.py` and `ingest/parse.py`.</p>
+<br>
+<h3> External Tools</h3>
+<br>
+<p>- <strong>gog</strong>: External CLI tool for authenticated Google Drive access when direct HTTP exports fail due to permissions. Invoked via subprocess in `download/google.py`.</p>
+<br>
+<h3> Cloud Services</h3>
+<br>
+<p>- <strong>Reducto AI Platform</strong> (platform.reducto.ai): Document parsing and metadata extraction service. Requires `REDUCTO_API_KEY` authentication.</p>
+<br>
+<p>- <strong>Browser-Use Cloud</strong> (connect.browser-use.com): Cloud browser automation service. Requires `BROWSER_USE_API_KEY` authentication.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Library Interface</h3>
+<br>
+<p>The <code>ArchiverClient</code> class exposes these primary methods for external consumption:</p>
+<br>
+<p>- <code>download(source_url, company, account, password, email, max_depth) -> dict</code>: Downloads documents from DocSend or Google Drive sources</p>
+<p>- <code>extract_source(source_url, ..., context) -> dict</code>: One-shot download and extraction pipeline</p>
+<p>- <code>extract_files(file_paths, context, source_url) -> dict</code>: Direct extraction from local file paths  </p>
+<p>- <code>extract_manifest(manifest_path, context) -> dict</code>: Extraction from pre-downloaded manifest</p>
+<p>- <code>parse(manifest_path, context) -> dict</code>: Alias for extract_manifest</p>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>- <code>archiver download --source <url> --output <dir></code>: Download source to directory</p>
+<p>- <code>archiver parse --manifest <path></code>: Parse from existing manifest</p>
+<p>- <code>archiver extract [--source|--manifest|--file]</code>: Unified extraction command</p>
+<br>
+<h3> Configuration Options</h3>
+<br>
+<p>- Environment variables: <code>REDUCTO_API_KEY</code>, <code>BROWSER_USE_API_KEY</code>, <code>DOCSEND_EMAIL</code></p>
+<p>- Timeout controls: <code>PARSE_TIMEOUT_S</code>, <code>EXTRACT_TIMEOUT_S</code></p>
+<p>- Feature flags: <code>EXTRACT_OPTIMIZE_FOR_LATENCY</code></p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

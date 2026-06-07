@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: centaur — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>centaur</h1>
+</header>
+<p>Now I have sufficient information about the codebase. Let me write the analysis.</p>
+<br>
+<h1>Centaur TypeScript Library Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The centaur component is a TypeScript monorepo library providing a comprehensive API client and event processing system for interacting with AI agent workflows. The architecture follows a <strong>modular package-based pattern</strong> with clear separation of concerns across three main areas:</p>
+<br>
+<p>1. <strong>API Communication Layer</strong> (`@centaur/api-client`) - HTTP client for agent lifecycle management</p>
+<p>2. <strong>Event Processing Layer</strong> (`@centaur/harness-events`) - Normalization of heterogeneous AI harness events  </p>
+<p>3. <strong>Service Integration Layer</strong> (`slackbot`) - Slack integration service demonstrating real-world usage</p>
+<br>
+<p>The design emphasizes <strong>type safety</strong>, <strong>streaming capabilities</strong>, and <strong>multi-harness compatibility</strong> to support diverse AI agent execution environments.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. **CentaurClient** (`packages/api-client/src/client.ts`)</h3>
+<p>The primary HTTP client providing comprehensive agent workflow management. Supports agent spawning, message handling, execution control, workflow orchestration, and real-time event streaming via Server-Sent Events.</p>
+<br>
+<h3> 2. **Event Normalizer** (`packages/harness-events/src/normalize.ts`)</h3>
+<p>A sophisticated event transformation system that converts harness-specific JSON events into canonical formats. Handles three major harness types: <code>amp</code>, <code>codex</code>, and <code>pi-mono</code> with different event schemas.</p>
+<br>
+<h3> 3. **Type Definitions** (`packages/harness-events/src/types.ts`, `packages/api-client/src/client.ts`)</h3>
+<p>Comprehensive TypeScript interfaces defining content blocks, canonical events, execution options, and workflow states across the entire system.</p>
+<br>
+<h3> 4. **Thread Key Management** (`packages/harness-events/src/thread-key.ts`)</h3>
+<p>Utilities for parsing and normalizing thread identifiers, particularly for Slack-style channel:timestamp formats.</p>
+<br>
+<h3> 5. **Parse Utilities** (`packages/harness-events/src/parse-utils.ts`)</h3>
+<p>Type-safe extraction functions for converting unknown JSON values into strongly-typed TypeScript values.</p>
+<br>
+<h3> 6. **Slack Integration Service** (`services/slackbot/`)</h3>
+<p>Production service demonstrating API client usage with Slack webhook handling, agent session management, final delivery polling, and comprehensive observability.</p>
+<br>
+<h3> 7. **Final Delivery System** (`services/slackbot/src/centaur/final-delivery.ts`)</h3>
+<p>Reliable message delivery mechanism with lease-based processing, retry logic, and error handling for Slack message delivery.</p>
+<br>
+<h3> 8. **Event Streaming Infrastructure** (`packages/api-client/src/client.ts:247-293`)</h3>
+<p>Async generator-based streaming system using EventSource parsing for real-time agent execution monitoring.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Slack Event] --&gt; B[SlackBot Service]
+    B --&gt; C[Event Normalization]
+    C --&gt; D[CentaurClient.spawn]
+    D --&gt; E[Agent Workflow]
+    
+    E --&gt; F[CentaurClient.streamEvents]
+    F --&gt; G[Raw Harness Events]
+    G --&gt; H[normalizeHarnessEvent]
+    H --&gt; I[Canonical Events]
+    I --&gt; J[Slack Message Rendering]
+    
+    E --&gt; K[Final Delivery Queue]
+    K --&gt; L[Final Delivery Poller]
+    L --&gt; M[CentaurClient.claimFinalDeliveries]
+    M --&gt; N[Slack API Response]</code></pre>
+<br>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant S as Slack
+    participant SB as SlackBot
+    participant CC as CentaurClient
+    participant AW as Agent Workflow
+    
+    S-&gt;&gt;SB: Webhook Event
+    SB-&gt;&gt;CC: spawn(threadKey, options)
+    CC-&gt;&gt;AW: Create Agent Thread
+    AW--&gt;&gt;CC: SpawnResult
+    
+    SB-&gt;&gt;CC: streamEvents(threadKey)
+    CC--&gt;&gt;SB: Real-time Events (SSE)
+    SB-&gt;&gt;SB: normalizeHarnessEvent()
+    SB-&gt;&gt;S: Update Slack Thread
+    
+    AW-&gt;&gt;CC: Final Delivery Ready
+    SB-&gt;&gt;CC: claimFinalDeliveries()
+    CC--&gt;&gt;SB: Delivery Batch
+    SB-&gt;&gt;S: Final Message
+    SB-&gt;&gt;CC: markFinalDelivered()</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>axios</strong> (^1.13.6) [networking]: HTTP client library providing request/response handling with interceptors and timeout support. Used throughout `CentaurClient` for all API communication. Imported in: `packages/api-client/src/client.ts`.</p>
+<br>
+<p>- <strong>eventsource-parser</strong> (^3.0.6) [networking]: Server-Sent Events parsing library enabling real-time event streaming. Used in `CentaurClient.streamEvents()` to parse SSE responses from agent execution streams. Imported in: `packages/api-client/src/client.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/api</strong> (^1.9.1) [monitoring]: OpenTelemetry tracing API for distributed tracing across microservices. Used in slackbot service for request correlation and performance monitoring. Imported in: `services/slackbot/src/otel.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/exporter-trace-otlp-proto</strong> (^0.218.0) [monitoring]: OTLP protocol exporter for sending traces to observability backends. Configured in slackbot for trace export. Imported in: `services/slackbot/src/otel.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/resources</strong> (^2.7.1) [monitoring]: Resource management for OpenTelemetry describing service metadata. Used for service identification in traces. Imported in: `services/slackbot/src/otel.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/sdk-trace-base</strong> (^2.7.1) [monitoring]: Base tracing SDK providing core tracing functionality. Used for span management in slackbot. Imported in: `services/slackbot/src/otel.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/sdk-trace-node</strong> (^2.7.1) [monitoring]: Node.js-specific tracing SDK extensions. Provides Node.js runtime integration for OpenTelemetry. Imported in: `services/slackbot/src/otel.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/semantic-conventions</strong> (^1.41.1) [monitoring]: Standard attribute names and values for OpenTelemetry spans. Used for consistent span annotation. Imported in: `services/slackbot/src/otel.ts`.</p>
+<br>
+<p>- <strong>@slack/types</strong> (^2.19.0) [web-framework]: TypeScript type definitions for Slack API objects and webhooks. Provides type safety for Slack message blocks and events. Imported throughout `services/slackbot/src/slack/`.</p>
+<br>
+<p>- <strong>@slack/web-api</strong> (^7.15.2) [web-framework]: Official Slack Web API client for bot interactions. Used for sending messages and managing Slack app installations. Imported in: `services/slackbot/src/slack/client.ts`.</p>
+<br>
+<p>- <strong>@std/ulid</strong> (npm:@jsr/std__ulid) [other]: ULID generation library for sortable unique identifiers. Used for request ID generation in HTTP middleware. Imported in: `services/slackbot/src/index.ts`.</p>
+<br>
+<p>- <strong>hono</strong> (^4.12.18) [web-framework]: Lightweight web framework for edge computing environments. Provides HTTP server functionality for the slackbot service. Imported in: `services/slackbot/src/index.ts`.</p>
+<br>
+<p>- <strong>zod</strong> (^4.4.3) [serialization]: TypeScript schema validation library. Used for runtime validation of configuration and request payloads. Imported in: `services/slackbot/src/config.ts`.</p>
+<br>
+<h3> Development Dependencies</h3>
+<br>
+<p>- <strong>typescript</strong> (5.9.3/^6.0.3) [build-tool]: TypeScript compiler for static type checking and compilation. Used across all packages for type safety.</p>
+<br>
+<p>- <strong>vitest</strong> (^4.1.0) [testing]: Modern testing framework with native TypeScript support. Used for unit testing the API client. Configured in: `packages/api-client/vitest.config.ts`.</p>
+<br>
+<p>- <strong>emulate</strong> (^0.5.0) [testing]: Test framework for integration testing. Used for end-to-end Slack bot testing. Imported in: `services/slackbot/test/emulate/`.</p>
+<br>
+<p>- <strong>oxfmt</strong> (^0.49.0) [build-tool]: Fast code formatter for consistent code style. Used in slackbot service build process.</p>
+<br>
+<p>- <strong>oxlint</strong> (^1.64.0) [build-tool]: TypeScript-aware linter with automatic fixes. Provides code quality enforcement.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The library exposes the following public interfaces:</p>
+<br>
+<h3> CentaurClient Public Methods</h3>
+<p>- <code>spawn(opts)</code> - Create new agent thread</p>
+<p>- <code>message(opts)</code> - Send message to agent thread  </p>
+<p>- <code>execute(opts)</code> - Trigger agent execution</p>
+<p>- <code>streamEvents(opts)</code> - Real-time event streaming</p>
+<p>- <code>startWorkflowRun(opts)</code> - Initiate workflow execution</p>
+<p>- <code>getWorkflowRun(runId)</code> - Retrieve workflow status</p>
+<p>- <code>listWorkflowRuns(opts)</code> - Query workflow executions</p>
+<p>- <code>cancelWorkflowRun(runId)</code> - Terminate workflow</p>
+<p>- <code>steerExecution(executionId, opts)</code> - Modify running execution</p>
+<p>- <code>claimFinalDeliveries(opts)</code> - Batch claim delivery tasks</p>
+<p>- <code>markFinalDelivered(executionId)</code> - Acknowledge delivery completion</p>
+<br>
+<h3> Event Processing Functions</h3>
+<p>- <code>normalizeHarnessEvent(harness, event)</code> - Convert harness events to canonical format</p>
+<p>- <code>splitThreadKey(threadKey)</code> - Parse thread identifier components</p>
+<p>- <code>normalizeThreadKey(threadKey)</code> - Standardize thread key format</p>
+<br>
+<h3> Type Exports</h3>
+<p>- <code>CanonicalEvent</code> - Unified event interface</p>
+<p>- <code>ContentBlock</code> - Content type definitions</p>
+<p>- <code>ExecuteOptions</code>, <code>MessageOptions</code>, <code>WorkflowRunOptions</code> - Request interfaces</p>
+<p>- <code>ThreadMessageRecord</code> - Message history format</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

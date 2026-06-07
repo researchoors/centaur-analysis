@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: veo3 — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>veo3</h1>
+</header>
+<h1>Veo3 Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The veo3 component follows a simple layered architecture with clear separation of concerns. It implements a <strong>client-server wrapper pattern</strong> that abstracts Google's Veo 3 video generation API behind a Python library with a CLI interface. The architecture consists of two primary layers:</p>
+<br>
+<p>1. <strong>Core Client Layer</strong> (`client.py`) - Handles API communication, authentication, and video generation operations</p>
+<p>2. <strong>CLI Interface Layer</strong> (`cli.py`) - Provides user-friendly command-line interface using Typer framework</p>
+<br>
+<p>The component uses dependency injection for the Google API client and implements a polling-based asynchronous pattern for long-running video generation operations.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> Veo3Client</h3>
+<p><strong>Location</strong>: `tools/media/veo3/client.py:13-287`</p>
+<p>The core client class that wraps Google's generative AI API for video generation. Supports three main operations: text-to-video generation, image-to-video generation, and video extension. Uses lazy initialization for the Google API client and implements robust error handling with parameter validation.</p>
+<br>
+<h3> CLI Application (app)</h3>
+<p><strong>Location</strong>: `tools/media/veo3/cli.py:10`</p>
+<p>Main Typer application instance that defines the command-line interface. Provides four commands: <code>generate</code>, <code>from-image</code>, <code>extend</code>, and <code>models</code> with rich console output and progress indicators.</p>
+<br>
+<h3> generate Command</h3>
+<p><strong>Location</strong>: `tools/media/veo3/cli.py:25-62`</p>
+<p>Primary CLI command for text-to-video generation. Accepts text prompts and various configuration options (model type, aspect ratio, resolution) and generates videos using the underlying client.</p>
+<br>
+<h3> from-image Command</h3>
+<p><strong>Location</strong>: `tools/media/veo3/cli.py:64-102`</p>
+<p>CLI command for image-to-video generation where an input image serves as the first frame. Shares similar parameters with the generate command but additionally requires an image file path.</p>
+<br>
+<h3> extend Command</h3>
+<p><strong>Location</strong>: `tools/media/veo3/cli.py:105-135`</p>
+<p>CLI command for video extension functionality, allowing users to extend existing videos with additional content based on text prompts.</p>
+<br>
+<h3> Model Configuration</h3>
+<p><strong>Location</strong>: `tools/media/veo3/client.py:19-25`</p>
+<p>Static configuration defining available Veo models ("full" and "fast"), supported aspect ratios, and resolution options. Maps user-friendly names to Google API model identifiers.</p>
+<br>
+<h3> Authentication Handler</h3>
+<p><strong>Location</strong>: `tools/media/veo3/client.py:36-43`</p>
+<p>Secure API key management that integrates with the centaur_sdk secret management system, with fallback to environment variables.</p>
+<br>
+<h3> Progress Callback System</h3>
+<p><strong>Location</strong>: `tools/media/veo3/cli.py:20-22`</p>
+<p>Simple callback mechanism for providing user feedback during long-running video generation operations.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Text-to-Video Generation Flow</h3>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[User Input: Text Prompt] --&gt; B[CLI Validation]
+    B --&gt; C[Veo3Client.generate]
+    C --&gt; D[API Key Resolution]
+    D --&gt; E[Google GenAI Client]
+    E --&gt; F[Start Generation Operation]
+    F --&gt; G[Polling Loop]
+    G --&gt; H{Operation Complete?}
+    H --&gt;|No| I[Wait 20s]
+    I --&gt; G
+    H --&gt;|Yes| J[Download Video]
+    J --&gt; K[Save to File]
+    K --&gt; L[Return Path]</code></pre>
+<br>
+<h3> Image-to-Video Generation Flow</h3>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[User Input: Image + Prompt] --&gt; B[File Validation]
+    B --&gt; C[Upload Image to Google]
+    C --&gt; D[Start Generation with Image]
+    D --&gt; E[Polling Loop]
+    E --&gt; F{Complete?}
+    F --&gt;|No| G[Progress Update]
+    G --&gt; E
+    F --&gt;|Yes| H[Download Result]
+    H --&gt; I[Save Video File]</code></pre>
+<br>
+<h3> Authentication Flow</h3>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Client Initialization] --&gt; B{API Key Provided?}
+    B --&gt;|Yes| C[Use Provided Key]
+    B --&gt;|No| D[Query centaur_sdk.secret]
+    D --&gt; E{Secret Found?}
+    E --&gt;|Yes| F[Use Secret Key]
+    E --&gt;|No| G[Raise RuntimeError]
+    C --&gt; H[Initialize Google Client]
+    F --&gt; H</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>google-genai</strong> (>=1.0.0) [cloud-sdk]: Google's official generative AI Python SDK for accessing Veo 3 video generation APIs. Primary integration point for all video generation functionality. Used throughout `client.py` for API communication, file uploads, and operation polling.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework for building command-line applications with automatic help generation and type validation. Powers the entire CLI interface in `cli.py` with decorators for command definition and argument parsing.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library providing colored output, progress indicators, and formatted tables. Used for console output, status indicators during video generation, and the models listing table display.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [build-tool]: Environment variable loader for development convenience. Automatically loads `.env` files at application startup to provide configuration without hardcoded secrets.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The veo3 component exposes both programmatic and command-line interfaces:</p>
+<br>
+<h3> Python API</h3>
+<br>
+<p><strong>Veo3Client Class</strong>:</p>
+<p>- <code>__init__(api_key: str | None = None)</code> - Initialize client with optional API key</p>
+<p>- <code>generate(prompt, output, model="full", aspect_ratio="16:9", resolution="720p", ...)</code> - Generate video from text</p>
+<p>- <code>generate_from_image(image_path, prompt, output, ...)</code> - Generate video using image as first frame  </p>
+<p>- <code>extend(video_path, prompt, output, model="full", ...)</code> - Extend existing video</p>
+<p>- <code>list_models()</code> - Get available model information</p>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p><strong>veo3 generate</strong> - Text-to-video generation</p>
+<p>- Arguments: <code>prompt</code> (required)</p>
+<p>- Options: <code>--output</code>, <code>--model</code>, <code>--aspect-ratio</code>, <code>--resolution</code></p>
+<br>
+<p><strong>veo3 from-image</strong> - Image-to-video generation  </p>
+<p>- Arguments: <code>image</code>, <code>prompt</code> (required)</p>
+<p>- Options: <code>--output</code>, <code>--model</code>, <code>--aspect-ratio</code>, <code>--resolution</code></p>
+<br>
+<p><strong>veo3 extend</strong> - Video extension</p>
+<p>- Arguments: <code>video</code>, <code>prompt</code> (required)</p>
+<p>- Options: <code>--output</code>, <code>--model</code></p>
+<br>
+<p><strong>veo3 models</strong> - List available models</p>
+<li>No arguments, displays formatted table of model information</li>
+<br>
+<p>All commands support standard CLI patterns with <code>--help</code> documentation and exit code handling for automation integration.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

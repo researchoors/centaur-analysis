@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: figma — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>figma</h1>
+</header>
+<h1>Figma Design System Analysis Tool</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The Figma component implements a <strong>client-server pattern</strong> with a clear separation between the API client layer and CLI interface layer. The architecture follows a simple linear data flow: URL parsing → API requests → data extraction → presentation. The design emphasizes extraction and analysis of design system information from Figma files through their REST API.</p>
+<br>
+<p>The component uses a <strong>structured data extraction pattern</strong> where raw Figma API responses are parsed and transformed into a standardized `FigmaDesignSystem` data structure that aggregates design tokens including colors, typography, components, variables, frames, effects, and grids.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> FigmaClient Class</h3>
+<p>The core API client class that handles authentication, HTTP requests, and URL parsing. It provides methods for accessing different Figma API endpoints including files, styles, components, and variables. Implements retry logic for rate limiting and supports both file-level and node-level data extraction.</p>
+<br>
+<h3> FigmaDesignSystem Dataclass  </h3>
+<p>A structured data container that holds extracted design system information. Contains typed collections for colors, text styles, components, variables, frames, effects, and grids. Serves as the standardized output format for all extraction operations.</p>
+<br>
+<h3> CLI Module</h3>
+<p>Provides the command-line interface with a single <code>crawl</code> command that takes a Figma URL and outputs design system information either as formatted tables or JSON. Integrates with the Centaur SDK's Table component for rich console output and handles error reporting.</p>
+<br>
+<h3> URL Parser</h3>
+<p>Static method that extracts file keys and optional node IDs from various Figma URL formats including file, design, and prototype URLs. Handles different node-id formats and URL structures.</p>
+<br>
+<h3> Tree Extraction Engine</h3>
+<p>Recursive algorithm that walks the Figma document tree to extract design elements. Identifies components, frames, colors from fills, and text styles. Implements deduplication logic to avoid duplicate entries.</p>
+<br>
+<h3> Color Extraction System</h3>
+<p>Converts Figma's normalized RGB color values (0-1 range) to standard hex format or RGBA strings with alpha transparency support. Only processes solid fills and ignores gradients or other complex fill types.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Figma URL Input] --&gt; B[URL Parser]
+    B --&gt; C[File Key + Node ID]
+    C --&gt; D[API Client]
+    D --&gt; E[Figma REST API]
+    E --&gt; F[File Data]
+    F --&gt; G[Tree Extractor]
+    G --&gt; H[Design System Data]
+    H --&gt; I{Output Format}
+    I --&gt;|Table| J[Rich Console]
+    I --&gt;|JSON| K[Standard Output]
+    
+    D --&gt; L[Styles Endpoint]
+    D --&gt; M[Variables Endpoint]
+    L --&gt; H
+    M --&gt; H</code></pre>
+<br>
+<p>The primary data flow starts with URL parsing to extract the Figma file key, followed by API requests to fetch file data, styles, and variables. The tree extraction process recursively walks the document structure to identify design elements, which are then aggregated into the standardized data structure and output in the requested format.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern Python CLI framework that provides type hints, automatic help generation, and command decoration. Used to define the `crawl` command with arguments and options. Imported in: `tools/productivity/figma/cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Rich text and beautiful formatting library for terminals. Provides the Console class for colored output and Table class for formatted data display. Used extensively in the CLI module for error messages and tabular output. Imported in: `tools/productivity/figma/cli.py`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [build-tool]: Loads environment variables from .env files into the Python environment. Used to automatically load the FIGMA_ACCESS_TOKEN from local .env files. Imported in: `tools/productivity/figma/cli.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>- <strong>crawl</strong>: Primary command that accepts a Figma URL and extracts design system information. Supports `--json` flag for JSON output format instead of formatted tables.</p>
+<br>
+<h3> Python API</h3>
+<br>
+<p>- <strong>FigmaClient</strong>: Main client class with methods for `get_file()`, `get_file_styles()`, `get_file_components()`, `get_file_variables()`, and `crawl()`.</p>
+<p>- <strong>FigmaDesignSystem</strong>: Data structure containing extracted design information with fields for colors, text_styles, components, variables, frames, effects, and grids.</p>
+<p>- <strong>parse_url()</strong>: Static utility method for extracting file keys and node IDs from Figma URLs.</p>
+<br>
+<h3> Authentication</h3>
+<br>
+<p>The component requires a Figma personal access token provided via the <code>FIGMA_ACCESS_TOKEN</code> environment variable or the shorter <code>FIGMA</code> variable. Token management is handled through the Centaur SDK's secret management system.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

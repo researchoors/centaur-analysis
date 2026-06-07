@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: etherscan — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>etherscan</h1>
+</header>
+<h1>Etherscan Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The etherscan component implements a clean, single-responsibility architecture following the client adapter pattern. The <code>EtherscanClient</code> class serves as a comprehensive wrapper around the Etherscan API V2, providing type-safe methods for interacting with Ethereum blockchain data. The component uses a lazy-initialization pattern for HTTP connections and implements proper resource management through context manager protocol.</p>
+<br>
+<p>The architecture is designed for simplicity and reliability, with centralized error handling and consistent parameter validation across all API methods. The client abstracts away the complexity of the Etherscan API while preserving its full functionality through well-organized method categories.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> EtherscanClient Class</h3>
+<p>The primary interface class that encapsulates all Etherscan API functionality. It manages HTTP connections, API key authentication, and provides organized access to blockchain data across multiple Ethereum networks.</p>
+<br>
+<h3> API Key Management</h3>
+<p>A secure credential management system that retrieves API keys from either constructor parameters or environment variables using the centaur SDK's secret management facilities.</p>
+<br>
+<h3> HTTP Client Layer  </h3>
+<p>Lazy-initialized HTTP client using httpx for making API requests, with configurable timeouts and proper connection lifecycle management.</p>
+<br>
+<h3> Request Handler (_request method)</h3>
+<p>Centralized request handling that manages API authentication, chain ID routing, error processing, and response parsing for all API calls.</p>
+<br>
+<h3> Account Operations Module</h3>
+<p>Methods for retrieving account balances, transaction histories, and token transfer records with comprehensive filtering and pagination support.</p>
+<br>
+<h3> Contract Operations Module</h3>
+<p>Functionality for accessing verified contract ABIs and source code, enabling integration with smart contract analysis workflows.</p>
+<br>
+<h3> Statistics Module</h3>
+<p>Methods for retrieving real-time blockchain statistics including ETH prices, gas prices, and token supply information.</p>
+<br>
+<h3> Event Logs Module</h3>
+<p>Sophisticated log querying capabilities with topic filtering for analyzing smart contract events and interactions.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<p>The component follows a straightforward request-response pattern for all operations:</p>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Client Method Call] --&gt; B[Parameter Validation]
+    B --&gt; C[API Key Resolution]
+    C --&gt; D[HTTP Request Construction]
+    D --&gt; E[Etherscan API V2]
+    E --&gt; F[Response Validation]
+    F --&gt; G[Error Handling]
+    G --&gt; H[Data Extraction]
+    H --&gt; I[Return Result]
+    
+    J[Context Manager] --&gt; K[Resource Cleanup]
+    K --&gt; L[HTTP Client Close]</code></pre>
+<br>
+<p>All API interactions follow this pattern, with specific parameter handling for different endpoint categories. The client maintains stateless operation except for the lazy-initialized HTTP connection.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library providing async/sync capabilities with connection pooling. Used for all API requests to Etherscan endpoints. Primary integration in the `client` property and `_request` method for making HTTP calls with proper timeout handling.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework for building command-line interfaces. Though not directly used in the current client code, included for potential CLI tooling expansion.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Rich text and formatting library for enhanced terminal output. Included for potential CLI output formatting in future iterations.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loading from .env files. Supports local development workflows for managing API keys and configuration.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk.secret</strong>: Internal SDK module for secure credential management. Used to retrieve the `ETHERSCAN_API_KEY` from environment variables or secure storage systems.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes a comprehensive public API through the <code>EtherscanClient</code> class:</p>
+<br>
+<h3> Account Operations</h3>
+<p>- <code>get_balance(address, chain_id=1)</code>: Retrieve ETH balance for an address</p>
+<p>- <code>get_transactions(address, start_block=0, end_block=99999999, page=1, offset=20, sort="desc", chain_id=1)</code>: Get transaction history with pagination</p>
+<p>- <code>get_token_transfers(address, contract_address=None, page=1, offset=20, sort="desc", chain_id=1)</code>: Retrieve ERC-20 token transfer events</p>
+<br>
+<h3> Contract Operations</h3>
+<p>- <code>get_contract_abi(address, chain_id=1)</code>: Fetch ABI for verified contracts</p>
+<p>- <code>get_contract_source(address, chain_id=1)</code>: Retrieve source code for verified contracts</p>
+<br>
+<h3> Statistics Operations</h3>
+<p>- <code>get_eth_price(chain_id=1)</code>: Current ETH price in USD/BTC</p>
+<p>- <code>get_token_supply(contract_address, chain_id=1)</code>: Total supply of ERC-20 tokens</p>
+<p>- <code>get_gas_price(chain_id=1)</code>: Current network gas prices</p>
+<br>
+<h3> Event Log Operations</h3>
+<p>- <code>get_logs(address, from_block, to_block, topic0=None, chain_id=1)</code>: Query contract event logs with topic filtering</p>
+<br>
+<h3> Utility Functions</h3>
+<p>- <code>_client()</code>: Factory function for creating pre-configured client instances</p>
+<li>Context manager support for automatic resource cleanup</li>
+<br>
+<p>All methods support multi-chain operations through the <code>chain_id</code> parameter and return structured data as Python dictionaries or lists.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

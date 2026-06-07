@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: nansen — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>nansen</h1>
+</header>
+<h1>Nansen CLI Tool Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The nansen component follows a clean CLI architecture with a clear separation of concerns between API client functionality and command-line interface presentation. The design follows a standard pattern for blockchain analytics tools, with a client-server model where the local CLI acts as a user-friendly wrapper around the Nansen REST API.</p>
+<br>
+<p>The architecture consists of two main layers:</p>
+<p>- <strong>API Client Layer</strong>: `NansenClient` class that handles all HTTP communication with the Nansen API</p>
+<p>- <strong>CLI Interface Layer</strong>: Typer-based command structure that provides user-friendly commands and output formatting</p>
+<br>
+<p>The component uses a lazy initialization pattern for the HTTP client and supports multiple output formats (rich tables, markdown, JSON) to accommodate different use cases from interactive terminal usage to automated workflows.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. NansenClient (client.py)</h3>
+<p>The core API client that encapsulates all interactions with the Nansen blockchain analytics API. Provides methods for wallet analysis, smart money tracking, token analytics, and entity searches. Supports 41 different blockchain networks including Ethereum, Solana, Bitcoin, and various Layer 2 solutions.</p>
+<br>
+<h3> 2. CLI Application (cli.py) </h3>
+<p>Typer-based command-line interface with 12 main commands for different analytics workflows. Handles argument parsing, output formatting, and error presentation with rich console styling.</p>
+<br>
+<h3> 3. Labels Command (lines 50-106)</h3>
+<p>Retrieves and displays Nansen's proprietary wallet labels for blockchain addresses, showing categorization like "Smart Money", "Fund", "Exchange" with entity details and definitions.</p>
+<br>
+<h3> 4. Balance Command (lines 108-174)</h3>
+<p>Fetches current token balances for wallet addresses or named entities, displaying holdings with USD valuations across supported chains.</p>
+<br>
+<h3> 5. Smart Money Commands (lines 176-303)</h3>
+<p>Three related commands for Smart Money analytics: holdings tracking, net flows analysis, and DEX trades monitoring. These provide insights into institutional and sophisticated trader behavior.</p>
+<br>
+<h3> 6. Token Analytics Commands (lines 370-551)</h3>
+<p>Commands for token-focused analysis including screener for discovering tokens with Smart Money activity, holder analysis, and flow tracking by entity type.</p>
+<br>
+<h3> 7. Wallet Analysis Commands (lines 554-653)</h3>
+<p>PnL tracking and related wallet discovery functionality for understanding wallet performance and connection patterns.</p>
+<br>
+<h3> 8. Entity Search (lines 656-704)</h3>
+<p>Search functionality for finding blockchain entities by name with wallet count metrics.</p>
+<br>
+<h3> 9. Output Formatting System (lines 20-48)</h3>
+<p>Utility functions for number formatting with K/M/B/T suffixes, markdown table generation, and string truncation for consistent presentation across all commands.</p>
+<br>
+<h3> 10. Raw API Access (lines 707-729)</h3>
+<p>Direct API endpoint access for advanced users or debugging, allowing arbitrary calls to the Nansen API with JSON request bodies.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Argument Parsing]
+    B --&gt; C[NansenClient.get_client()]
+    C --&gt; D[API Key Resolution]
+    D --&gt; E[HTTP Request to Nansen API]
+    E --&gt; F[JSON Response Processing]
+    F --&gt; G{Output Format?}
+    G --&gt;|JSON| H[Direct JSON Output]
+    G --&gt;|Markdown| I[Markdown Table Formatting]
+    G --&gt;|Default| J[Rich Console Table]
+    
+    K[API Key Sources] --&gt; D
+    K --&gt; L[Instance Variable]
+    K --&gt; M[NANSEN_API_KEY Secret]
+    
+    N[Error Handling] --&gt; O[HTTP Status Errors]
+    N --&gt; P[Request Timeout]
+    N --&gt; Q[Missing API Key]
+    N --&gt; R[Typer Exit with Code]</code></pre>
+<br>
+<p>The primary data flow starts with CLI command invocation, proceeds through argument validation and API client initialization, makes authenticated HTTP requests to the Nansen API, and concludes with formatted output presentation. Error handling is integrated throughout the flow with appropriate user feedback.</p>
+<br>
+<pre><code class="language-mermaid">graph LR
+    A[Wallet Address] --&gt; B[Labels API]
+    B --&gt; C[Entity Classification]
+    
+    D[Smart Money Query] --&gt; E[Holdings API]
+    E --&gt; F[Token Holdings Data]
+    
+    G[Token Address] --&gt; H[Analytics APIs]
+    H --&gt; I[Holder Analysis]
+    H --&gt; J[Flow Analysis]
+    H --&gt; K[Trade Analysis]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client for Python with async support and HTTP/2 capabilities. Used exclusively by NansenClient for all API communication with connection pooling and timeout management. Imported in: `tools/crypto/nansen/client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework for Python with automatic help generation and type hints. Provides the entire command structure and argument parsing for all 12 CLI commands. Imported in: `tools/crypto/nansen/cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library for Python. Used for console output styling, table rendering, and colored text display across all commands. Provides the Console class and Table formatting. Imported in: `tools/crypto/nansen/cli.py`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable management for Python applications. Listed as dependency but not directly imported in the codebase, likely used by the centaur_sdk for secret management. No direct imports found in source files.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes a comprehensive CLI interface for Nansen blockchain analytics with the following main command categories:</p>
+<br>
+<h3> Address Analytics Commands</h3>
+<p>- <code>labels <address></code> - Get Nansen labels for wallet addresses</p>
+<p>- <code>balance <address></code> - Get current token balances </p>
+<p>- <code>pnl <address></code> - Get profit/loss analysis</p>
+<p>- <code>related-wallets <address></code> - Find connected wallets</p>
+<br>
+<h3> Smart Money Analytics Commands  </h3>
+<p>- <code>smart-money</code> - Get Smart Money token holdings</p>
+<p>- <code>netflows</code> - Get Smart Money buying/selling flows</p>
+<p>- <code>dex-trades</code> - Get Smart Money DEX trades (24h)</p>
+<br>
+<h3> Token Analytics Commands</h3>
+<p>- <code>screener</code> - Discover tokens with Smart Money activity</p>
+<p>- <code>holders <token></code> - Get top token holders</p>
+<p>- <code>flows <token></code> - Get token inflows/outflows by entity type</p>
+<br>
+<h3> Entity Management Commands</h3>
+<p>- <code>entity-search <query></code> - Search entities by name</p>
+<br>
+<h3> Utility Commands</h3>
+<p>- <code>raw <endpoint></code> - Direct API access for advanced usage</p>
+<br>
+<p>All commands support multiple output formats:</p>
+<li>Default: Rich formatted tables for terminal display</li>
+<p>- <code>--json</code>: JSON output for programmatic consumption  </p>
+<p>- <code>--markdown</code>: Markdown tables for documentation</p>
+<br>
+<p>Common options across commands include:</p>
+<p>- <code>--chain/-c</code>: Specify blockchain (default: ethereum)</p>
+<p>- <code>--limit/-n</code>: Limit number of results (default: 20)</p>
+<li>Chain support includes 41+ networks from Ethereum to Bitcoin, Solana, and various L2s</li>
+<br>
+<p>The CLI also provides the NansenClient class as a programmatic interface, though this is primarily used internally by the CLI commands rather than as a public library API.</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<p>The component integrates with the following external systems:</p>
+<br>
+<h3> Nansen API (api.nansen.ai)</h3>
+<p>Primary integration for all blockchain analytics data. The component makes authenticated HTTP requests to various Nansen API endpoints including profiler, smart-money, and token analytics services. Requires NANSEN_API_KEY for authentication via API key header.</p>
+<br>
+<h3> Centaur SDK Integration</h3>
+<p>Uses the centaur_sdk for secret management (API key retrieval) and table formatting utilities. The SDK provides the <code>secret()</code> function for secure credential access and <code>Table</code> class for rich formatting.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component has no internal dependencies on other centaur components, functioning as a standalone CLI tool. However, it integrates with the broader centaur ecosystem through:</p>
+<br>
+<h3> Centaur SDK Usage</h3>
+<p>- <strong>Target</strong>: centaur_sdk</p>
+<p>- <strong>Type</strong>: imports  </p>
+<p>- <strong>Protocol</strong>: Python module imports</p>
+<p>- <strong>Description</strong>: Uses SDK for secret management (`secret()` function) and table formatting (`Table` class) utilities</p>
+<br>
+<p>The component is designed to be self-contained for blockchain analytics workflows while leveraging shared infrastructure patterns from the centaur SDK.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

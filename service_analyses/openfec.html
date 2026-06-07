@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: openfec — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>openfec</h1>
+</header>
+<h1>OpenFEC Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The OpenFEC component implements a <strong>client-server library pattern</strong> with a CLI wrapper around a REST API client. It follows a clear separation of concerns with three primary modules:</p>
+<br>
+<p>1. <strong>Client Module</strong>: HTTP client abstraction for the OpenFEC API</p>
+<p>2. <strong>CLI Module</strong>: Command-line interface with rich output formatting</p>
+<p>3. <strong>Configuration Module</strong>: Minimal configuration via environment variables</p>
+<br>
+<p>The architecture is structured as a thin wrapper around the Federal Election Commission's OpenFEC API (api.open.fec.gov), providing a Python-friendly interface for accessing federal election campaign finance data.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. OpenFECClient (`client.py`)</h3>
+<p>The core HTTP client that manages authentication and API communication. It provides methods for searching candidates, committees, contributions, filings, and financial totals. The client uses lazy initialization for the HTTP connection and implements proper error handling with custom exceptions.</p>
+<br>
+<h3> 2. CLI Commands (`cli.py`)</h3>
+<p>A comprehensive command-line interface built with Typer that exposes six main commands:</p>
+<p>- <code>candidates</code>: Search/list candidates with filtering options</p>
+<p>- <code>candidate</code>: Get specific candidate by ID</p>
+<p>- <code>committees</code>: Search committees with various filters</p>
+<p>- <code>contributions</code>: Query itemized contributions (Schedule A data)</p>
+<p>- <code>filings</code>: Get committee financial filings</p>
+<p>- <code>totals</code>: Get candidate financial summaries</p>
+<br>
+<h3> 3. Output Formatting</h3>
+<p>Dual-mode output system supporting both rich terminal display and markdown tables. Uses Rich library for styled terminal output with color-coded columns and data truncation for readability.</p>
+<br>
+<h3> 4. API Authentication</h3>
+<p>Secure API key management through the Centaur SDK secret system, with fallback to environment variables. The API key is automatically appended to all requests as a query parameter.</p>
+<br>
+<h3> 5. Error Handling</h3>
+<p>Comprehensive error handling that catches HTTP status errors and request failures, converting them to user-friendly RuntimeError messages displayed in red terminal output.</p>
+<br>
+<h3> 6. Pagination Support</h3>
+<p>Built-in pagination support across all search endpoints with configurable page size and page number parameters for handling large result sets.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">flowchart TD
+    A[CLI Command] --&gt; B[Parameter Validation]
+    B --&gt; C[Client Instance Creation]
+    C --&gt; D[API Key Retrieval]
+    D --&gt; E[HTTP Request to OpenFEC]
+    E --&gt; F[Response Parsing]
+    F --&gt; G{Output Format?}
+    G --&gt;|JSON| H[JSON Output]
+    G --&gt;|Markdown| I[Markdown Table]
+    G --&gt;|Rich| J[Styled Terminal Table]
+    
+    D --&gt; K[Secret Manager]
+    K --&gt; L[Environment Variable]
+    
+    E --&gt; M[Error Handling]
+    M --&gt; N[User-Friendly Error Message]</code></pre>
+<br>
+<p>The primary data flow follows a request-response pattern where CLI commands gather parameters, instantiate the client, make authenticated API requests, and format the response data for user consumption.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library for making asynchronous and synchronous HTTP requests. Used throughout `client.py` for all API communication with the OpenFEC service. Provides better error handling and timeout support than requests. Integration points: `client.py:4`, `client.py:24-26`, `client.py:44-50`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework that provides automatic help generation, type validation, and option parsing. Used to define all CLI commands and their parameters in `cli.py`. Handles command routing, argument parsing, and help text generation. Integration points: `cli.py:9`, `cli.py:13`, all command decorators `@app.command()`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Library for rich text and beautiful terminal output formatting. Used to create styled tables with colors and column formatting for displaying election data. Provides the `Console` class for error messages and `Table` class for data display. Integration points: `cli.py:10`, `cli.py:14`, table creation throughout CLI commands.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (dev dependency): Environment variable loading from `.env` files. Used in `cli.py:5-7` to load environment variables before importing other modules. Enables local development with environment file configuration.</p>
+<br>
+<p>- <strong>centaur-sdk</strong> (internal): Centaur platform SDK providing secret management and CLI table utilities. Used for secure API key retrieval via `secret()` function and table formatting via `Table` class. Integration points: `client.py:5`, `cli.py:11`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes two primary interfaces:</p>
+<br>
+<h3> Python API (Library Interface)</h3>
+<p>- <strong>OpenFECClient</strong>: Main client class with methods for all API operations</p>
+<p>  - <code>search_candidates()</code>: Search for candidates with filtering</p>
+<p>  - <code>get_candidate()</code>: Get specific candidate by ID</p>
+<p>  - <code>search_committees()</code>: Search for committees</p>
+<p>  - <code>get_contributions()</code>: Query itemized contributions</p>
+<p>  - <code>get_filings()</code>: Get committee filings</p>
+<p>  - <code>get_candidate_totals()</code>: Get financial summaries</p>
+<p>  - Context manager support for resource cleanup</p>
+<br>
+<h3> CLI Interface</h3>
+<p>- <strong>openfec</strong>: Command-line tool with six subcommands</p>
+<p>  - Rich terminal output with colored, formatted tables</p>
+<p>  - JSON output option for programmatic consumption</p>
+<p>  - Markdown table output for documentation</p>
+<p>  - Comprehensive parameter filtering and pagination</p>
+<p>  - Error handling with user-friendly messages</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> OpenFEC API</h3>
+<p>The component integrates with the Federal Election Commission's OpenFEC API at <code>https://api.open.fec.gov/v1/</code>. This is a public REST API that provides access to federal election campaign finance data including:</p>
+<li>Candidate information and search</li>
+<li>Committee data and filings</li>
+<li>Contribution records (Schedule A)</li>
+<li>Financial totals and summaries</li>
+<br>
+<p>Authentication is handled via API key in query parameters, sourced from the <code>DATAGOV_API_KEY</code> environment variable managed through Centaur's secret system.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component has no direct interactions with other components in the centaur-src codebase. It operates as a standalone library/CLI tool that only interacts with:</p>
+<li>The external OpenFEC API for data retrieval</li>
+<li>The Centaur SDK for secret management and CLI utilities</li>
+<li>Standard Python HTTP and CLI libraries</li>
+<br>
+<p>The component is designed to be consumed by other tools or used directly via the command line for federal election data research and analysis.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

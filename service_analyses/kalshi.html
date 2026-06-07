@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: kalshi — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>kalshi</h1>
+</header>
+<h1>Kalshi Prediction Market CLI</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The Kalshi component follows a <strong>layered architecture</strong> pattern, separating API client functionality from command-line interface presentation. The architecture consists of two main layers:</p>
+<br>
+<p>1. <strong>Client Layer</strong> (`client.py`) - Handles HTTP communication with the Kalshi API</p>
+<p>2. <strong>Presentation Layer</strong> (`cli.py`) - Provides user-facing CLI commands with rich formatting</p>
+<br>
+<p>The component is designed around <strong>read-only market data access</strong>, focusing on public prediction market information without requiring authentication. It implements a <strong>functional programming style</strong> with command functions that orchestrate client operations and format output for different consumption patterns.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> KalshiClient Class</h3>
+<p>The core HTTP client that manages all API interactions with the Kalshi prediction market platform. It provides methods for fetching markets, events, trades, and historical data with configurable timeouts and error handling.</p>
+<br>
+<h3> CLI Command Functions</h3>
+<p>Eight primary command functions that expose market data functionality:</p>
+<p>- <code>markets()</code> - Lists active prediction markets with filtering options</p>
+<p>- <code>market()</code> - Shows detailed information for a specific market</p>
+<p>- <code>trades()</code> - Displays recent trading activity for a market</p>
+<p>- <code>history()</code> - Provides candlestick price history data</p>
+<p>- <code>events()</code> - Lists event categories and series</p>
+<p>- <code>search()</code> - Searches markets by title or ticker</p>
+<p>- <code>raw()</code> - Makes direct API calls for debugging</p>
+<br>
+<h3> Formatting Utilities</h3>
+<p>Helper functions for data presentation:</p>
+<p>- <code>format_price()</code> - Converts cent values to readable price format</p>
+<p>- <code>format_volume()</code> - Formats trading volumes with K/M suffixes</p>
+<p>- <code>print_markdown_table()</code> - Outputs data in markdown table format</p>
+<br>
+<h3> Output Modes</h3>
+<p>The CLI supports three output formats for all commands:</p>
+<p>- <strong>Rich Console Tables</strong> - Default colorized terminal output using Rich library</p>
+<p>- <strong>JSON Output</strong> - Machine-readable format for programmatic consumption</p>
+<p>- <strong>Markdown Tables</strong> - Human-readable format for documentation</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[get_client]
+    B --&gt; C[KalshiClient Instance]
+    C --&gt; D[_request Method]
+    D --&gt; E[HTTP GET to Kalshi API]
+    E --&gt; F[JSON Response]
+    F --&gt; G[Data Processing]
+    G --&gt; H{Output Format}
+    H --&gt;|Default| I[Rich Table Display]
+    H --&gt;|--json| J[JSON Print]
+    H --&gt;|--markdown| K[Markdown Table]
+    
+    L[Market History Flow] --&gt; M[Get Market Details]
+    M --&gt; N[Extract Series Ticker]
+    N --&gt; O[Request Candlesticks]
+    O --&gt; P[Time Series Data]</code></pre>
+<br>
+<h3> Market Data Retrieval Flow</h3>
+<p>1. User executes CLI command with parameters</p>
+<p>2. Command function calls <code>get_client()</code> to obtain KalshiClient instance</p>
+<p>3. Client makes HTTP request to Kalshi API endpoint</p>
+<p>4. JSON response is processed and filtered based on command parameters</p>
+<p>5. Data is formatted according to specified output mode (rich, JSON, or markdown)</p>
+<p>6. Results are displayed to user</p>
+<br>
+<h3> Historical Data Processing</h3>
+<p>The history command follows a special flow requiring two API calls:</p>
+<p>1. First retrieves market details to extract series ticker</p>
+<p>2. Uses series ticker to fetch candlestick data for the specified time period</p>
+<p>3. Converts timestamps to human-readable dates for display</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client for making requests to the Kalshi API. Provides timeout handling, connection pooling, and status code validation. Used in `client.py` for all API communication.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Command-line interface framework built on Click, providing type annotations and automatic help generation. Used throughout `cli.py` for command definitions, argument parsing, and option handling.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library providing colorized tables, progress bars, and styled output. Used in `cli.py` for creating formatted market data tables and console output with colors and styling.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loading from .env files. Listed as dependency but not actively used in current implementation - likely reserved for future authentication features.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [framework]: Internal framework providing the `Table` class used for rich console output formatting. Imported in `cli.py` line 9 for creating data tables.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>The component exposes the following command-line interface:</p>
+<br>
+<pre><code class="language-bash">kalshi markets [--status STATUS] [--event EVENT] [--limit N] [--json] [--markdown]
+kalshi market TICKER [--json]
+kalshi trades TICKER [--limit N] [--json] [--markdown]
+kalshi history TICKER [--days N] [--interval MINUTES] [--json] [--markdown]
+kalshi events [--status STATUS] [--series SERIES] [--limit N] [--json] [--markdown]
+kalshi search QUERY [--limit N] [--json] [--markdown]
+kalshi raw ENDPOINT [--params KEY=VALUE,KEY=VALUE]</code></pre>
+<br>
+<h3> Public Client Methods</h3>
+<br>
+<p>- <code>list_markets()</code> - Retrieve markets with optional filtering by status, event, or series</p>
+<p>- <code>get_market()</code> - Get detailed information for a specific market ticker</p>
+<p>- <code>get_trades()</code> - Fetch recent trades with time and ticker filtering</p>
+<p>- <code>get_candlesticks()</code> - Historical OHLC price data for technical analysis</p>
+<p>- <code>list_events()</code> - Browse event categories and series</p>
+<p>- <code>get_event()</code> - Get specific event details</p>
+<p>- <code>list_series()</code> - List available market series/categories</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Kalshi Elections API</h3>
+<p>- <strong>Endpoint</strong>: `https://api.elections.kalshi.com/trade-api/v2`</p>
+<p>- <strong>Purpose</strong>: Primary data source for prediction market information</p>
+<p>- <strong>Integration</strong>: Read-only access through public endpoints, no authentication required</p>
+<p>- <strong>Data Types</strong>: Markets, events, trades, candlestick price history, series information</p>
+<br>
+<p>The component exclusively consumes public market data from Kalshi's prediction market platform, focusing on informational use cases rather than trading operations.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

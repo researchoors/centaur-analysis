@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: investmemos — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>investmemos</h1>
+</header>
+<h1>InvestMemos Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The <code>investmemos</code> component is a Python library that provides a Postgres-backed investment memo search and retrieval system. It offers full-text search capabilities with vector embeddings for finding relevant investment memos, company information, and analysis content stored in a structured corpus.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>client-server pattern</strong> with an asynchronous database client architecture. It implements a single-purpose library design focused on search and retrieval operations, using asyncpg for high-performance Postgres connectivity and full-text search with text embeddings for semantic retrieval.</p>
+<br>
+<p>The architecture centers around the <code>InvestmemosClient</code> class which provides both synchronous public APIs (using asyncio.run internally) and asynchronous private implementations for database operations. The design supports multiple search strategies including full-text search (FTS), token matching, and hybrid scoring approaches.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> InvestmemosClient</h3>
+<p><strong>Location</strong>: `tools/research/investmemos/client.py:75-481`</p>
+<p>The main client class providing investment memo search and retrieval functionality. Manages database connections, implements multiple search strategies, and provides both document-level and chunk-level operations.</p>
+<br>
+<h3> Query Processing Pipeline</h3>
+<p><strong>Location</strong>: `tools/research/investmemos/client.py:54-61, 142-246`</p>
+<p>Implements query tokenization, normalization, and multi-strategy search including FTS ranking, lexical matching, and hybrid scoring. Handles fallback search mechanisms when primary searches return no results.</p>
+<br>
+<h3> Document Aggregation System</h3>
+<p><strong>Location</strong>: `tools/research/investmemos/client.py:280-314`</p>
+<p>Groups search results by document ID, consolidates chunk hits, and provides document-level ranking with excerpt aggregation for improved search result presentation.</p>
+<br>
+<h3> Company Type Normalization</h3>
+<p><strong>Location</strong>: `tools/research/investmemos/client.py:19-32`</p>
+<p>Standardizes company type classifications with aliases mapping (e.g., "protocol" → "crypto_protocol", "saas" → "software_business") for consistent filtering.</p>
+<br>
+<h3> MIQ Context Builder</h3>
+<p><strong>Location</strong>: `tools/research/investmemos/client.py:424-477`</p>
+<p>Builds context for "Most Important Questions" (MIQs) by combining opportunity descriptions with question lists to find relevant memo excerpts for investment analysis.</p>
+<br>
+<h3> Content Reading System</h3>
+<p><strong>Location</strong>: `tools/research/investmemos/client.py:316-422`</p>
+<p>Retrieves full memo content by document ID or name, assembles chunks in proper order, and provides content truncation for size management.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Investment Memo Search Flow</h3>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[User Query] --&gt; B[Query Tokenization]
+    B --&gt; C[Company Type Normalization]
+    C --&gt; D[Primary FTS Search]
+    D --&gt; E{Results Found?}
+    E --&gt;|No| F[Fallback LIKE Search]
+    E --&gt;|Yes| G[Score Calculation]
+    F --&gt; G
+    G --&gt; H[Document Aggregation]
+    H --&gt; I[Result Ranking]
+    I --&gt; J[Response Formation]</code></pre>
+<br>
+<h3> Memo Reading Flow</h3>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Memo ID/Name] --&gt; B[Document Lookup]
+    B --&gt; C{Found?}
+    C --&gt;|No| D[Fuzzy Name Search]
+    C --&gt;|Yes| E[Chunk Retrieval]
+    D --&gt; E
+    E --&gt; F[Chunk Ordering]
+    F --&gt; G[Content Assembly]
+    G --&gt; H[Size Truncation]
+    H --&gt; I[Full Content Response]</code></pre>
+<br>
+<h3> MIQ Context Building Flow</h3>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Opportunity + MIQ List] --&gt; B[Query Combination]
+    B --&gt; C[Per-MIQ Search]
+    C --&gt; D[Result Collection]
+    D --&gt; E[Excerpt Generation]
+    E --&gt; F[Context Assembly]
+    F --&gt; G[Structured MIQ Response]</code></pre>
+<br>
+<h2>Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>asyncpg</strong> (>=0.30.0) [database]: High-performance asynchronous PostgreSQL client library. Used for all database connectivity, connection pooling, and query execution. The client leverages asyncpg's prepared statement support and connection management for efficient database operations. Imported in: `tools/research/investmemos/client.py:12`, used throughout async methods for database connectivity.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes a public API through the <code>InvestmemosClient</code> class with four primary methods:</p>
+<br>
+<h3> Public Methods</h3>
+<br>
+<p>- <strong>`list_memos(query, limit, source)`</strong>: Lists memo documents with optional name-based filtering, returning document metadata and basic information</p>
+<p>- <strong>`search_memos(query, limit, stage, company_type, source, kind)`</strong>: Performs full-text search across memo chunks with filtering capabilities, returns ranked documents with excerpts</p>
+<p>- <strong>`read_memo(memo, max_chars, source, kind)`</strong>: Retrieves full memo content by document ID or name, with content size management</p>
+<p>- <strong>`build_miq_context(opportunity, miqs, memos_per_miq, excerpt_chars, stage, company_type, source, kind)`</strong>: Builds contextual memo excerpts for investment analysis questions</p>
+<br>
+<h3> Configuration</h3>
+<br>
+<p>The client supports environment-based configuration:</p>
+<p>- <code>DATABASE_URL</code>: PostgreSQL connection string</p>
+<p>- <code>INVEST_MEMO_SOURCE</code>: Default source identifier (defaults to "invest_memo_corpus")  </p>
+<p>- <code>INVEST_MEMO_KIND</code>: Default content kind (defaults to "invest_memo_chunk")</p>
+<br>
+<h3> Response Format</h3>
+<br>
+<p>All public methods return structured dictionaries with consistent error handling:</p>
+<pre><code class="language-python">{
+    &quot;status&quot;: &quot;ok&quot; | &quot;error&quot;,
+    &quot;error&quot;: &quot;error message if status=error&quot;,
+    # method-specific data fields
+}</code></pre>
+<br>
+<h2>Database Schema Integration</h2>
+<br>
+<p>The component integrates with two primary Postgres tables:</p>
+<br>
+<p>- <strong>`raw_records`</strong>: Stores document-level metadata with fields `external_id`, `data` (JSON), `fetched_at`, `source`, and `kind`</p>
+<p>- <strong>`embeddings`</strong>: Stores searchable content chunks with full-text search vectors, including `source_id`, `content`, `metadata` (JSON), `content_tsv` (tsvector), `source`, and `kind`</p>
+<br>
+<p>The schema supports multi-tenant operation through source/kind partitioning and provides full-text search capabilities using PostgreSQL's built-in text search features.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

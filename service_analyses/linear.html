@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: linear — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>linear</h1>
+</header>
+<p>Based on my analysis, I can see that the LinearClient inherits from LinearReadonlyClient but that class isn't found in the current codebase. This suggests it's defined elsewhere in the centaur codebase. Now I have enough information to write the comprehensive analysis.</p>
+<br>
+<h1>Linear CLI Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The Linear component is a comprehensive command-line interface for interacting with Linear issue tracking, providing AI agents and users with full access to Linear's GraphQL API. The tool offers both read-only operations (listing issues, teams, projects) and write operations (creating, updating, commenting on issues) while integrating with external services like GitHub and Slack for enriched reporting.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> pattern with clear separation between CLI commands, client abstraction, and external integrations:</p>
+<br>
+<p>1. <strong>CLI Layer</strong> (`cli.py`) - Command definitions using Typer for argument parsing and Rich for formatted output</p>
+<p>2. <strong>Client Layer</strong> (`client.py`) - API abstraction inheriting from a shared LinearReadonlyClient </p>
+<p>3. <strong>Integration Layer</strong> (`integrations.py`) - Cross-platform enrichment with GitHub and Slack APIs</p>
+<p>4. <strong>Configuration Layer</strong> - Environment-based authentication and settings</p>
+<br>
+<p>The design promotes reusability by separating read-only operations (shared with other components) from CLI-specific mutations and integrations.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> CLI Application (`cli.py`)</h3>
+<p>- <strong>Entry Point</strong>: Typer-based CLI app with 20+ commands covering the full Linear workflow</p>
+<p>- <strong>Rich Output</strong>: Formatted tables and console output using the Rich library</p>
+<p>- <strong>Authentication</strong>: Dynamic environment loading from multiple locations</p>
+<p>- <strong>Command Categories</strong>: User info, teams, issues (CRUD), projects, cycles, labels, search, integrations</p>
+<p>- <strong>Error Handling</strong>: Graceful exit codes and user-friendly error messages</p>
+<br>
+<h3> Linear Client (`client.py`) </h3>
+<p>- <strong>API Abstraction</strong>: Wraps Linear's GraphQL API with typed Python methods</p>
+<p>- <strong>Inheritance Model</strong>: Extends LinearReadonlyClient for shared query operations</p>
+<p>- <strong>Mutation Support</strong>: Create/update issues, comments, labels, and relations</p>
+<p>- <strong>Label Resolution</strong>: Smart label name-to-ID mapping with team scoping</p>
+<p>- <strong>GraphQL Queries</strong>: Hand-crafted mutations for precise data fetching</p>
+<br>
+<h3> Cross-Platform Integrations (`integrations.py`)</h3>
+<p>- <strong>GitHub Integration</strong>: PR and commit search via GitHub API</p>
+<p>- <strong>Slack Integration</strong>: Message search using Slack SDK</p>
+<p>- <strong>Issue Enrichment</strong>: Automatic linking of Linear issues to related GitHub/Slack content</p>
+<p>- <strong>Weekly Reporting</strong>: Time-filtered issue reporting with external link discovery</p>
+<p>- <strong>Search Term Extraction</strong>: Intelligent keyword extraction from issue titles</p>
+<br>
+<h3> Configuration Management</h3>
+<p>- <strong>Environment Loading</strong>: Multi-location .env file discovery</p>
+<p>- <strong>Secret Management</strong>: Integration with centaur_sdk for secure API key handling</p>
+<p>- <strong>Authentication</strong>: Support for Linear API keys, GitHub tokens, and Slack bot tokens</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Client Method]
+    B --&gt; C[GraphQL Query/Mutation]
+    C --&gt; D[Linear API]
+    D --&gt; E[Response Processing]
+    E --&gt; F[Rich Table/Console Output]
+    
+    G[Weekly Report] --&gt; H[Issue Filtering]
+    H --&gt; I[GitHub Search]
+    H --&gt; J[Slack Search] 
+    I --&gt; K[Link Enrichment]
+    J --&gt; K
+    K --&gt; F
+    
+    L[Create Issue] --&gt; M[Team/User Resolution]
+    M --&gt; N[GraphQL Mutation]
+    N --&gt; D</code></pre>
+<br>
+<h3> Primary Data Flow</h3>
+<p>1. <strong>Command Parsing</strong>: Typer processes CLI arguments and options</p>
+<p>2. <strong>Client Initialization</strong>: LinearClient loads environment and authenticates</p>
+<p>3. <strong>API Interaction</strong>: GraphQL queries/mutations sent to Linear API</p>
+<p>4. <strong>Data Processing</strong>: Response transformation and filtering</p>
+<p>5. <strong>Output Rendering</strong>: Rich library formats tables and console output</p>
+<br>
+<h3> Integration Data Flow</h3>
+<p>1. <strong>Issue Collection</strong>: Fetch Linear issues based on filters</p>
+<p>2. <strong>Search Term Extraction</strong>: Parse issue titles/identifiers for keywords</p>
+<p>3. <strong>External API Calls</strong>: Parallel searches to GitHub and Slack APIs</p>
+<p>4. <strong>Link Enrichment</strong>: Attach found links to issue metadata</p>
+<p>5. <strong>Unified Reporting</strong>: Present enriched data in structured format</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Core Dependencies</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async HTTP client for API requests. Used in integrations.py for GitHub API calls and as the underlying transport for Linear GraphQL requests. Provides connection pooling and timeout handling.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework built on Click. Powers all command definitions in cli.py including argument parsing, option handling, help generation, and command organization. Provides type hints for better developer experience.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library. Used extensively in cli.py for creating formatted tables, progress indicators, colored output, and structured console display. Enhances user experience with professional CLI output.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [config]: Environment variable management from .env files. Used in cli.py get_client() function to load Linear API keys and other configuration from multiple possible .env locations in the project hierarchy.</p>
+<br>
+<h3> Integration Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal]: Centaur's internal SDK providing Table class for formatted output and secret() function for secure credential management. Used in cli.py for table creation and in integrations.py for GitHub/Slack token access.</p>
+<br>
+<p>- <strong>slack_sdk</strong> [optional]: Official Slack Python SDK for workspace API access. Dynamically imported in integrations.py SlackSearchClient class for message search functionality. Gracefully handled if not installed.</p>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>The component also depends on external command-line tools:</p>
+<br>
+<p>- <strong>gh CLI</strong>: GitHub's official command-line tool used as fallback for GitHub authentication token retrieval when GITHUB_TOKEN environment variable is not set.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>The component exposes a rich CLI interface through 20+ commands:</p>
+<br>
+<h4>Core Issue Management</h4>
+<p>- <code>linear me</code> - Show authenticated user info</p>
+<p>- <code>linear issues [--team] [--assignee] [--state] [--limit] [--full] [--json]</code> - List issues with filters</p>
+<p>- <code>linear issue <id> [--json]</code> - Get detailed issue information</p>
+<p>- <code>linear create <title> --team <key> [options]</code> - Create new issues</p>
+<p>- <code>linear update <id> [options]</code> - Update existing issues  </p>
+<p>- <code>linear comment <id> <body></code> - Add comments to issues</p>
+<br>
+<h4>Resource Management  </h4>
+<p>- <code>linear teams</code> - List all teams</p>
+<p>- <code>linear projects [--limit] [--json]</code> - List projects</p>
+<p>- <code>linear project <name></code> - Get project details</p>
+<p>- <code>linear cycles [--team] [--limit]</code> - List development cycles</p>
+<p>- <code>linear states [--team]</code> - List workflow states</p>
+<br>
+<h4>Labels and Relations</h4>
+<p>- <code>linear labels [--team]</code> - List available labels</p>
+<p>- <code>linear add-label <issue-id> <label> [--team]</code> - Add labels to issues</p>
+<p>- <code>linear remove-label <issue-id> <label> [--team]</code> - Remove labels from issues  </p>
+<p>- <code>linear link <issue-id> <related-id> [--type]</code> - Create issue relations</p>
+<br>
+<h4>Search and Reporting</h4>
+<p>- <code>linear search <query> [--limit] [--json]</code> - Full-text issue search</p>
+<p>- <code>linear weekly [--team] [--org]</code> - Generate weekly reports with external links</p>
+<p>- <code>linear users [--limit] [--query]</code> - List workspace users</p>
+<br>
+<h4>Asset Management</h4>
+<p>- <code>linear fetch-asset <url> [--output]</code> - Download Linear-hosted files</p>
+<br>
+<h3> Programmatic Interface</h3>
+<br>
+<p>When imported as a module, the component provides:</p>
+<br>
+<pre><code class="language-python">from linear.client import LinearClient
+
+client = LinearClient()
+# Full access to all Linear GraphQL operations
+issues = client.issues(team_key=&quot;ENG&quot;, limit=25)
+client.create_issue(title=&quot;Bug fix&quot;, team_id=&quot;team_123&quot;)</code></pre>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Linear API Integration</h3>
+<p>- <strong>Service</strong>: Linear GraphQL API (api.linear.app)</p>
+<p>- <strong>Protocol</strong>: HTTPS/GraphQL</p>
+<p>- <strong>Authentication</strong>: Bearer token via LINEAR_API_KEY</p>
+<p>- <strong>Usage</strong>: Primary data source for all issue tracking operations</p>
+<p>- <strong>Rate Limits</strong>: Respects Linear's API rate limiting</p>
+<br>
+<h3> GitHub API Integration  </h3>
+<p>- <strong>Service</strong>: GitHub REST API (api.github.com)</p>
+<p>- <strong>Protocol</strong>: HTTPS/REST</p>
+<p>- <strong>Authentication</strong>: Bearer token via GITHUB_TOKEN or gh CLI</p>
+<p>- <strong>Usage</strong>: Search PRs and commits for issue enrichment</p>
+<p>- <strong>Scope</strong>: Read access to public and private repositories</p>
+<br>
+<h3> Slack API Integration</h3>
+<p>- <strong>Service</strong>: Slack Web API (slack.com/api)</p>
+<p>- <strong>Protocol</strong>: HTTPS/REST  </p>
+<p>- <strong>Authentication</strong>: Bot token via SLACK_BOT_TOKEN</p>
+<p>- <strong>Usage</strong>: Search workspace messages for issue context</p>
+<p>- <strong>Permissions</strong>: Requires search:read scope</p>
+<br>
+<h3> File Upload Integration</h3>
+<p>- <strong>Service</strong>: Linear Asset CDN (uploads.linear.app)</p>
+<p>- <strong>Protocol</strong>: HTTPS</p>
+<p>- <strong>Authentication</strong>: Linear API key</p>
+<p>- <strong>Usage</strong>: Download issue attachments and embedded media</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>The Linear component integrates with the broader Centaur ecosystem through several mechanisms:</p>
+<br>
+<h3> Internal Service Dependencies</h3>
+<p>- <strong>LinearReadonlyClient</strong>: Inherits from a shared client in `api.integrations.linear` for read operations, enabling code reuse across multiple Centaur components</p>
+<p>- <strong>centaur_sdk</strong>: Uses internal SDK for secure credential management and standardized table formatting</p>
+<br>
+<h3> External Tool Dependencies  </h3>
+<p>- <strong>GitHub CLI</strong>: Leverages `gh auth token` for GitHub authentication as fallback</p>
+<p>- <strong>Environment Configuration</strong>: Shares .env files with other Centaur components for unified configuration management</p>
+<br>
+<h3> Data Exchange Patterns</h3>
+<p>- <strong>JSON Output</strong>: All commands support `--json` flag for programmatic consumption by other tools</p>
+<p>- <strong>Exit Codes</strong>: Proper exit code handling for shell script integration</p>
+<p>- <strong>Environment Variables</strong>: Standard environment variable patterns for service configuration</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

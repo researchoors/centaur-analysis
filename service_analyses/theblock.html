@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: theblock — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>theblock</h1>
+</header>
+<p>Now I have a comprehensive understanding of the theblock component. Let me write the analysis.</p>
+<br>
+<h1>The Block Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The <code>theblock</code> component is a Python library that provides a command-line interface for accessing cryptocurrency news from The Block's RSS feed. It offers a simple yet robust way to fetch and display the latest crypto news articles with multiple output formats including rich terminal tables, markdown, and JSON.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a simple layered architecture pattern with clear separation of concerns:</p>
+<br>
+<p>- <strong>CLI Layer</strong> (`cli.py`): Handles user interaction, command parsing, and output formatting</p>
+<p>- <strong>Client Layer</strong> (`client.py`): Manages RSS feed fetching, parsing, and data transformation</p>
+<p>- <strong>Data Layer</strong>: RSS feed parsing and article data structures</p>
+<br>
+<p>The architecture emphasizes simplicity and reliability, using subprocess calls to <code>curl</code> as a fallback when direct HTTP requests might be blocked, demonstrating a pragmatic approach to web scraping resilience.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. TheBlockClient Class (`client.py`)</h3>
+<p>The core client responsible for fetching and parsing The Block's RSS feed. It implements a dual-fetch strategy using both <code>curl</code> subprocess calls and direct HTTP requests via <code>feedparser</code> for maximum compatibility.</p>
+<br>
+<h3> 2. CLI Application (`cli.py`)</h3>
+<p>Built on Typer framework, providing two main commands:</p>
+<p>- <code>news</code>: Fetches latest articles with configurable limit</p>
+<p>- <code>search</code>: Searches articles by keyword in title and summary</p>
+<br>
+<h3> 3. Output Formatters</h3>
+<p>Multiple output formats supported:</p>
+<li>Rich terminal tables with color coding and column sizing</li>
+<li>Markdown tables for documentation</li>
+<li>JSON output for programmatic consumption</li>
+<br>
+<h3> 4. Utility Functions</h3>
+<p>- <code>truncate()</code>: Text truncation for display formatting</p>
+<p>- <code>print_markdown_table()</code>: Markdown table generation</p>
+<p>- <code>get_client()</code>: Client factory function</p>
+<br>
+<h3> 5. Feed Parser Integration</h3>
+<p>Uses <code>feedparser</code> library to parse RSS XML into structured article data with fields: title, link, published date, summary, and author.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<p>The component implements a straightforward data flow pipeline:</p>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[TheBlockClient]
+    B --&gt; C{Fetch Strategy}
+    C --&gt;|Primary| D[curl subprocess]
+    C --&gt;|Fallback| E[feedparser HTTP]
+    D --&gt; F[RSS XML Content]
+    E --&gt; F
+    F --&gt; G[feedparser.parse]
+    G --&gt; H[Article List]
+    H --&gt; I[Filter/Limit]
+    I --&gt; J{Output Format}
+    J --&gt;|Rich| K[Terminal Table]
+    J --&gt;|Markdown| L[Markdown Table]
+    J --&gt;|JSON| M[JSON Output]</code></pre>
+<br>
+<h3> News Command Flow</h3>
+<p>1. User invokes <code>theblock news</code> with optional parameters</p>
+<p>2. CLI creates TheBlockClient instance</p>
+<p>3. Client fetches RSS feed from The Block</p>
+<p>4. Feed content is parsed into article dictionaries</p>
+<p>5. Articles are limited to requested count</p>
+<p>6. Output is formatted according to user preference</p>
+<br>
+<h3> Search Command Flow</h3>
+<p>1. User provides search query and optional parameters</p>
+<p>2. Full article list is fetched and parsed</p>
+<p>3. Articles are filtered by query matching in title/summary</p>
+<p>4. Filtered results are limited and formatted for output</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>feedparser</strong> (>=6.0.0) [xml-parsing]: Universal RSS/Atom feed parser library. Handles XML parsing, content extraction, and provides fallback HTTP client capabilities. Used in `client.py` for parsing The Block's RSS feed and as backup HTTP client when curl fails. Imported in: `client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern Python CLI framework built on Click. Provides command decoration, argument parsing, help generation, and type validation. Powers the entire CLI interface with two main commands (`news` and `search`). Imported in: `cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [terminal-ui]: Advanced terminal formatting library providing colored output, tables, and rich text rendering. Used for creating formatted terminal tables with color-coded columns and styling. Imported in: `cli.py` for Console and Table classes.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loader that reads `.env` files. Loaded at CLI startup to handle any environment-based configuration, though no specific environment variables are currently used. Imported in: `cli.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>As a library component, theblock exposes the following public interfaces:</p>
+<br>
+<h3> CLI Commands</h3>
+<p>- <code>theblock news [--limit N] [--json] [--markdown]</code>: Fetch latest crypto news</p>
+<p>- <code>theblock search QUERY [--limit N] [--json] [--markdown]</code>: Search news by keyword</p>
+<br>
+<h3> Python API</h3>
+<p>- <code>TheBlockClient</code>: Main client class for programmatic access</p>
+<p>  - <code>news(limit: int = 20) -> list[dict]</code>: Get latest articles</p>
+<p>  - <code>search(query: str, limit: int = 20) -> list[dict]</code>: Search articles</p>
+<p>- Article data structure: <code>{"title", "link", "published", "summary", "author"}</code></p>
+<br>
+<h3> Configuration</h3>
+<p>- Configurable timeout via <code>TheBlockClient(timeout=30.0)</code></p>
+<li>User-Agent spoofing for bot detection avoidance</li>
+<p>- RSS feed URL: <code>https://www.theblock.co/rss.xml</code></p>
+<br>
+<h2>External Systems</h2>
+<br>
+<p>The component connects to a single external system:</p>
+<br>
+<p>- <strong>The Block RSS Feed</strong> (`www.theblock.co`): Fetches cryptocurrency news articles via RSS XML feed. Uses HTTP GET requests with User-Agent spoofing to avoid bot detection. No authentication required.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

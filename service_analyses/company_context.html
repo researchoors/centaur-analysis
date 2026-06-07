@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: company_context — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>company_context</h1>
+</header>
+<h1>Company Context Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The company_context component implements a <strong>layered architecture</strong> with clear separation between data access, business logic, and client interfaces. The design centers around a single `CompanyContextClient` class that orchestrates search operations across both indexed documents and live Slack data. The architecture follows an async/sync pattern where internal operations use asyncio for database connections while exposing synchronous methods for tool integration.</p>
+<br>
+<p>The component uses a <strong>hybrid search strategy</strong> combining PostgreSQL full-text search with ParadeDB's BM25 ranking and live Slack API queries to provide comprehensive company history access. The search implementation includes sophisticated query processing with term extraction, stop word filtering, and relevance boosting.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> CompanyContextClient</h3>
+<p>The primary interface class exposing four main operations: search, list_documents, latest_date, and read_document. Each method implements proper error handling and parameter validation while delegating to async internal methods for actual database operations.</p>
+<br>
+<h3> Search Engine Core</h3>
+<p>A collection of utility functions implementing the search logic:</p>
+<p>- <code>_search_terms()</code>: Extracts meaningful search terms while filtering stop words</p>
+<p>- <code>_search_where_clause()</code>: Builds ParadeDB query clauses with relevance boosting</p>
+<p>- <code>_body_preview()</code>: Creates contextual document previews centered on query matches</p>
+<br>
+<h3> Database Integration Layer</h3>
+<p>Async methods handling PostgreSQL connections and queries:</p>
+<p>- <code>_search_async()</code>: Core search implementation with BM25 ranking</p>
+<p>- <code>_list_documents_async()</code>: Document listing with date filtering</p>
+<p>- <code>_latest_date_for_connection()</code>: Index freshness tracking</p>
+<br>
+<h3> Slack Integration</h3>
+<p>Dynamic loading and integration with the sibling Slack tool:</p>
+<p>- <code>_load_slack_client()</code>: Runtime discovery and loading of Slack client</p>
+<p>- <code>_live_slack_result()</code>: Normalization of live Slack messages to document format</p>
+<p>- <code>_slack_after_query()</code>: Intelligent date modifier injection for gap queries</p>
+<br>
+<h3> Data Processing Utilities</h3>
+<p>Helper functions for data transformation and validation:</p>
+<p>- <code>_document_summary()</code>: Standardizes document metadata extraction</p>
+<p>- <code>_parse_datetime_filter()</code>: Robust ISO 8601 date parsing with timezone handling</p>
+<p>- <code>_normalize_text()</code>: Text cleanup for consistent previews</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[User Query] --&gt; B[CompanyContextClient.search]
+    B --&gt; C[Parameter Validation]
+    C --&gt; D[Term Extraction &amp; Processing]
+    D --&gt; E[Database Connection]
+    E --&gt; F[ParadeDB BM25 Query]
+    F --&gt; G[Result Processing]
+    G --&gt; H{Live Slack Needed?}
+    H --&gt;|Yes| I[Load Slack Client]
+    H --&gt;|No| L[Return Results]
+    I --&gt; J[Query Live Slack API]
+    J --&gt; K[Merge Live Results]
+    K --&gt; L
+    L --&gt; M[Formatted Response]</code></pre>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Document Read Request] --&gt; B[CompanyContextClient.read_document]
+    B --&gt; C[Document ID Validation]
+    C --&gt; D[Database Connection]
+    D --&gt; E[Document Fetch Query]
+    E --&gt; F{Include Related?}
+    F --&gt;|Yes| G[Fetch Parent Document]
+    F --&gt;|No| J[Format Response]
+    G --&gt; H[Fetch Child Documents]
+    H --&gt; I[Build Related Structure]
+    I --&gt; J
+    J --&gt; K[Content Truncation if Needed]
+    K --&gt; L[Return Document with Metadata]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>asyncpg</strong> (>=0.30.0) [database]: High-performance async PostgreSQL driver providing connection pooling and query execution. Used throughout all database operations via `CompanyContextClient._connect()` and query methods. Imported in: `client.py`.</p>
+<br>
+<p>- <strong>slack-sdk</strong> (>=3.27.0) [api-client]: Official Slack SDK for Python enabling Slack API interactions. Dynamically loaded via `_load_slack_client()` for live message search functionality when bridging indexed/live data gaps. Not directly imported but loaded at runtime.</p>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>The component also relies on:</p>
+<p>- <strong>centaur_sdk.tool_sdk</strong>: Provides the `secret()` function for secure configuration management</p>
+<p>- <strong>ParadeDB</strong>: PostgreSQL extension providing BM25 full-text search capabilities (accessed via SQL)</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Primary Methods</h3>
+<br>
+<p><strong>search(query, limit=10, source=None, source_type=None, occurred_after=None, occurred_before=None) -> dict</strong></p>
+<li>Core search functionality across indexed documents with optional live Slack integration</li>
+<li>Supports advanced filtering by source system, content type, and date ranges</li>
+<li>Returns ranked results with relevance scores and contextual previews</li>
+<br>
+<p><strong>list_documents(limit=10, source=None, source_type=None, occurred_after=None, occurred_before=None) -> dict</strong></p>
+<li>Lists documents without search ranking, useful for browsing by date or source</li>
+<li>Supports same filtering options as search but orders chronologically</li>
+<br>
+<p><strong>read_document(document_id, max_chars=0, include_related=False, max_related_children=25) -> dict</strong></p>
+<li>Retrieves full document content by ID with optional content truncation</li>
+<li>Can include parent/child document relationships for threaded content</li>
+<br>
+<p><strong>latest_date(source=None, source_type=None) -> dict</strong></p>
+<li>Returns indexing freshness information for gap detection and live query optimization</li>
+<li>Essential for determining when to supplement with live Slack data</li>
+<br>
+<h3> Module Entry Point</h3>
+<br>
+<p><strong>_client() -> CompanyContextClient</strong></p>
+<li>Factory function providing the standard client instance for tool integration</li>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> PostgreSQL Database</h3>
+<p>The component connects to a PostgreSQL database with ParadeDB extension for document storage and search. The database contains a <code>company_context_documents</code> table with full-text search indexes and metadata fields supporting multi-source document ingestion from Slack, Google Drive, Google Calendar, and Linear.</p>
+<br>
+<h3> Slack API</h3>
+<p>Runtime integration with Slack's search API through the sibling slack tool component. Used for live message queries when indexed data has gaps, automatically determining query date modifiers based on index freshness.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<h3> Slack Tool Integration</h3>
+<p>The component dynamically loads and calls the slack tool's <code>search_messages()</code> method to supplement indexed results with live Slack data. This integration uses file system discovery to locate the sibling component and runtime module loading to avoid circular dependencies.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

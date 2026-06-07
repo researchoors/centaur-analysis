@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: snapshot — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>snapshot</h1>
+</header>
+<h1>Snapshot Component Analysis</h1>
+<br>
+<p>The snapshot component is a Python library that provides a GraphQL client for interacting with the Snapshot governance platform. It enables off-chain governance voting, proposal management, and space exploration through a clean API wrapper around Snapshot's GraphQL endpoint.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a simple client-wrapper architecture pattern with a single main class <code>SnapshotClient</code> that encapsulates all interactions with the Snapshot Hub GraphQL API. The design emphasizes simplicity and ease of use while providing comprehensive access to governance data.</p>
+<br>
+<p>The architecture is built around:</p>
+<li>A stateful HTTP client with optional API key authentication</li>
+<li>GraphQL query execution with error handling</li>
+<li>Context manager support for resource cleanup</li>
+<li>Lazy initialization of the HTTP client</li>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> SnapshotClient Class</h3>
+<p>The primary interface for all Snapshot API interactions, providing methods for spaces, proposals, votes, and voting power queries. It manages HTTP client lifecycle and authentication headers.</p>
+<br>
+<h3> GraphQL Query Methods</h3>
+<p>- <strong>get_space()</strong>: Retrieves detailed information about a governance space</p>
+<p>- <strong>list_spaces()</strong>: Queries multiple spaces with sorting and pagination</p>
+<p>- <strong>get_proposal()</strong>: Fetches complete proposal data including voting results</p>
+<p>- <strong>list_proposals()</strong>: Lists proposals for a space with optional state filtering</p>
+<p>- <strong>get_votes()</strong>: Retrieves vote records for a specific proposal</p>
+<p>- <strong>get_voting_power()</strong>: Calculates voting power for a voter in a specific context</p>
+<br>
+<h3> Authentication System</h3>
+<p>Optional API key support for higher rate limits, with fallback to environment variable configuration through the centaur_sdk secret management.</p>
+<br>
+<h3> HTTP Client Management</h3>
+<p>Lazy-loaded httpx.Client with timeout configuration and proper resource cleanup via context manager pattern.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Client Application] --&gt;|Method Call| B[SnapshotClient]
+    B --&gt;|Lazy Init| C[HTTP Client]
+    B --&gt;|GraphQL Query| D[Query Builder]
+    D --&gt;|POST Request| E[Snapshot Hub API]
+    E --&gt;|JSON Response| F[Response Parser]
+    F --&gt;|Error Check| G{GraphQL Errors?}
+    G --&gt;|Yes| H[RuntimeError]
+    G --&gt;|No| I[Return Data Dict]
+    
+    B --&gt;|API Key Check| J[Secret Manager]
+    J --&gt;|Environment Variable| K[SNAPSHOT_API_KEY]
+    K --&gt;|Header| C</code></pre>
+<br>
+<p>The data flow follows a request-response pattern where:</p>
+<p>1. Client methods construct GraphQL queries with variables</p>
+<p>2. HTTP client executes POST requests to hub.snapshot.org/graphql</p>
+<p>3. Responses are parsed and validated for GraphQL errors</p>
+<p>4. Clean data dictionaries are returned to callers</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library providing sync/async support. Used for all GraphQL API requests to Snapshot Hub. Provides timeout handling, connection pooling, and automatic JSON serialization. Imported in: `client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Command-line interface creation library. Listed as dependency but not used in current implementation, likely reserved for future CLI functionality.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting and display library. Listed as dependency but not used in current implementation, likely intended for future CLI output formatting.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loading from .env files. Not directly imported but may be used by the centaur_sdk secret management system for configuration loading.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [secret management]: Internal SDK providing the `secret()` function for secure environment variable access. Used for SNAPSHOT_API_KEY retrieval with fallback support.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes a clean public API through the <code>SnapshotClient</code> class:</p>
+<br>
+<h3> Constructor</h3>
+<pre><code class="language-python">SnapshotClient(api_key: str | None = None, timeout: float = 30.0)</code></pre>
+<br>
+<h3> Core Methods</h3>
+<p>- <code>get_space(space_id: str) -> dict</code>: Single space retrieval</p>
+<p>- <code>list_spaces(first: int = 20, order_by: str = "created", order_direction: str = "desc") -> list[dict]</code>: Space listing with pagination</p>
+<p>- <code>get_proposal(proposal_id: str) -> dict</code>: Proposal details</p>
+<p>- <code>list_proposals(space: str, state: str | None = None, first: int = 20) -> list[dict]</code>: Proposal listing with filtering</p>
+<p>- <code>get_votes(proposal_id: str, first: int = 1000) -> list[dict]</code>: Vote records</p>
+<p>- <code>get_voting_power(voter: str, space: str, proposal: str) -> dict</code>: Voting power calculation</p>
+<br>
+<h3> Resource Management</h3>
+<p>- Context manager support (<code>__enter__</code>/<code>__exit__</code>)</p>
+<p>- Explicit <code>close()</code> method for cleanup</p>
+<br>
+<h3> Factory Function</h3>
+<p>- <code>_client() -> SnapshotClient</code>: Convenience factory using environment configuration</p>
+<br>
+<p>The API is designed for both standalone usage and integration into larger governance analysis workflows, with consistent return types and comprehensive error handling.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

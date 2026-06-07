@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: allium — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>allium</h1>
+</header>
+<h1>Allium Component Analysis</h1>
+<br>
+<p>The allium component is a comprehensive command-line interface (CLI) tool for Allium on-chain analytics, focusing on stablecoin analysis, prediction markets, and Hyperliquid DEX data. It provides both direct SQL execution capabilities and pre-built analytical commands for blockchain data exploration.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a modular CLI architecture with three main layers:</p>
+<br>
+<p>- <strong>CLI Layer</strong> (`cli.py`): Command definitions using Typer framework with rich output formatting</p>
+<p>- <strong>Client Layer</strong> (`client.py`): HTTP client for Allium API interactions with both REST and MCP (Model Context Protocol) endpoints</p>
+<p>- <strong>Configuration Layer</strong>: Environment-based API key management integrated with centaur_sdk</p>
+<br>
+<p>The architecture implements a context manager pattern for HTTP client lifecycle management and supports both synchronous and asynchronous query execution patterns.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> CLI Command Router (`cli.py`)</h3>
+<p>The main CLI application built on Typer, providing 23 commands organized into categories: general analytics, stablecoin analysis, and Hyperliquid-specific queries. Commands support multiple output formats (table, JSON, CSV, markdown) with rich console formatting.</p>
+<br>
+<h3> Allium API Client (`client.py`)</h3>
+<p>A comprehensive HTTP client that interfaces with two Allium endpoints:</p>
+<p>- <strong>REST API</strong> (`api.allium.so`): For saved query management and status tracking</p>
+<p>- <strong>MCP Endpoint</strong> (`mcp.allium.so`): For direct SQL execution and schema operations</p>
+<br>
+<p>The client handles both JSON-RPC and Server-Sent Events (SSE) responses, with intelligent response parsing and error handling.</p>
+<br>
+<h3> Query Management System</h3>
+<p>Supports both direct SQL execution and saved query workflows:</p>
+<p>- <strong>Direct SQL</strong>: Immediate execution via MCP endpoint</p>
+<p>- <strong>Saved Queries</strong>: Async execution with polling for results</p>
+<p>- <strong>Pre-built Templates</strong>: Seven analytical query templates for stablecoin analysis</p>
+<br>
+<h3> Output Formatting Engine</h3>
+<p>Multi-format output system supporting:</p>
+<p>- <strong>Rich Tables</strong>: Interactive console tables with styling</p>
+<p>- <strong>JSON/CSV Export</strong>: Machine-readable formats</p>
+<p>- <strong>Markdown Tables</strong>: Documentation-friendly output</p>
+<br>
+<h3> Hyperliquid Integration</h3>
+<p>Specialized command set for Hyperliquid DEX analytics including trades, volume, orders, funding rates, and builder metrics with predefined table mappings and optimized queries.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B{Command Type}
+    B --&gt;|Direct SQL| C[MCP Client]
+    B --&gt;|Saved Query| D[REST Client]
+    B --&gt;|Schema Search| C
+    
+    C --&gt; E[MCP Endpoint]
+    D --&gt; F[REST API]
+    
+    E --&gt; G[Parse SSE/JSON Response]
+    F --&gt; H[Parse JSON Response]
+    
+    G --&gt; I[Extract Data List]
+    H --&gt; I
+    
+    I --&gt; J{Output Format}
+    J --&gt;|table| K[Rich Table]
+    J --&gt;|json| L[JSON Output]
+    J --&gt;|csv| M[CSV Output]
+    J --&gt;|markdown| N[Markdown Table]
+    
+    O[Environment] --&gt; P[API Key Management]
+    P --&gt; C
+    P --&gt; D</code></pre>
+<br>
+<pre><code class="language-mermaid">graph LR
+    A[Query Execution Flow] --&gt; B[run_query]
+    B --&gt; C[get_query_status]
+    C --&gt; D{Status Check}
+    D --&gt;|pending/running| E[Poll Again]
+    D --&gt;|success| F[get_query_results]
+    D --&gt;|failed| G[Raise Error]
+    E --&gt; C
+    F --&gt; H[Return Results]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client used for API communication with Allium endpoints. Handles both REST and MCP protocol interactions. Imported in: `tools/crypto/allium/client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: CLI framework providing command parsing, argument validation, and help generation. Powers all 23 CLI commands with type hints and automatic documentation. Imported in: `tools/crypto/allium/cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library providing styled tables, progress indicators, and colored output. Used for all interactive console output and table rendering. Imported in: `tools/crypto/allium/cli.py`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loader for development configuration. Loads `.env` files for API key management during development. Imported in: `tools/crypto/allium/cli.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes a comprehensive CLI interface through the <code>allium</code> command with the following primary categories:</p>
+<br>
+<h3> Core Analytics Commands</h3>
+<p>- <code>sql <query></code>: Execute arbitrary SQL against Allium database</p>
+<p>- <code>search-schemas <query></code>: Semantic search for relevant tables</p>
+<p>- <code>describe <table></code>: Get table schema and metadata</p>
+<p>- <code>check-freshness [tables]</code>: Check data freshness for prediction/hyperliquid tables</p>
+<br>
+<h3> Query Management Commands  </h3>
+<p>- <code>query <id> [--params]</code>: Execute saved queries with optional parameters</p>
+<p>- <code>status <run_id></code>: Check async query execution status</p>
+<p>- <code>results <run_id></code>: Retrieve completed query results</p>
+<br>
+<h3> Stablecoin Analysis Commands</h3>
+<p>- <code>stablecoin-volume --query-id <id></code>: Analyze stablecoin transfer volumes</p>
+<p>- <code>top-contracts <chain> --query-id <id></code>: Find top contracts by stablecoin volume</p>
+<p>- <code>sql-examples [name]</code>: Display pre-built analytical query templates</p>
+<p>- <code>tables</code>: List key Allium tables for stablecoin analysis</p>
+<br>
+<h3> Hyperliquid DEX Commands</h3>
+<p>- <code>hl-trades</code>: Query DEX trades with filtering options</p>
+<p>- <code>hl-volume</code>: Aggregate trading volume by coin</p>
+<p>- <code>hl-orders</code>: Order book data and status tracking</p>
+<p>- <code>hl-metrics</code>: Daily overview metrics (transactions, users, TVL)</p>
+<p>- <code>hl-funding</code>: Perpetual funding rates and open interest</p>
+<p>- <code>hl-builders</code>: Builder fee analysis and activity metrics</p>
+<p>- <code>hl-tables</code>: List available Hyperliquid data tables</p>
+<br>
+<h3> Utility Commands</h3>
+<p>- <code>raw <method> <endpoint></code>: Make direct API calls for debugging</p>
+<p>- Global flags: <code>--output (table|json|csv)</code>, <code>--markdown</code>, <code>--limit</code></p>
+<br>
+<h2>External Systems</h2>
+<br>
+<p>The component integrates with the following external systems at runtime:</p>
+<br>
+<p>- <strong>Allium Analytics Platform</strong>: Primary blockchain data provider via REST API (`api.allium.so`) for query management and MCP endpoint (`mcp.allium.so`) for direct SQL execution</p>
+<p>- <strong>Centaur SDK</strong>: Internal dependency for secret management and table formatting utilities</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component operates as a standalone CLI tool with no direct interactions with other components in the codebase. It integrates with:</p>
+<br>
+<p>- <strong>centaur_sdk</strong>: Uses the `secret()` function for API key management and `Table` class for rich output formatting</p>
+<p>- <strong>Environment Configuration</strong>: Reads `ALLIUM_API_KEY` from environment variables or `.env` files</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

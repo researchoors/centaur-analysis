@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: slackbot — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>slackbot</h1>
+</header>
+<p>Now let me analyze the project structure and create the comprehensive analysis:</p>
+<br>
+<h1>Slackbot Service Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The slackbot service is a TypeScript-based Slack bot service built with the Hono web framework that serves as a bridge between Slack workspace events and the Centaur AI platform. The architecture follows an event-driven pattern with webhook-based integrations:</p>
+<br>
+<p>- <strong>Event Processing Pipeline</strong>: Receives Slack events via webhooks, normalizes them, deduplicates, and hands off to Centaur workflows</p>
+<p>- <strong>API Gateway Pattern</strong>: Provides REST endpoints for Slack message operations, agent sessions, and streaming</p>
+<p>- <strong>Session Management</strong>: Manages real-time agent execution sessions with streaming text and task updates</p>
+<p>- <strong>Final Delivery System</strong>: Polls Centaur for completed workflows and delivers results back to Slack</p>
+<br>
+<p>The service uses a modular architecture with clear separation between Slack-specific logic, Centaur integration, and core utilities.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. **Main Application (`src/index.ts`)**</h3>
+<p>The central Hono application that defines all HTTP routes, middleware, and request handlers. Handles Slack webhook events, API endpoints for message operations, agent sessions, and Linear feedback integration.</p>
+<br>
+<h3> 2. **Event Normalization (`src/slack/normalize.ts`)**  </h3>
+<p>Transforms raw Slack events into standardized <code>NormalizedSlackEvent</code> objects. Handles message parsing, mention detection, file processing, and thread history collection for context.</p>
+<br>
+<h3> 3. **Centaur Handoff (`src/centaur/handoff.ts`)**</h3>
+<p>Orchestrates communication with the Centaur API by sending normalized Slack events as workflow trigger requests. Handles authentication, tracing, and error responses.</p>
+<br>
+<h3> 4. **Agent Session Renderer (`src/slack/agent-session.ts`)**</h3>
+<p>Manages interactive agent execution sessions in Slack with real-time streaming capabilities. Renders execution plans, task updates, and maintains session state across multiple message updates.</p>
+<br>
+<h3> 5. **Final Delivery Poller (`src/centaur/final-delivery.ts`)**  </h3>
+<p>Background service that polls Centaur for completed workflow results and delivers them back to Slack channels. Handles chunking, error recovery, and delivery confirmation.</p>
+<br>
+<h3> 6. **Event Deduplication (`src/slack/dedup.ts`)**</h3>
+<p>In-memory TTL-based deduplication system to prevent processing duplicate Slack webhook events, which can occur due to network retries or Slack's delivery guarantees.</p>
+<br>
+<h3> 7. **Slack Installation Management (`src/slack/installations.ts`)**</h3>
+<p>Manages Slack app installations and bot tokens. Provides a resolver pattern for obtaining authenticated Slack WebClient instances based on team/enterprise IDs.</p>
+<br>
+<h3> 8. **Configuration (`src/config.ts`)**</h3>
+<p>Zod-based configuration schema that validates and parses environment variables for Slack credentials, API keys, URLs, and feature flags.</p>
+<br>
+<h3> 9. **Signature Verification (`src/slack/signature.ts`)**  </h3>
+<p>Implements Slack's webhook signature verification using HMAC-SHA256 to ensure requests are authentic and not tampered with.</p>
+<br>
+<h3> 10. **OpenTelemetry Integration (`src/otel.ts`)**</h3>
+<p>Comprehensive distributed tracing setup with OTLP export, span management, and trace header propagation for observability across the system.</p>
+<br>
+<h3> 11. **Message Rendering (`src/slack/render.ts`)**</h3>
+<p>Converts markdown content to Slack's block format with proper chunking, length limits, and fallback text generation for message display.</p>
+<br>
+<h3> 12. **Logging (`src/logging.ts`)**</h3>
+<p>Security-focused logging system with automatic PII redaction (emails, phones, SSNs, tokens) and structured JSON output for monitoring.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Slack Event Processing Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Slack
+    participant SlackBot
+    participant Deduper
+    participant Normalizer
+    participant Centaur
+    
+    Slack-&gt;&gt;SlackBot: Webhook Event
+    SlackBot-&gt;&gt;SlackBot: Verify Signature
+    SlackBot-&gt;&gt;Deduper: Check Duplicate
+    Deduper--&gt;&gt;SlackBot: Not Duplicate
+    SlackBot-&gt;&gt;Normalizer: Normalize Event
+    Normalizer-&gt;&gt;Slack: Fetch Thread History
+    Normalizer--&gt;&gt;SlackBot: NormalizedSlackEvent
+    SlackBot-&gt;&gt;Centaur: Handoff to Workflow
+    SlackBot--&gt;&gt;Slack: 200 OK</code></pre>
+<br>
+<h3> Agent Session Streaming Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Centaur
+    participant SlackBot
+    participant Slack
+    participant User
+    
+    Centaur-&gt;&gt;SlackBot: POST /agent-sessions
+    SlackBot-&gt;&gt;Slack: Create Stream Message
+    SlackBot--&gt;&gt;Centaur: Session ID
+    
+    loop Real-time Updates
+        Centaur-&gt;&gt;SlackBot: POST /agent-sessions/{id}/text
+        SlackBot-&gt;&gt;Slack: Append to Stream
+        Centaur-&gt;&gt;SlackBot: POST /agent-sessions/{id}/step
+        SlackBot-&gt;&gt;Slack: Update Task Status
+    end
+    
+    Centaur-&gt;&gt;SlackBot: POST /agent-sessions/{id}/done
+    SlackBot-&gt;&gt;Slack: Finalize Stream</code></pre>
+<br>
+<h3> Final Delivery Polling Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Timer
+    participant SlackBot
+    participant Centaur
+    participant Slack
+    
+    Timer-&gt;&gt;SlackBot: Every 2 seconds
+    SlackBot-&gt;&gt;Centaur: GET /final-deliveries/claim
+    Centaur--&gt;&gt;SlackBot: Claimed Deliveries[]
+    
+    loop For each delivery
+        SlackBot-&gt;&gt;Slack: Post Final Result
+        SlackBot-&gt;&gt;Centaur: Mark Delivered
+    end</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>hono</strong> (^4.12.18) [web-framework]: Fast, lightweight web framework for building HTTP APIs. Used as the main application server handling all routes, middleware, and request/response processing. Imported in: `src/index.ts`.</p>
+<br>
+<p>- <strong>@slack/web-api</strong> (^7.15.2) [slack-sdk]: Official Slack Web API client for Node.js. Provides WebClient class for making authenticated Slack API calls including posting messages, updating streams, and fetching conversation data. Imported in: `src/slack/installations.ts`, `src/slack/agent-session.ts`, `src/centaur/final-delivery.ts`.</p>
+<br>
+<p>- <strong>@slack/types</strong> (^2.19.0) [slack-sdk]: TypeScript type definitions for Slack's API objects and block kit elements. Provides type safety for message blocks, chunks, and API responses. Imported in: `src/slack/types.ts`, `src/slack/agent-session.ts`, `src/index.ts`.</p>
+<br>
+<p>- <strong>zod</strong> (^4.4.3) [validation]: TypeScript-first schema validation library. Used for parsing and validating environment configuration with automatic type inference and transformation. Imported in: `src/config.ts`.</p>
+<br>
+<p>- <strong>@std/ulid</strong> (npm:@jsr/std__ulid) [id-generation]: Universally Unique Lexicographically Sortable Identifier generation. Used for creating unique session IDs and request IDs. Imported in: `src/index.ts`, `src/slack/agent-session.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/api</strong> (^1.9.1) [observability]: OpenTelemetry API for distributed tracing. Provides span creation, context propagation, and trace instrumentation. Imported in: `src/otel.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/exporter-trace-otlp-proto</strong> (^0.218.0) [observability]: OTLP protocol trace exporter for sending telemetry data to observability backends. Used in OTEL configuration. Imported in: `src/otel.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/resources</strong> (^2.7.1) [observability]: Resource detection and attribution for telemetry data. Imported in: `src/otel.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/sdk-trace-base</strong> (^2.7.1) [observability]: Base trace SDK for span processing and sampling. Imported in: `src/otel.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/sdk-trace-node</strong> (^2.7.1) [observability]: Node.js-specific trace SDK with automatic instrumentation. Imported in: `src/otel.ts`.</p>
+<br>
+<p>- <strong>@opentelemetry/semantic-conventions</strong> (^1.41.1) [observability]: Standard attribute names and values for telemetry data. Imported in: `src/otel.ts`.</p>
+<br>
+<h3> Development Dependencies</h3>
+<br>
+<p>- <strong>@types/bun</strong> (^1.3.13) [build-tool]: TypeScript definitions for Bun runtime APIs and globals.</p>
+<br>
+<p>- <strong>@types/node</strong> (^25.7.0) [build-tool]: TypeScript definitions for Node.js built-in modules used for crypto operations.</p>
+<br>
+<p>- <strong>typescript</strong> (^6.0.3) [build-tool]: TypeScript compiler for type checking and transpilation.</p>
+<br>
+<p>- <strong>@total-typescript/ts-reset</strong> (^0.6.1) [build-tool]: Improves TypeScript's built-in types with better defaults.</p>
+<br>
+<p>- <strong>emulate</strong> (^0.5.0) [testing]: Test framework for integration testing with Slack API mocking.</p>
+<br>
+<p>- <strong>oxfmt</strong> (^0.49.0) [build-tool]: Fast code formatter for TypeScript/JavaScript.</p>
+<br>
+<p>- <strong>oxlint</strong> (^1.64.0) [build-tool]: Fast linter with TypeScript support and type-aware rules.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Slack Webhook Endpoints</h3>
+<p>- <strong>POST</strong> `/api/slack/events` - Handles Slack event callbacks (messages, mentions, etc.)</p>
+<p>- <strong>POST</strong> `/api/slack/actions` - Processes Slack interactive component actions  </p>
+<p>- <strong>POST</strong> `/api/slack/options` - Handles dynamic option loading for select menus</p>
+<p>- <strong>POST</strong> `/api/slack/commands` - Processes slash commands for Linear feedback integration</p>
+<p>- <strong>POST</strong> `/api/webhooks/slack` - Alternative webhook endpoint for Slack events</p>
+<br>
+<h3> Slack Message API</h3>
+<p>- <strong>POST</strong> `/api/slack/messages` - Posts new messages to Slack channels</p>
+<p>- <strong>PATCH</strong> `/api/slack/messages` - Updates existing Slack messages  </p>
+<p>- <strong>DELETE</strong> `/api/slack/messages` - Deletes Slack messages</p>
+<p>- <strong>GET</strong> `/api/slack/conversations/replies` - Retrieves thread conversation history</p>
+<br>
+<h3> Streaming API</h3>
+<p>- <strong>POST</strong> `/api/slack/streams/start` - Initiates a new streaming message</p>
+<p>- <strong>POST</strong> `/api/slack/streams/append` - Appends content to an active stream</p>
+<p>- <strong>POST</strong> `/api/slack/streams/stop` - Finalizes and stops a stream</p>
+<br>
+<h3> Agent Session API  </h3>
+<p>- <strong>POST</strong> `/api/slack/agent-sessions` - Creates new agent execution sessions</p>
+<p>- <strong>POST</strong> `/api/slack/agent-sessions/{id}/text` - Streams markdown text to sessions</p>
+<p>- <strong>POST</strong> `/api/slack/agent-sessions/{id}/step` - Updates execution step status</p>
+<p>- <strong>POST</strong> `/api/slack/agent-sessions/{id}/done` - Marks sessions as complete</p>
+<p>- <strong>POST</strong> `/api/slack/agent-sessions/{id}/harness-event` - Processes harness events</p>
+<br>
+<h3> Assistant API</h3>
+<p>- <strong>POST</strong> `/api/slack/assistant/status` - Updates assistant thread status</p>
+<p>- <strong>POST</strong> `/api/slack/assistant/title` - Sets assistant thread title</p>
+<br>
+<h3> Health Endpoints</h3>
+<p>- <strong>GET</strong> `/health` - Basic health check returning service status</p>
+<p>- <strong>GET</strong> `/health/ready` - Readiness probe (redirects to `/health`)</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<p>The slackbot service integrates with several external systems at runtime:</p>
+<br>
+<h3> Slack API</h3>
+<p>- <strong>Workspace Integration</strong>: Connects to Slack workspaces via bot tokens for posting messages, managing threads, and receiving events</p>
+<p>- <strong>Real-time Streaming</strong>: Uses Slack's streaming message API for live agent session updates</p>
+<p>- <strong>Webhook Delivery</strong>: Receives event notifications from Slack via signed webhooks</p>
+<br>
+<h3> Centaur API Platform  </h3>
+<p>- <strong>Workflow Orchestration</strong>: Sends normalized Slack events to trigger AI agent workflows via `/workflows/runs`</p>
+<p>- <strong>Final Delivery Polling</strong>: Continuously polls `/agent/final-deliveries/claim` for completed workflow results</p>
+<p>- <strong>Session Management</strong>: Reports delivery status via `/agent/final-deliveries/{id}/delivered` and `/agent/final-deliveries/{id}/failed`</p>
+<br>
+<h3> Linear API</h3>
+<p>- <strong>Issue Creation</strong>: Creates feedback issues via GraphQL mutations when users submit slash commands</p>
+<p>- <strong>Project Integration</strong>: Routes issues to configured Linear teams and projects based on environment configuration</p>
+<br>
+<h3> OpenTelemetry Backend</h3>
+<p>- <strong>Distributed Tracing</strong>: Exports telemetry data via OTLP protocol to observability platforms</p>
+<p>- <strong>Performance Monitoring</strong>: Tracks request flows, external API calls, and error rates across the system</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>The slackbot service primarily serves as a bridge component and does not directly call other components in the centaur-src codebase. Instead, it integrates with external systems:</p>
+<br>
+<p>- <strong>HTTP API Calls</strong>: Makes authenticated requests to the Centaur API for workflow triggering and result polling</p>
+<p>- <strong>Webhook Processing</strong>: Receives and processes events from Slack's Event API</p>
+<p>- <strong>Database Independence</strong>: Maintains no persistent state, relying on external systems for data storage</p>
+<p>- <strong>Session State</strong>: Uses in-memory maps for temporary session management with TTL-based cleanup</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

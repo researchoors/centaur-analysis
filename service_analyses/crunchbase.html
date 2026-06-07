@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: crunchbase — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>crunchbase</h1>
+</header>
+<h1>Crunchbase Enterprise API Client</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The crunchbase component is a Python library implementing a comprehensive client for the Crunchbase Enterprise API v4. It follows a <strong>layered architecture</strong> with clear separation between the HTTP client layer (`client.py`) and the CLI interface layer (`cli.py`). The design emphasizes ease of use through field aliasing, robust error handling, and multiple output formats (JSON, rich tables, and markdown).</p>
+<br>
+<p>The component is structured around two main layers:</p>
+<p>- <strong>API Client Layer</strong>: Handles HTTP communication, authentication, and data normalization</p>
+<p>- <strong>CLI Interface Layer</strong>: Provides command-line access with rich formatting and user-friendly features</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> CrunchbaseClient Class</h3>
+<p>The core HTTP client that handles all API communication with Crunchbase's Enterprise API. It provides methods for entity lookups, searches, and autocomplete functionality. Features include field name aliasing to handle common LLM-generated mistakes, automatic API key management through the centaur SDK, and comprehensive error handling with meaningful messages.</p>
+<br>
+<h3> CLI Commands</h3>
+<p>Eight primary commands provide comprehensive access to Crunchbase data:</p>
+<p>- <code>org</code>: Organization lookup with support for cards and custom fields</p>
+<p>- <code>person</code>: Person entity lookup</p>
+<p>- <code>funding</code>: Funding round details</p>
+<p>- <code>card</code>: Paginated organization card data</p>
+<p>- <code>search</code>: Multi-collection search with filtering</p>
+<p>- <code>autocomplete</code>: Entity name completion</p>
+<p>- <code>recent_funding</code>: Specialized query for recent large funding rounds</p>
+<p>- <code>raw</code>: Direct API endpoint access</p>
+<br>
+<h3> Data Formatting Utilities</h3>
+<p>Specialized formatting functions handle Crunchbase's complex nested data structures:</p>
+<p>- <code>format_money()</code>: Converts monetary values to human-readable formats (M, B suffixes)</p>
+<p>- <code>extract_identifier()</code>: Extracts names from Crunchbase identifier objects</p>
+<p>- <code>extract_identifiers()</code>: Handles lists of identifiers with truncation</p>
+<p>- <code>extract_locations()</code>: Formats location data from location identifiers</p>
+<br>
+<h3> Field Aliasing System</h3>
+<p>A mapping system (<code>_FIELD_ALIASES</code>) corrects common field name mistakes, particularly those made by LLMs. This includes converting "lead_investors" to "lead_investor_identifiers" and similar pluralization corrections.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[get_client()]
+    B --&gt; C[CrunchbaseClient]
+    C --&gt; D[_get_api_key()]
+    D --&gt; E[centaur_sdk.secret]
+    C --&gt; F[_normalize_field_ids()]
+    F --&gt; G[_request()]
+    G --&gt; H[httpx.Client]
+    H --&gt; I[Crunchbase API v4]
+    I --&gt; J[JSON Response]
+    J --&gt; K[Format Output]
+    K --&gt; L[Console/JSON/Markdown]</code></pre>
+<br>
+<h3> Request Processing Flow</h3>
+<p>1. CLI command receives user input and parses arguments</p>
+<p>2. Field IDs are normalized through the aliasing system</p>
+<p>3. API client constructs HTTP request with proper headers and authentication</p>
+<p>4. Response data flows through formatting utilities based on output format</p>
+<p>5. Results are presented via Rich console, JSON, or markdown formats</p>
+<br>
+<h3> Search and Pagination Flow</h3>
+<p>Complex queries and large result sets are handled through POST endpoints with JSON bodies containing query predicates, ordering specifications, and pagination cursors (<code>after_id</code>).</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library providing async/sync support. Used as the primary HTTP transport for all API requests to Crunchbase. The client is instantiated lazily and supports connection pooling and timeout configuration. Imported in: `tools/research/crunchbase/client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Command-line interface framework built on Click. Provides argument parsing, help generation, and command routing for all CLI commands. Used extensively for decorators like `@app.command()` and parameter definitions with `typer.Argument()` and `typer.Option()`. Imported in: `tools/research/crunchbase/cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library providing colored output, tables, and progress indicators. Used for creating formatted tables via `Table()` class and console output via `Console()`. Enables rich text formatting with markup like `[bold cyan]` and `[yellow]`. Imported in: `tools/research/crunchbase/cli.py`.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal]: Internal SDK providing the `secret()` function for secure credential management. Used to retrieve the `CRUNCHBASE_API_KEY` from environment variables or secure storage. This is the only internal dependency, imported in: `tools/research/crunchbase/client.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes its functionality through two primary interfaces:</p>
+<br>
+<h3> Python Library Interface</h3>
+<p>- <strong>CrunchbaseClient</strong>: Main client class with methods for all Crunchbase entity types</p>
+<p>- Entity lookup methods: <code>get_organization()</code>, <code>get_person()</code>, <code>get_funding_round()</code>, etc.</p>
+<p>- Search methods: <code>search_organizations()</code>, <code>search_people()</code>, <code>search_funding_rounds()</code>, etc.</p>
+<p>- Utility methods: <code>autocomplete()</code>, <code>get_deleted_entities()</code>, <code>raw()</code></p>
+<li>Context manager support for resource cleanup</li>
+<br>
+<h3> CLI Interface</h3>
+<p>- <strong>crunchbase</strong> command with 8 subcommands</p>
+<p>- Multiple output formats: default rich tables, <code>--json</code>, <code>--markdown</code></p>
+<p>- Field selection via <code>--fields</code> parameter</p>
+<p>- Pagination support with <code>--after</code> cursors</p>
+<li>Advanced filtering through JSON query syntax</li>
+<br>
+<h3> Configuration</h3>
+<p>- API key management through <code>CRUNCHBASE_API_KEY</code> environment variable</p>
+<li>Configurable timeout settings (default 30 seconds)</li>
+<li>Field aliasing system for user-friendly field names</li>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Crunchbase Enterprise API v4</h3>
+<p>The component integrates with Crunchbase's Enterprise API hosted at <code>api.crunchbase.com</code>. Authentication uses API key headers (<code>X-cb-user-key</code>). The API provides comprehensive startup, investor, and funding data through REST endpoints supporting both GET and POST methods for complex queries.</p>
+<br>
+<h3> Configuration and Secrets</h3>
+<p>Relies on the centaur SDK's secret management system for secure API key storage and retrieval. The API key must be configured as <code>CRUNCHBASE_API_KEY</code> in the environment.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component has no dependencies on other components in the centaur codebase beyond the shared <code>centaur_sdk</code> for secret management. It is designed as a standalone library that can be consumed by other components or used directly via its CLI interface.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

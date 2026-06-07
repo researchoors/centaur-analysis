@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: legistorm — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>legistorm</h1>
+</header>
+<h1>LegiStorm Congressional Data Library</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The legistorm component is a Python library that provides a comprehensive API client and CLI interface for accessing the LegiStorm Congressional database. The component follows a layered architecture with clear separation between the API client logic, CLI interface, and data transformation utilities.</p>
+<br>
+<p>The core architecture consists of:</p>
+<br>
+<p>1. <strong>Client Layer</strong>: The `LegiStormClient` class provides a robust HTTP client with authentication, caching, and error handling</p>
+<p>2. <strong>CLI Layer</strong>: A Typer-based command-line interface that exposes all client functionality with formatted output options</p>
+<p>3. <strong>Data Processing Layer</strong>: Extensive data normalization and extraction utilities for handling LegiStorm's complex API responses</p>
+<br>
+<p>The component implements intelligent endpoint discovery for issue portfolio data, automatically testing multiple candidate endpoints to find working routes based on API key permissions. It also includes a sophisticated caching system for expensive issue portfolio queries.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> LegiStormClient Class</h3>
+<p>The main API client class that handles all interactions with the LegiStorm API. It manages authentication via API keys, implements HTTP request/response handling, and provides methods for accessing different types of congressional data including members, staff, offices, caucuses, town halls, trips, and hearings.</p>
+<br>
+<h3> Issue Portfolio Intelligence System</h3>
+<p>A complex system for discovering and caching issue portfolio data across different API endpoints. Since LegiStorm's issue portfolio endpoints vary by subscription level, the client automatically tests multiple candidate endpoints (<code>/issue_staff/list</code>, <code>/member/issue/list</code>, <code>/office/issue/list</code>, etc.) to find working routes.</p>
+<br>
+<h3> CLI Commands Module</h3>
+<p>Comprehensive command-line interface built with Typer that provides 13 different commands for querying congressional data. Each command supports multiple output formats (table, markdown, JSON) and includes consistent parameter handling for date ranges, pagination, and filtering.</p>
+<br>
+<h3> Data Extraction Utilities</h3>
+<p>Static methods for extracting and normalizing data from LegiStorm's nested JSON responses. These utilities handle the complexity of LegiStorm's data structure, extracting staff IDs, member IDs, office IDs, and issue names from various nested object patterns.</p>
+<br>
+<h3> Caching System</h3>
+<p>Time-based caching for issue portfolio queries with configurable TTL (default 3600 seconds). The cache key includes all relevant query parameters to ensure accurate cache hits while reducing expensive API calls.</p>
+<br>
+<h3> Authentication Management</h3>
+<p>Flexible authentication system that accepts API keys via constructor parameter or environment variables (<code>LEGISTORM_API_KEY</code>). The client uses the centaur SDK's secret management for secure credential handling.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Parameter Validation]
+    B --&gt; C[LegiStormClient]
+    C --&gt; D[API Key Resolution]
+    D --&gt; E[HTTP Request]
+    E --&gt; F[LegiStorm API]
+    F --&gt; G[JSON Response]
+    G --&gt; H[Data Normalization]
+    H --&gt; I[Output Formatting]
+    I --&gt; J[Console Display]
+    
+    K[Issue Portfolio Query] --&gt; L[Cache Check]
+    L --&gt; M{Cache Hit?}
+    M --&gt;|Yes| N[Return Cached Data]
+    M --&gt;|No| O[Endpoint Discovery]
+    O --&gt; P[Test Candidate Endpoints]
+    P --&gt; Q[Find Working Endpoint]
+    Q --&gt; R[Cache Result]
+    R --&gt; S[Return Data]</code></pre>
+<br>
+<p>The primary data flow starts with CLI commands that validate parameters and delegate to the <code>LegiStormClient</code>. The client resolves API credentials, makes authenticated HTTP requests to the LegiStorm API, and processes the JSON responses through normalization utilities before returning formatted data.</p>
+<br>
+<p>For issue portfolio queries, there's a secondary flow involving cache checks and intelligent endpoint discovery. The system first checks for cached results, and if none exist, it tests multiple candidate endpoints to find one that works with the current API key's permissions.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client library used for making requests to the LegiStorm API. Provides robust error handling, timeout management, and connection pooling. Used throughout the `LegiStormClient._request()` method and initialized in the `client` property.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework for building command-line applications with type hints and automatic help generation. Powers the entire CLI interface in `cli.py` with 13 different commands for querying congressional data. Creates the main `app` instance and handles all command parsing and validation.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0) [cli]: Advanced terminal formatting library that provides styled tables, colors, and text rendering. Used for creating formatted output tables via the `Console` class and imported `Table` from centaur SDK. Handles all visual formatting in CLI commands when not using JSON or markdown output.</p>
+<br>
+<p>- <strong>centaur_sdk</strong> (internal) [framework]: Internal Centaur SDK providing shared utilities including `secret()` for credential management, `cli_tables.Table` for consistent table formatting across tools, and `tool_sdk` integration. Used for API key resolution and standardized CLI table rendering.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The library exposes its functionality through two primary interfaces:</p>
+<br>
+<h3> LegiStormClient Public Methods</h3>
+<br>
+<pre><code class="language-python"># Core data access methods
+get_members(updated_from, updated_to, limit=20, page=1, member_id=None, state_id=None, status=&quot;a&quot;) -&gt; dict
+get_staff(updated_from, updated_to, limit=20, page=1, staff_id=None, member_id=None, office_id=None) -&gt; dict  
+get_staff_with_issue_portfolios(updated_from, updated_to, limit=20, page=1, staff_id=None, member_id=None, office_id=None, issue_endpoint=None) -&gt; dict
+get_offices(updated_from, updated_to, limit=20, page=1, office_id=None) -&gt; dict
+get_caucuses(updated_from, updated_to, limit=20, page=1, caucus_id=None) -&gt; dict
+get_townhalls(updated_from, updated_to, limit=20, page=1, townhall_id=None) -&gt; dict  
+get_trips(updated_from, updated_to, limit=20, page=1, trip_id=None) -&gt; dict
+get_hearings(updated_from, updated_to, chamber=&quot;H&quot;, limit=20, page=1, hearing_id=None, office_id=None, hearing_date_from=None, hearing_date_to=None) -&gt; dict
+
+# Utility methods
+get_staff_retired_ids() -&gt; dict
+get_offices_retired_ids() -&gt; dict  
+get_caucuses_retired_ids() -&gt; dict
+raw_request(endpoint, params=None) -&gt; dict | list
+
+# Context manager support
+__enter__() / __exit__() / close()</code></pre>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>The CLI provides 13 commands accessible via the <code>legistorm</code> command:</p>
+<p>- <code>members</code> - Query congressional members with filtering by state, status, ID</p>
+<p>- <code>staff</code> - Query congressional staff with filtering by member, office, ID  </p>
+<p>- <code>staff-portfolios</code> - Get staff with enriched issue portfolio data</p>
+<p>- <code>staff-retired</code> - Get retired staff IDs</p>
+<p>- <code>offices</code> - Query congressional offices (committees, subcommittees, etc.)</p>
+<p>- <code>offices-retired</code> - Get retired office IDs</p>
+<p>- <code>caucuses</code> - Query congressional caucuses (requires subscription)</p>
+<p>- <code>caucuses-retired</code> - Get retired caucus IDs</p>
+<p>- <code>townhalls</code> - Query town hall events</p>
+<p>- <code>trips</code> - Query privately funded travel records</p>
+<p>- <code>hearings</code> - Query congressional hearings with chamber and date filtering</p>
+<br>
+<p>All commands support multiple output formats (<code>--json</code>, <code>--markdown</code>) and consistent parameter patterns for date ranges (<code>--from</code>, <code>--to</code>), pagination (<code>--limit</code>, <code>--page</code>), and entity-specific filtering.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

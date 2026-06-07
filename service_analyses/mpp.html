@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: mpp — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>mpp</h1>
+</header>
+<h1>MPP Library Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The MPP (Machine Payments Protocol) library implements a <strong>service-oriented architecture</strong> with a central client class that acts as a gateway to multiple external data providers. The architecture follows a <strong>proxy pattern</strong> where the `MppClient` abstracts away the complexity of different APIs behind a unified interface, while implementing cost tracking and budget management as cross-cutting concerns.</p>
+<br>
+<p>The library is structured around a single monolithic client that provides access to five distinct data services:</p>
+<p>- <strong>Parallel</strong> for web search</p>
+<p>- <strong>CoinGecko</strong> for token prices and market data  </p>
+<p>- <strong>Codex</strong> for DEX data as fallback</p>
+<p>- <strong>Allium</strong> for wallet balance queries</p>
+<p>- <strong>Dune Analytics</strong> for SQL-based blockchain queries</p>
+<br>
+<p>All requests are authenticated and paid for using Tempo stablecoins via the MPP protocol, with each query type having different cost structures ranging from $0.01 to $4.00.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<p>1. <strong>MppClient Class</strong> (`client.py:62-513`): The main client class that orchestrates all API interactions, manages authentication, budget tracking, and provides unified methods for accessing market data services.</p>
+<br>
+<p>2. <strong>Token Normalization System</strong> (`client.py:20-45`): A mapping system that converts full token names (e.g., "SOLANA") to standard symbols ("SOL") and maps symbols to CoinGecko IDs for consistent data retrieval across services.</p>
+<br>
+<p>3. <strong>Budget Management System</strong> (`client.py:86-94`): Implements daily spending caps ($10 default) with automatic daily resets and per-query cost tracking to prevent runaway spending.</p>
+<br>
+<p>4. <strong>Authentication Handler</strong> (`client.py:75-84`): Lazy-loads the MPP private key from 1Password secrets only when needed, preventing initialization failures if secrets aren't configured.</p>
+<br>
+<p>5. <strong>HTTP Request Handler</strong> (`client.py:96-110`): Centralized HTTP client using httpx with MPP authentication headers and error handling for all external API calls.</p>
+<br>
+<p>6. <strong>Web Search Interface</strong> (`client.py:114-136`): Provides web search capabilities via Parallel API with structured result formatting including title, URL, text content, and publication dates.</p>
+<br>
+<p>7. <strong>Token Price Services</strong> (`client.py:140-253`): Dual-source price data using CoinGecko as primary source with Codex DEX data as fallback, including real-time prices, 24h changes, volume, and market cap.</p>
+<br>
+<p>8. <strong>Price History Services</strong> (`client.py:257-343`): Provides both simple price history for line charts and OHLC candlestick data with configurable time periods and automatic data point reduction.</p>
+<br>
+<p>9. <strong>Market Overview Services</strong> (`client.py:347-424`): Offers trending tokens and market snapshots including BTC dominance and total market cap calculations.</p>
+<br>
+<p>10. <strong>Wallet Analysis Interface</strong> (`client.py:428-459`): Queries wallet balances across different blockchains via Allium with USD value calculations and portfolio summaries.</p>
+<br>
+<p>11. <strong>Dune SQL Engine</strong> (`client.py:463-502`): Executes arbitrary SQL queries against Dune Analytics with async polling for results and comprehensive error handling.</p>
+<br>
+<p>12. <strong>Price Formatting Utility</strong> (`client.py:48-59`): Formats large numbers in human-readable format (K/M/B/T suffixes) for display purposes.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Token Price Query Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[User Request: get_token_price] --&gt; B[Normalize Token Name]
+    B --&gt; C[Check Budget Available]
+    C --&gt; D{Try CoinGecko}
+    D --&gt;|Success| E[Return CoinGecko Data]
+    D --&gt;|Fail| F[Fallback to Codex DEX]
+    F --&gt;|Success| G[Return Codex Data]
+    F --&gt;|Fail| H[Return Empty Result]
+    C --&gt;|Budget Exceeded| H
+    E --&gt; I[Track Spending]
+    G --&gt; I</code></pre>
+<br>
+<h3> Web Search Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[search_web Request] --&gt; B[Check Daily Budget]
+    B --&gt;|Available| C[Call Parallel API]
+    B --&gt;|Exceeded| D[Return Empty]
+    C --&gt; E[Process Results]
+    E --&gt; F[Format Response Fields]
+    F --&gt; G[Track $0.01 Cost]
+    G --&gt; H[Return Structured Results]</code></pre>
+<br>
+<h3> Dune SQL Execution Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[run_dune_query] --&gt; B[Check Budget]
+    B --&gt; C[Submit SQL to Dune]
+    C --&gt; D[Get Execution ID]
+    D --&gt; E[Start Polling Loop]
+    E --&gt; F{Check Status}
+    F --&gt;|Running| G[Wait 5-15s]
+    G --&gt; E
+    F --&gt;|Complete| H[Return Results]
+    F --&gt;|Failed| I[Return Error]
+    F --&gt;|Timeout| I
+    H --&gt; J[Track Cost]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async HTTP client library for making authenticated requests to MPP-enabled APIs. Used throughout the `_tempo_fetch` method for all external service calls. Provides timeout handling, connection pooling, and comprehensive HTTP error handling. Imported in: `client.py:15`.</p>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal-framework]: Centaur's internal SDK providing the `secret` function for accessing 1Password-stored credentials. Used specifically for lazy-loading the MPP private key required for authenticated API requests. Imported in: `client.py:16`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The MPP library exposes a comprehensive API for accessing paid market data services:</p>
+<br>
+<h3> Public Methods</h3>
+<br>
+<p>- <strong>`search_web(query: str, num_results: int = 5) -> list[dict]`</strong>: Web search via Parallel ($0.01/query) returning structured results with title, URL, text, and date fields.</p>
+<br>
+<p>- <strong>`get_token_price(token_name: str) -> dict`</strong>: Current token price, 24h change, volume, and market cap using CoinGecko primary with Codex fallback ($0.06-0.12).</p>
+<br>
+<p>- <strong>`get_price_history(token_name: str, days: int = 30) -> list[dict]`</strong>: Historical price data for charting with configurable timeframes ($0.06 via CoinGecko).</p>
+<br>
+<p>- <strong>`get_ohlc(token_name: str, days: int = 30) -> list[dict]`</strong>: OHLC candlestick data for advanced charting ($0.06 via CoinGecko).</p>
+<br>
+<p>- <strong>`get_trending() -> list[dict]`</strong>: Top trending tokens from CoinGecko with rank, price, and 24h change data ($0.06).</p>
+<br>
+<p>- <strong>`get_market_snapshot() -> dict`</strong>: Market overview including BTC, ETH, SOL, HYPE prices plus BTC dominance and total market cap ($0.12).</p>
+<br>
+<p>- <strong>`get_wallet(address: str, chain: str = "ethereum") -> dict`</strong>: Wallet balance analysis via Allium with token balances and USD values ($0.03).</p>
+<br>
+<p>- <strong>`run_dune_query(sql: str) -> dict`</strong>: Execute SQL queries on Dune Analytics with async result polling ($0.05-4.00).</p>
+<br>
+<p>- <strong>`get_spend() -> dict`</strong>: Current daily spending and remaining budget information for cost monitoring.</p>
+<br>
+<h3> Factory Function</h3>
+<br>
+<p>- <strong>`_client() -> MppClient`</strong>: Factory function that returns a new MppClient instance for use by other components.</p>
+<br>
+<p>The API is designed for consumption by trading bots, market analysis tools, and financial dashboards that require real-time and historical cryptocurrency market data with transparent per-query pricing.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

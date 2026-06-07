@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: dune — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>dune</h1>
+</header>
+<p>Now I have a complete understanding of the dune component. Let me analyze it.</p>
+<br>
+<h1>Dune Analytics CLI Component Analysis</h1>
+<br>
+<p>The Dune component is a command-line interface (CLI) tool for interacting with Dune Analytics' API to execute SQL queries, monitor their status, and retrieve results. It provides a comprehensive set of commands for managing query executions on the Dune Analytics platform, which is a popular blockchain data analysis service.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> with clear separation of concerns:</p>
+<br>
+<p>1. <strong>CLI Layer</strong> (`cli.py`) - User interface handling command parsing, argument validation, and output formatting</p>
+<p>2. <strong>Client Layer</strong> (`client.py`) - HTTP client abstraction for Dune Analytics API</p>
+<p>3. <strong>Configuration Layer</strong> - Environment-based configuration with `.env` support</p>
+<br>
+<p>The architecture emphasizes simplicity and direct API interaction, with minimal abstraction layers to maintain clarity and ease of debugging.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> DuneClient Class</h3>
+<p>The core HTTP client that handles all API communication with Dune Analytics. It provides authenticated requests with automatic error handling and response parsing. The client maintains a persistent HTTPX connection with base URL configuration and API key authentication headers.</p>
+<br>
+<h3> CLI Command Functions</h3>
+<p>Seven main command functions that form the public interface:</p>
+<p>- <code>execute()</code> - Initiates query execution and returns execution ID</p>
+<p>- <code>status()</code> - Checks execution status and queue position  </p>
+<p>- <code>results()</code> - Retrieves and displays completed query results</p>
+<p>- <code>run()</code> - Full workflow combining execution, polling, and result display</p>
+<p>- <code>cancel()</code> - Cancels running executions</p>
+<p>- <code>query()</code> - Fetches query metadata and parameters</p>
+<p>- <code>raw()</code> - Direct API endpoint access for advanced usage</p>
+<br>
+<h3> Client Factory and Singleton Pattern</h3>
+<p>Global client instance management with lazy initialization ensures efficient resource usage while maintaining state across command invocations.</p>
+<br>
+<h3> Rich Console Integration</h3>
+<p>Sophisticated terminal output with colored status indicators, progress spinners, and formatted tables for enhanced user experience.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<p>The component implements several distinct data flows for different use cases:</p>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[User Command] --&gt; B{Command Type}
+    B --&gt;|execute| C[Parse Parameters]
+    B --&gt;|status| D[Get Execution ID]
+    B --&gt;|results| E[Get Execution ID]
+    B --&gt;|run| F[Parse Parameters &amp; Start Execution]
+    
+    C --&gt; G[DuneClient.execute_query]
+    D --&gt; H[DuneClient.get_execution_status]
+    E --&gt; I[DuneClient.get_execution_results]
+    F --&gt; J[Execute + Poll Loop]
+    
+    G --&gt; K[Dune API]
+    H --&gt; K
+    I --&gt; K
+    J --&gt; L[Poll Status Until Complete]
+    
+    K --&gt; M[HTTP Response]
+    M --&gt; N[JSON Parsing]
+    N --&gt; O[Error Handling]
+    O --&gt; P[Format Output]
+    P --&gt; Q[Console Display]
+    
+    L --&gt; R[Get Final Results]
+    R --&gt; I</code></pre>
+<br>
+<h3> Execute-and-Wait Flow (run command)</h3>
+<p>The most complex flow that combines query execution with polling:</p>
+<p>1. Parse and validate JSON parameters</p>
+<p>2. Execute query via API</p>
+<p>3. Enter polling loop with configurable intervals</p>
+<p>4. Monitor execution status with timeout protection</p>
+<p>5. Retrieve and format final results</p>
+<p>6. Display formatted table or JSON output</p>
+<br>
+<h3> Simple Query Flow (execute/status/results commands)</h3>
+<p>Direct API operations for individual workflow steps:</p>
+<p>1. Validate input parameters</p>
+<p>2. Make authenticated API request</p>
+<p>3. Handle errors and format response</p>
+<p>4. Display results with appropriate styling</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client library for Python. Provides the core HTTP functionality for API communication with connection pooling, timeout handling, and comprehensive request/response processing. Used in `client.py` for all Dune API interactions.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework built on top of Click with automatic help generation and type annotations. Handles command parsing, argument validation, option processing, and help text generation. Used throughout `cli.py` for all command definitions and decorators.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library providing colored output, progress indicators, tables, and status spinners. Used extensively in `cli.py` for console output formatting, table display, and interactive feedback. Integrates with typer for enhanced user experience.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loading from .env files. Automatically loaded at module import to support local development configuration. Used in `cli.py` for loading environment variables including the required DUNE_API_KEY.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes a comprehensive CLI interface through the <code>dune</code> command with the following subcommands:</p>
+<br>
+<h3> Command Interface</h3>
+<p>- <code>dune execute <query_id></code> - Execute a query and return execution ID</p>
+<p>- <code>dune status <execution_id></code> - Check execution status</p>
+<p>- <code>dune results <execution_id></code> - Get results from completed execution  </p>
+<p>- <code>dune run <query_id></code> - Execute query and wait for results (most common workflow)</p>
+<p>- <code>dune cancel <execution_id></code> - Cancel running execution</p>
+<p>- <code>dune query <query_id></code> - Get query metadata and parameters</p>
+<p>- <code>dune raw <endpoint></code> - Make direct API calls for debugging</p>
+<br>
+<h3> Global Options</h3>
+<p>All commands support:</p>
+<p>- <code>--json</code> flag for machine-readable JSON output</p>
+<p>- <code>--help</code> for command-specific documentation</p>
+<br>
+<h3> Specialized Options</h3>
+<p>- <code>--params/-p</code> for JSON query parameters (execute, run)</p>
+<p>- <code>--limit/-n</code> for result row limiting (results, run)  </p>
+<p>- <code>--poll</code> for polling interval configuration (run)</p>
+<p>- <code>--timeout/-t</code> for execution timeout (run)</p>
+<p>- <code>--method/-X</code> and <code>--data/-d</code> for HTTP method and body (raw)</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Dune Analytics API</h3>
+<p>The component integrates exclusively with Dune Analytics' REST API at <code>https://api.dune.com/api/v1</code>. Authentication uses API key headers (<code>X-Dune-API-Key</code>) and all communication occurs over HTTPS with 60-second timeouts.</p>
+<br>
+<p><strong>Key API Endpoints:</strong></p>
+<p>- <code>POST /query/{id}/execute</code> - Start query execution</p>
+<p>- <code>GET /execution/{id}/status</code> - Check execution progress</p>
+<p>- <code>GET /execution/{id}/results</code> - Retrieve query results</p>
+<p>- <code>POST /execution/{id}/cancel</code> - Cancel running queries</p>
+<p>- <code>GET /query/{id}</code> - Fetch query metadata</p>
+<br>
+<h3> Configuration Sources</h3>
+<li>Environment variables (DUNE_API_KEY required)</li>
+<p>- <code>.env</code> files for local development</p>
+<li>Centaur SDK secret management integration</li>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>The component has minimal internal dependencies within the Centaur ecosystem:</p>
+<br>
+<p>- <strong>centaur_sdk.Table</strong>: Used for rich table formatting in result display</p>
+<p>- <strong>centaur_sdk.secret</strong>: Factory function integration for API key management</p>
+<p>- <strong>No HTTP/gRPC calls</strong> to other Centaur components - operates as standalone tool</p>
+<br>
+<p>The component is designed as a self-contained utility that can be used independently or as part of larger blockchain data analysis workflows.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

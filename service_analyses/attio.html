@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: attio — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>attio</h1>
+</header>
+<h1>Attio CRM CLI Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The attio component follows a clean layered architecture pattern with clear separation between the CLI interface and the API client. The component is structured as:</p>
+<br>
+<p>1. <strong>CLI Layer</strong> (`cli.py`): Typer-based command interface with rich formatting</p>
+<p>2. <strong>Client Layer</strong> (`client.py`): HTTP API client wrapper for Attio CRM REST API</p>
+<p>3. <strong>Configuration</strong>: Environment-based authentication via dotenv</p>
+<br>
+<p>The architecture employs a facade pattern where the CLI commands provide user-friendly interfaces to complex CRM operations, while the client handles all HTTP communication, authentication, and error handling.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> AttioClient Class</h3>
+<p>The core API client that manages authenticated requests to Attio's REST API at <code>https://api.attio.com/v2</code>. Features lazy HTTP client initialization, automatic JSON parsing, and comprehensive error handling with status code checking.</p>
+<br>
+<h3> CLI Command Structure</h3>
+<p>Eighteen distinct commands organized by CRM entity types:</p>
+<p>- <strong>Metadata commands</strong>: `whoami`, `objects`, `attributes`, `members`</p>
+<p>- <strong>Record operations</strong>: `people`, `companies`, `records`, `get`, `create`, `update`, `delete`, `upsert`  </p>
+<p>- <strong>List management</strong>: `lists`, `entries`</p>
+<p>- <strong>Activity tracking</strong>: `notes`, `add-note`, `tasks`, `add-task`</p>
+<br>
+<h3> Value Extraction System</h3>
+<p>A sophisticated <code>_extract_value()</code> function that handles Attio's complex nested value objects, supporting multiple field types (names, emails, domains, phone numbers) with fallback hierarchies.</p>
+<br>
+<h3> Authentication Manager</h3>
+<p>Secure credential handling using the centaur_sdk secret management system with environment variable fallback and runtime validation.</p>
+<br>
+<h3> Rich Formatting Engine</h3>
+<p>Consistent table-based output using the centaur_sdk Table component with color coding, column sizing, and truncation for optimal CLI experience.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[_get_client()]
+    B --&gt; C[AttioClient.__init__]
+    C --&gt; D[Load .env secrets]
+    D --&gt; E[Lazy HTTP client init]
+    A --&gt; F[Client API method]
+    F --&gt; G[_request() wrapper]
+    G --&gt; H[httpx HTTP call]
+    H --&gt; I[Attio REST API]
+    I --&gt; J[JSON response parsing]
+    J --&gt; K[Error handling]
+    K --&gt; L[Rich table formatting]
+    L --&gt; M[Console output]</code></pre>
+<br>
+<h3> Record Query Flow</h3>
+<p>1. User invokes CLI command with filters/parameters</p>
+<p>2. CLI validates and transforms parameters to Attio API format</p>
+<p>3. Client constructs POST request with filter objects and pagination</p>
+<p>4. API returns paginated JSON results with nested value structures</p>
+<p>5. Value extraction flattens complex objects for display</p>
+<p>6. Rich tables present formatted data with ID truncation and styling</p>
+<br>
+<h3> CRUD Operation Flow  </h3>
+<p>1. CLI commands parse JSON input for record values</p>
+<p>2. Client validates required authentication credentials</p>
+<p>3. HTTP requests sent with proper Content-Type and Authorization headers</p>
+<p>4. API responses include full record objects with generated IDs</p>
+<p>5. Success/error feedback provided via colored console output</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client library providing the core API communication layer. Used extensively in `AttioClient._http()` for creating authenticated sessions with base URL, headers, and timeout configuration. Imported in: `tools/business/attio/client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: CLI framework built on Click providing command parsing, argument validation, and help generation. Powers all 18 CLI commands with decorators like `@app.command()` and handles option/argument parsing. Imported in: `tools/business/attio/cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library providing colored output, tables, and console styling. Used for creating formatted tables via `Console()` and `Table()` classes for all data display commands. Imported in: `tools/business/attio/cli.py`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [config]: Environment variable management from `.env` files. Loaded at module level via `load_dotenv()` to support local development credential configuration. Imported in: `tools/business/attio/cli.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>The component exposes 18 commands through the <code>attio</code> executable:</p>
+<br>
+<p><strong>Authentication & Discovery</strong></p>
+<p>- <code>whoami</code>: Display workspace information for current API token</p>
+<p>- <code>objects</code>: List all CRM objects (people, companies, custom objects) </p>
+<p>- <code>attributes</code>: Show field definitions for any object type</p>
+<p>- <code>members</code>: List workspace members with roles and contact info</p>
+<br>
+<p><strong>Record Management</strong></p>
+<p>- <code>people</code>: Query people records with name/email filtering</p>
+<p>- <code>companies</code>: Query company records with name/domain filtering  </p>
+<p>- <code>records</code>: Generic record querying for any object type</p>
+<p>- <code>get</code>: Retrieve single record by ID</p>
+<p>- <code>create</code>: Create new records with JSON value specification</p>
+<p>- <code>update</code>: Modify existing records via JSON patches</p>
+<p>- <code>delete</code>: Remove records with confirmation prompts</p>
+<p>- <code>upsert</code>: Create or update based on matching attributes</p>
+<br>
+<p><strong>List Operations</strong></p>
+<p>- <code>lists</code>: Display all lists in workspace</p>
+<p>- <code>entries</code>: Query entries within specific lists</p>
+<br>
+<p><strong>Activity Tracking</strong></p>
+<p>- <code>notes</code>: List notes attached to records</p>
+<p>- <code>add-note</code>: Create new notes with title and content</p>
+<p>- <code>tasks</code>: Query tasks with filtering by completion status</p>
+<p>- <code>add-task</code>: Create tasks with deadlines and assignees</p>
+<br>
+<h3> Python Client API</h3>
+<br>
+<p>The <code>AttioClient</code> class provides programmatic access with 25+ methods covering:</p>
+<br>
+<p><strong>Object & Schema APIs</strong>: `list_objects()`, `get_object()`, `list_attributes()`</p>
+<br>
+<p><strong>Record CRUD</strong>: `query_records()`, `get_record()`, `create_record()`, `update_record()`, `delete_record()`, `assert_record()`</p>
+<br>
+<p><strong>List Management</strong>: `list_lists()`, `get_list()`, `query_entries()`, `create_entry()`</p>
+<br>
+<p><strong>Notes & Tasks</strong>: `list_notes()`, `create_note()`, `list_tasks()`, `create_task()`</p>
+<br>
+<p><strong>Advanced Features</strong>: `list_meetings()`, `get_meeting()`, `list_call_recordings()`, `get_call_transcript()`, `list_threads()`, `get_thread()`</p>
+<br>
+<p><strong>Workspace Management</strong>: `list_workspace_members()`, `get_self()`</p>
+<br>
+<p><strong>Raw API Access</strong>: `raw_request()` for direct REST API calls</p>
+<br>
+<p>All methods return parsed JSON dictionaries and handle authentication, error responses, and API-specific parameter encoding automatically.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

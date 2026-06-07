@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: centaur-docs — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>centaur-docs</h1>
+</header>
+<h1>centaur-docs Component Analysis</h1>
+<br>
+<p>The centaur-docs component is a modern documentation website service built with Vocs (a React-based documentation framework) and deployed to Cloudflare Workers. It serves as the primary documentation portal for the Centaur project at https://centaur.run.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>static site generator pattern</strong> with build-time optimization:</p>
+<br>
+<p>- <strong>Static Generation</strong>: Uses Vocs to generate fully static HTML/CSS/JS assets</p>
+<p>- <strong>Edge Deployment</strong>: Deploys to Cloudflare Workers as a static site with CDN distribution</p>
+<p>- <strong>Build-Time Processing</strong>: Pre-generates Open Graph images, copies markdown files, and bundles brand assets</p>
+<p>- <strong>Client-Side Interactivity</strong>: Minimal JavaScript for search, navigation, and interactive components</p>
+<br>
+<p>The architecture emphasizes performance and SEO through static generation while maintaining rich interactivity through React hydration.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> Configuration and Build System</h3>
+<br>
+<p>- <strong>vocs.config.ts</strong>: Central configuration defining site structure, themes, metadata, and build behavior</p>
+<p>- <strong>sidebar.ts</strong>: Hierarchical navigation structure with categories like "Start", "Operate", "Extend Centaur", "Secrets", and "Reference"</p>
+<p>- <strong>build-og.ts</strong>: Advanced Open Graph image generator that creates personalized social cards for each page using SVG templates and Google Fonts</p>
+<p>- <strong>build-md.sh</strong>: Script that copies MDX pages to `/public/md/` as plain markdown for agent consumption</p>
+<p>- <strong>build-brand-zip.sh</strong>: Bundles brand assets into a downloadable zip file for media kit distribution</p>
+<br>
+<h3> Content Management</h3>
+<br>
+<p>- <strong>MDX Pages</strong>: 23+ documentation pages organized in a hierarchical structure covering architecture, deployment, security, and extension guides</p>
+<p>- <strong>ThreadPanel.tsx</strong>: Interactive React component showcasing real Slack conversation examples with rich formatting</p>
+<p>- <strong>Brand Assets</strong>: Comprehensive visual identity system with SVG logos, color schemes, and typography definitions</p>
+<br>
+<h3> User Interface Features</h3>
+<br>
+<p>- <strong>Dynamic Theming</strong>: Supports light/dark modes with CSS custom properties and coordinated color schemes</p>
+<p>- <strong>Interactive Search</strong>: Built-in search with document boosting (prioritizes getting-started content)</p>
+<p>- <strong>Brand Menu</strong>: Right-click context menu on logo offering brand downloads and GitHub access</p>
+<p>- <strong>Typography System</strong>: Custom font stack including PolySans, Sagittaire Display, and Perfectly Nineties for brand consistency</p>
+<br>
+<h3> Deployment Infrastructure</h3>
+<br>
+<p>- <strong>Cloudflare Workers</strong>: Configured via `wrangler.jsonc` with custom domain routing to centaur.run</p>
+<p>- <strong>Static Asset Optimization</strong>: HTML handling, 404 pages, and trailing slash normalization</p>
+<p>- <strong>SEO Optimization</strong>: Sitemap generation, canonical URLs, and meta tag management</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[MDX Source Pages] --&gt; B[Vocs Build Process]
+    B --&gt; C[Static HTML Generation]
+    B --&gt; D[Asset Processing]
+    
+    D --&gt; E[OG Image Generation]
+    D --&gt; F[MD File Copying]  
+    D --&gt; G[Brand Asset Bundling]
+    
+    C --&gt; H[Cloudflare Workers]
+    E --&gt; H
+    F --&gt; H
+    G --&gt; H
+    
+    H --&gt; I[CDN Distribution]
+    I --&gt; J[End Users]
+    
+    K[GitHub Repository] --&gt; L[CI/CD Pipeline]
+    L --&gt; M[Build &amp; Deploy]
+    M --&gt; H</code></pre>
+<br>
+<p>The build process transforms MDX content through multiple stages: Vocs compilation, asset generation (Open Graph images, markdown copies, brand bundles), and final deployment to Cloudflare's edge network.</p>
+<br>
+<h2>Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>react</strong> (^19.0.0) [web-framework]: React 19 for component-based UI and server-side rendering capabilities. Used throughout the documentation site for interactive components and page layouts. Imported in: `components/ThreadPanel.tsx`, `vocs.config.ts`.</p>
+<br>
+<p>- <strong>react-dom</strong> (^19.0.0) [web-framework]: React DOM rendering for client-side hydration and server rendering. Provides the runtime for React components in the browser. Imported in: component files, Vocs build system.</p>
+<br>
+<p>- <strong>vocs</strong> (https://pkg.pr.new/vocs@3f54829) [build-tool]: Modern documentation framework built on React and Vite. Provides static site generation, MDX processing, built-in search, theming, and navigation. Core system imported in: `vocs.config.ts`, used for entire build pipeline.</p>
+<br>
+<p>- <strong>waku</strong> (1.0.0-alpha.6) [web-framework]: React framework for building fast web applications. Likely used by Vocs internally for rendering and routing capabilities. Integrated through Vocs build system.</p>
+<br>
+<h3> Development Dependencies  </h3>
+<br>
+<p>- <strong>@resvg/resvg-wasm</strong> (^2.6.2) [build-tool]: WebAssembly-based SVG rasterization library for generating PNG images from SVG templates. Used for creating Open Graph social media cards at build time. Imported in: `scripts/build-og.ts`.</p>
+<br>
+<p>- <strong>gray-matter</strong> (^4.0.3) [serialization]: Parses YAML frontmatter from markdown/MDX files to extract metadata like titles and descriptions. Used for processing page metadata during OG image generation. Imported in: `scripts/build-og.ts`.</p>
+<br>
+<p>- <strong>typescript</strong> (5.9.3) [build-tool]: TypeScript compiler providing static type checking and ES module compilation. Used for all TypeScript source files including configuration and build scripts. Imported in: all `.ts` and `.tsx` files.</p>
+<br>
+<p>- <strong>wrangler</strong> (^4.14.0) [cloud-sdk]: Cloudflare Workers CLI for deployment, development, and configuration management. Handles building and deploying the static site to Cloudflare's edge network. Used in: npm scripts and CI/CD pipeline.</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<p>The component integrates with several external services:</p>
+<br>
+<p>- <strong>Cloudflare Workers</strong>: Primary hosting platform providing global CDN distribution and edge computing capabilities</p>
+<p>- <strong>Google Fonts API</strong>: Dynamically loads web fonts (Bodoni Moda, Source Serif 4, Geist Mono) for Open Graph image generation</p>
+<p>- <strong>GitHub</strong>: Source code repository and CI/CD integration for automated deployments</p>
+<p>- <strong>Centaur.run Domain</strong>: Custom domain routing through Cloudflare for production access</p>
+<br>
+<h2>Component Interactions  </h2>
+<br>
+<p>The documentation service operates independently without direct API calls to other Centaur components, but serves as the primary information hub:</p>
+<br>
+<p>- <strong>Provides Documentation</strong>: Comprehensive guides for all other Centaur components including API usage, deployment, and extension patterns</p>
+<p>- <strong>Agent Integration</strong>: Markdown files are copied to `/public/md/` to enable AI agents to curl and consume documentation content programmatically</p>
+<p>- <strong>Brand Consistency</strong>: Serves downloadable brand assets used across other components and external materials</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Endpoints (Static Routes)</h3>
+<br>
+<p>- <strong>/</strong> - Landing page with hero, overview, and interactive thread demo</p>
+<p>- <strong>/what-is-centaur</strong> - Core product explanation and architecture overview  </p>
+<p>- <strong>/quickstart</strong> - Getting started guide for new users</p>
+<p>- <strong>/architecture</strong> - Detailed system architecture and component relationships</p>
+<p>- <strong>/extend/</strong>* - Extension guides for tools, skills, workflows, and overlays</p>
+<p>- <strong>/secrets/</strong>* - Security and credential management documentation</p>
+<p>- <strong>/operate/</strong>* - Operational guides and maintenance procedures</p>
+<p>- <strong>/reference/</strong>* - API reference and configuration documentation</p>
+<p>- <strong>/brand</strong> - Brand guidelines and asset downloads</p>
+<br>
+<h3> Asset Endpoints</h3>
+<br>
+<p>- <strong>/md/</strong>* - Machine-readable markdown versions of all documentation</p>
+<p>- <strong>/brand/</strong>* - SVG logos, icons, and visual identity assets</p>
+<p>- <strong>/og/</strong>* - Generated Open Graph social media preview images</p>
+<p>- <strong>/centaur-brand-assets.zip</strong> - Complete brand kit download</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

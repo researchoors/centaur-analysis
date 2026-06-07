@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: fedreg — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>fedreg</h1>
+</header>
+<p>Now I have a comprehensive understanding of the codebase. Let me write the analysis:</p>
+<br>
+<h1>Federal Register CLI Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The <code>fedreg</code> component is a Python library that provides a command-line interface (CLI) for accessing data from the U.S. Federal Register API. It serves as a research tool for querying regulatory documents, agency information, and public inspection data. The component follows a clean separation between API client logic and CLI presentation, making it both usable as a library and as a standalone command-line tool.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> pattern with clear separation of concerns:</p>
+<br>
+<p>- <strong>Client Layer</strong>: Pure HTTP API client for Federal Register API interactions</p>
+<p>- <strong>CLI Layer</strong>: Command-line interface with rich output formatting</p>
+<p>- <strong>Presentation Layer</strong>: Multiple output formats (console tables, markdown, JSON)</p>
+<br>
+<p>The architecture emphasizes simplicity and direct API consumption without complex abstractions, making it suitable for research and data exploration workflows.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. FederalRegisterClient (`client.py`)</h3>
+<p>The core HTTP client that handles all interactions with the Federal Register API v1. Implements lazy initialization of the HTTP client and provides context manager support for proper resource cleanup.</p>
+<br>
+<h3> 2. CLI Commands (`cli.py`)</h3>
+<p>Comprehensive command-line interface with six main commands:</p>
+<p>- <code>search</code>: Full-text search of Federal Register documents</p>
+<p>- <code>document</code>: Retrieve single documents by FR number</p>
+<p>- <code>agencies</code>: List all government agencies</p>
+<p>- <code>agency</code>: Get detailed agency information</p>
+<p>- <code>public-inspection</code>: View current public inspection documents</p>
+<p>- <code>comments-open</code>: Find documents with open comment periods</p>
+<br>
+<h3> 3. Output Formatters (`cli.py`)</h3>
+<p>Multiple rendering functions that support three output formats:</p>
+<li>Rich console tables with syntax highlighting</li>
+<li>Markdown tables for documentation</li>
+<li>Raw JSON for programmatic consumption</li>
+<br>
+<h3> 4. Utility Functions (`cli.py`)</h3>
+<p>Helper functions for text truncation, data extraction, and table formatting that ensure consistent presentation across different command outputs.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<p>The component implements a straightforward request-response pattern:</p>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[get_client()]
+    B --&gt; C[FederalRegisterClient]
+    C --&gt; D[HTTP Request]
+    D --&gt; E[Federal Register API]
+    E --&gt; F[JSON Response]
+    F --&gt; C
+    C --&gt; G[CLI Formatter]
+    G --&gt; H[Console Output]</code></pre>
+<br>
+<h3> Primary Data Flow</h3>
+<p>1. <strong>Command Parsing</strong>: Typer processes CLI arguments and options</p>
+<p>2. <strong>Client Creation</strong>: Lazy instantiation of HTTP client</p>
+<p>3. <strong>API Request</strong>: HTTPX makes authenticated requests to federalregister.gov</p>
+<p>4. <strong>Response Processing</strong>: JSON data is parsed and validated</p>
+<p>5. <strong>Output Formatting</strong>: Data is rendered in requested format (table/markdown/JSON)</p>
+<p>6. <strong>Console Display</strong>: Rich library provides enhanced terminal output</p>
+<br>
+<h3> Error Handling Flow</h3>
+<p>1. <strong>HTTP Errors</strong>: Captured and converted to RuntimeError with status codes</p>
+<p>2. <strong>Request Errors</strong>: Network issues wrapped with descriptive messages</p>
+<p>3. <strong>CLI Errors</strong>: Typer exits with appropriate error codes and colored output</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library providing async/sync capabilities. Used in `FederalRegisterClient` for all API requests with timeout support and proper error handling. Imported in: `client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Type-driven CLI framework built on Click. Provides the entire command-line interface structure including argument parsing, option validation, and help generation. Used throughout `cli.py` for all command definitions and decorators.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library. Provides colored console output, progress indicators, and enhanced table rendering. Used in `cli.py` for all user-facing output via the Console class.</p>
+<br>
+<h3> Development Dependencies</h3>
+<br>
+<p>- <strong>python-dotenv</strong> [build-tool]: Environment variable loader used for configuration management. Imported in `cli.py` to load `.env` files for local development.</p>
+<br>
+<p>- <strong>centaur_sdk.cli_tables</strong> [internal]: Internal SDK dependency providing standardized table rendering. Used for consistent table formatting across Centaur components.</p>
+<br>
+<p>- <strong>hatchling</strong> [build-tool]: Modern Python packaging tool specified as the build backend in `pyproject.toml`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes both programmatic and command-line interfaces:</p>
+<br>
+<h3> Library Interface</h3>
+<br>
+<pre><code class="language-python">from fedreg.client import FederalRegisterClient
+
+client = FederalRegisterClient()
+# Search documents
+results = client.search_articles(term=&quot;climate change&quot;, type=&quot;RULE&quot;)
+# Get specific document  
+doc = client.get_article(&quot;2024-12345&quot;)
+# List agencies
+agencies = client.get_agencies()</code></pre>
+<br>
+<h3> CLI Interface</h3>
+<br>
+<pre><code class="language-bash"># Search for documents
+fedreg search &quot;climate change&quot; --type RULE --agency epa
+
+# Get specific document
+fedreg document 2024-12345
+
+# List agencies
+fedreg agencies --markdown
+
+# Find documents with open comments
+fedreg comments-open --agency epa</code></pre>
+<br>
+<h3> Output Formats</h3>
+<p>- <strong>Console</strong>: Rich tables with color coding and truncation</p>
+<p>- <strong>Markdown</strong>: Standard markdown tables for documentation</p>
+<p>- <strong>JSON</strong>: Raw API responses for programmatic processing</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Federal Register API</h3>
+<p>- <strong>Endpoint</strong>: `https://www.federalregister.gov/api/v1`</p>
+<p>- <strong>Authentication</strong>: None required (public API)</p>
+<p>- <strong>Rate Limiting</strong>: Not explicitly handled</p>
+<p>- <strong>Data Format</strong>: JSON responses</p>
+<p>- <strong>Timeout</strong>: 60 seconds default</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component has <strong>no internal dependencies</strong> on other Centaur components. It operates as a standalone research tool with minimal coupling, only importing the shared `centaur_sdk.cli_tables` utility for consistent table formatting.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

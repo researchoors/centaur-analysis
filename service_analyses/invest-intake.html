@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: invest-intake — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>invest-intake</h1>
+</header>
+<h1>invest-intake Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The invest-intake component implements a normalization layer that standardizes mixed investment research inputs (URLs and files) into a unified context pack. It follows a client-based architecture where the main <code>InvestIntakeClient</code> class orchestrates the processing of diverse input sources through a combination of classification, delegation, and parallel processing patterns.</p>
+<br>
+<p>The component uses dynamic module loading to integrate with the archiver component for URL extraction and implements a concurrent processing model with ThreadPoolExecutor for parallel URL handling. The design emphasizes resilience with comprehensive error handling and graceful degradation for unsupported URL types.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> InvestIntakeClient Class</h3>
+<p>The central orchestrator that provides the main <code>normalize</code> method for processing mixed inputs. It manages temporary directories, coordinates parallel processing, and aggregates results from multiple sources.</p>
+<br>
+<h3> URL Classification System</h3>
+<p>Static methods <code>_classify_url</code> and <code>_classify_file</code> that categorize inputs based on domain patterns and file extensions. URL classification identifies docsend.com, docs.google.com, drive.google.com as archiver-supported, while other HTTP(S) URLs are marked for websearch delegation.</p>
+<br>
+<h3> Dynamic Archiver Integration</h3>
+<p>The <code>_load_archiver_client</code> method implements runtime dependency resolution, searching for the archiver component in multiple locations and dynamically importing it. This allows loose coupling between components while maintaining functionality.</p>
+<br>
+<h3> Parallel URL Processing</h3>
+<p>Uses ThreadPoolExecutor with configurable parallelism (max 6 workers) to process multiple URLs concurrently. Each URL is processed through the <code>_extract_url</code> method which delegates to the archiver client for supported domains.</p>
+<br>
+<h3> Error Handling and Status Management</h3>
+<p>Comprehensive error tracking with structured status reporting. Errors are collected and categorized, with partial success scenarios handled gracefully. Status codes include "ok", "error", "partial", and "needs_websearch".</p>
+<br>
+<h3> Deduplication Utility</h3>
+<p>The <code>_dedupe</code> static method removes duplicate entries from input lists while preserving order, handling null/empty values gracefully.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Mixed Inputs: URLs + Files] --&gt; B[InvestIntakeClient.normalize]
+    B --&gt; C[Deduplicate Inputs]
+    C --&gt; D[Load Archiver Client]
+    D --&gt; E[Classify URLs]
+    E --&gt; F{URL Type}
+    F --&gt;|Supported| G[Parallel URL Extraction]
+    F --&gt;|Unsupported| H[Mark for Websearch]
+    G --&gt; I[ThreadPool Processing]
+    I --&gt; J[Archiver.extract_source]
+    C --&gt; K[File Processing]
+    K --&gt; L[Archiver.extract_files]
+    J --&gt; M[Aggregate Results]
+    L --&gt; M
+    H --&gt; M
+    M --&gt; N[Generate Response]
+    N --&gt; O[Context Pack Output]</code></pre>
+<br>
+<p>The flow starts with mixed input normalization, proceeds through classification and parallel processing, and culminates in a structured response containing artifacts, errors, and next-action recommendations.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Command-line interface framework providing type-safe argument parsing and CLI building capabilities. Used for CLI command registration and argument handling.</p>
+<br>
+<p>The component has minimal external dependencies, relying primarily on Python's standard library for core functionality including concurrent.futures for parallel processing, pathlib for file system operations, and urllib.parse for URL parsing.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Methods</h3>
+<br>
+<p><strong>InvestIntakeClient.normalize()</strong></p>
+<p>- <strong>Parameters</strong>: `urls`, `file_paths`, `company`, `max_depth`, `parallelism`, `include_raw_payload`</p>
+<p>- <strong>Returns</strong>: Structured dictionary with status, summary, artifacts, errors, and next actions</p>
+<p>- <strong>Purpose</strong>: Main entry point for normalizing mixed investment research inputs</p>
+<br>
+<p><strong>Module-level Factory Function</strong></p>
+<p>- <strong>_client()</strong>: Returns configured InvestIntakeClient instance for external consumption</p>
+<br>
+<h3> Response Structure</h3>
+<br>
+<p>The normalize method returns a comprehensive response dictionary containing:</p>
+<p>- <code>status</code>: Overall processing status ("ok", "error", "partial")</p>
+<p>- <code>summary</code>: Counts of processed items and outcomes</p>
+<p>- <code>artifacts</code>: List of processed items with classification and status</p>
+<p>- <code>output_root</code>: Temporary directory containing extracted content</p>
+<p>- <code>errors</code>: List of processing errors with source identification</p>
+<p>- <code>deferred_to_websearch</code>: Items requiring websearch component handling</p>
+<p>- <code>next_actions</code>: Suggested follow-up steps for research workflow</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

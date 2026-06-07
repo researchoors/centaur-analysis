@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: vmetrics — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>vmetrics</h1>
+</header>
+<h1>VictoriaMetrics Client Library</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The vmetrics component implements a clean client library architecture following the facade pattern. It provides a single unified interface (<code>VictoriaMetricsClient</code>) that wraps the VictoriaMetrics HTTP API, abstracting away the complexity of direct HTTP interactions and response formatting. The architecture is stateful with lazy initialization of the HTTP client and provides both synchronous query methods and context manager support for proper resource cleanup.</p>
+<br>
+<p>The component follows a simple layered design:</p>
+<p>- <strong>API Layer</strong>: Public methods that expose VictoriaMetrics functionality</p>
+<p>- <strong>HTTP Layer</strong>: HTTP client management using httpx</p>
+<p>- <strong>Response Processing Layer</strong>: Result formatting and normalization</p>
+<p>- <strong>Configuration Layer</strong>: URL and timeout management with environment variable support</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> VictoriaMetricsClient Class</h3>
+<p>The main client class that provides all VictoriaMetrics interaction capabilities. It manages HTTP connections, handles configuration, and provides methods for instant queries, range queries, series discovery, and health checks. The client supports both explicit URL configuration and environment-based configuration via <code>VICTORIAMETRICS_URL</code>.</p>
+<br>
+<h3> Query Methods</h3>
+<p>- <strong>query()</strong>: Executes instant PromQL/MetricsQL queries for point-in-time data</p>
+<p>- <strong>query_range()</strong>: Performs range queries over time periods with configurable step intervals</p>
+<p>- <strong>series()</strong>: Discovers time series matching label selectors</p>
+<p>- <strong>label_values()</strong>: Retrieves all values for specific labels</p>
+<p>- <strong>metric_names()</strong>: Lists available metrics with optional prefix filtering</p>
+<br>
+<h3> HTTP Client Management</h3>
+<p>Lazy initialization of httpx.Client with automatic base URL construction and timeout configuration. The client property ensures a single HTTP client instance per VictoriaMetricsClient instance, supporting connection reuse and efficient resource management.</p>
+<br>
+<h3> Response Formatting</h3>
+<p>The <code>_format_result()</code> function transforms VictoriaMetrics API responses into a normalized format, extracting metric names, labels, and values into a consistent structure that's easier to work with than the raw Prometheus API format.</p>
+<br>
+<h3> Context Manager Support</h3>
+<p>Full context manager implementation with <code>__enter__</code> and <code>__exit__</code> methods for automatic resource cleanup, ensuring HTTP connections are properly closed when used in <code>with</code> statements.</p>
+<br>
+<h3> Health Checking</h3>
+<p>The <code>ready()</code> method provides a simple health check mechanism to verify VictoriaMetrics availability before executing queries, useful for readiness probes and error handling.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Client Code] --&gt; B[VictoriaMetricsClient]
+    B --&gt; C[HTTP Client]
+    C --&gt; D[VictoriaMetrics API]
+    D --&gt; E[Raw Response]
+    E --&gt; F[_format_result]
+    F --&gt; G[Normalized Response]
+    G --&gt; A
+    
+    H[Environment Variables] --&gt; B
+    I[Configuration] --&gt; B</code></pre>
+<br>
+<h3> Query Flow</h3>
+<p>1. <strong>Request Construction</strong>: Client code calls query method with PromQL expression</p>
+<p>2. <strong>Parameter Preparation</strong>: Method builds query parameters and optional time constraints</p>
+<p>3. <strong>HTTP Request</strong>: httpx client sends GET request to appropriate VictoriaMetrics endpoint</p>
+<p>4. <strong>Response Processing</strong>: Raw JSON response is parsed and validated</p>
+<p>5. <strong>Result Formatting</strong>: `_format_result()` transforms response into normalized structure</p>
+<p>6. <strong>Return</strong>: Formatted results returned to client code</p>
+<br>
+<h3> Connection Management Flow</h3>
+<p>1. <strong>Lazy Initialization</strong>: First API call triggers HTTP client creation</p>
+<p>2. <strong>Base URL Resolution</strong>: URL determined from constructor parameter or environment variable</p>
+<p>3. <strong>Client Reuse</strong>: Subsequent calls reuse the same HTTP client instance</p>
+<p>4. <strong>Resource Cleanup</strong>: Context manager or explicit close() releases connections</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async/sync HTTP client library for Python. Provides the underlying HTTP transport for all VictoriaMetrics API calls. Used throughout the `VictoriaMetricsClient` class for GET requests to query endpoints, with timeout and base URL configuration support. Imported in: `client.py` line 6.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Public Classes</h3>
+<br>
+<p>- <strong>VictoriaMetricsClient</strong>: Main client class for VictoriaMetrics interactions</p>
+<p>  - Constructor parameters: <code>url</code> (optional), <code>timeout</code> (default 30.0s)</p>
+<p>  - Context manager support for automatic resource cleanup</p>
+<p>  - Environment variable configuration via <code>VICTORIAMETRICS_URL</code></p>
+<br>
+<h3> Public Methods</h3>
+<br>
+<p>- <strong>query(expr, time=None)</strong>: Instant PromQL/MetricsQL queries</p>
+<p>- <strong>query_range(expr, start, end=None, step="60s")</strong>: Range queries with time bounds</p>
+<p>- <strong>series(match, start=None, end=None)</strong>: Time series discovery</p>
+<p>- <strong>label_values(label)</strong>: Label value enumeration</p>
+<p>- <strong>metric_names(prefix="agent_")</strong>: Metric name listing with filtering</p>
+<p>- <strong>ready()</strong>: Health check method</p>
+<p>- <strong>close()</strong>: Explicit resource cleanup</p>
+<br>
+<h3> Response Format</h3>
+<br>
+<p>All query methods return a standardized dictionary format:</p>
+<pre><code class="language-python">{
+    &quot;status&quot;: &quot;success|error&quot;,
+    &quot;type&quot;: &quot;vector|matrix|scalar&quot;,
+    &quot;results&quot;: [
+        {
+            &quot;metric&quot;: &quot;metric_name&quot;,
+            &quot;labels&quot;: {&quot;key&quot;: &quot;value&quot;},
+            &quot;value&quot;: &quot;numeric_value&quot;,
+            &quot;values&quot;: [[timestamp, value], ...]
+        }
+    ]
+}</code></pre>
+<br>
+<h3> Module Entry Point</h3>
+<br>
+<p>The component provides a factory function <code>_client()</code> that returns a pre-configured VictoriaMetricsClient instance, though the primary usage pattern is direct class instantiation.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

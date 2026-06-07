@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: slack — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>slack</h1>
+</header>
+<p>Now I have a comprehensive understanding. Let me provide the full analysis:</p>
+<br>
+<h1>Slack Component Analysis</h1>
+<br>
+<p>The <code>slack</code> component is a comprehensive command-line interface (CLI) tool for interacting with Slack workspaces. It provides extensive functionality for searching messages, managing channels, sending messages, uploading files, and analyzing bot interaction feedback. The component serves as both an interactive tool for users and an automated feedback collection system for improving AI agent behaviors.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> with clear separation of concerns:</p>
+<br>
+<p>- <strong>CLI Layer</strong> (`cli.py`): Typer-based command interface with rich console formatting</p>
+<p>- <strong>Client Layer</strong> (`client.py`): Slack API abstraction with authentication, caching, and error handling</p>
+<p>- <strong>Feedback System</strong> (`feedback.py`): Automated analysis of bot interactions for continuous improvement</p>
+<p>- <strong>Integration Layer</strong>: Centaur SDK integration for tool context and secret management</p>
+<br>
+<p>The architecture emphasizes robust error handling, rate limiting, and caching to provide a reliable interface to the Slack API while minimizing API calls through intelligent caching strategies.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> SlackClient Class</h3>
+<p><strong>Location</strong>: `client.py:72-2067`  </p>
+<p>The core API client that handles all Slack Web API interactions. Features comprehensive authentication management, rate limiting with exponential backoff, and intelligent caching of channels and users. Supports both bot tokens and optional search tokens for different access patterns.</p>
+<br>
+<h3> Command Interface</h3>
+<p><strong>Location</strong>: `cli.py:12-1128`  </p>
+<p>Typer-based CLI application providing 20+ commands for Slack operations. Commands are organized into functional groups: messaging, searching, channel management, user management, file operations, and feedback analysis.</p>
+<br>
+<h3> Message Search System</h3>
+<p><strong>Location</strong>: `client.py:615-858`  </p>
+<p>Dual-mode search implementation that attempts native Slack search first, then falls back to local channel scanning. Supports Slack search modifiers (<code>in:#channel</code>, <code>from:@user</code>) and provides relevance-based ranking of results.</p>
+<br>
+<h3> Feedback Collection Engine</h3>
+<p><strong>Location</strong>: `feedback.py:74-1041`  </p>
+<p>Automated system that analyzes Slack threads containing bot interactions to identify issues, classify problems, and generate actionable improvement recommendations. Uses SQLite for persistence and integrates with the Centaur agent system for automated improvements.</p>
+<br>
+<h3> Channel History Management</h3>
+<p><strong>Location</strong>: `client.py:859-1107`  </p>
+<p>Sophisticated pagination and synchronization system for channel history with cursor-based pagination, timestamp boundaries, and incremental sync capabilities suitable for ETL operations.</p>
+<br>
+<h3> File Upload/Download System</h3>
+<p><strong>Location</strong>: `client.py:1561-1951`  </p>
+<p>Complete file management system supporting upload, download, and sharing of files to Slack channels with base64 encoding, MIME type detection, and progress tracking.</p>
+<br>
+<h3> User and Channel Management</h3>
+<p><strong>Location</strong>: `client.py:1108-1372`  </p>
+<p>Comprehensive workspace introspection capabilities including user lookups, channel membership management, and usergroup operations with caching to minimize API overhead.</p>
+<br>
+<h3> Authentication and Rate Limiting</h3>
+<p><strong>Location</strong>: `client.py:134-251`  </p>
+<p>Structured error handling for authentication failures and rate limits with exponential backoff, retry mechanisms, and proper error propagation for tool orchestration.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Command Handler]
+    B --&gt; C[SlackClient]
+    C --&gt; D[Authentication]
+    D --&gt; E[Rate Limiting]
+    E --&gt; F[Slack API]
+    F --&gt; G[Response Processing]
+    G --&gt; H[Caching]
+    H --&gt; I[Result Formatting]
+    I --&gt; J[Console Output]
+    
+    C --&gt; K[Feedback Collection]
+    K --&gt; L[Thread Analysis]
+    L --&gt; M[SQLite Storage]
+    M --&gt; N[Improvement Agent]</code></pre>
+<br>
+<h3> Message Search Flow</h3>
+<p>1. <strong>Query Processing</strong>: Parse search query and extract Slack modifiers</p>
+<p>2. <strong>Authentication Check</strong>: Verify token availability and permissions</p>
+<p>3. <strong>Native Search Attempt</strong>: Try Slack's search.messages API if search token available</p>
+<p>4. <strong>Fallback Strategy</strong>: Use local channel scanning if native search fails</p>
+<p>5. <strong>Result Ranking</strong>: Score matches by relevance and return sorted results</p>
+<br>
+<h3> Feedback Analysis Flow</h3>
+<p>1. <strong>Thread Collection</strong>: Scan bot-accessible channels for interactions</p>
+<p>2. <strong>Signal Extraction</strong>: Analyze reactions, keywords, and user patterns</p>
+<p>3. <strong>Classification</strong>: Categorize feedback as bugs, missing features, or successes</p>
+<p>4. <strong>Storage</strong>: Persist structured feedback items in SQLite database</p>
+<p>5. <strong>Improvement Dispatch</strong>: Generate prompts and trigger automated agent runs</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>slack-sdk</strong> (>=3.27.0) [api-client]: Official Slack Python SDK providing WebClient for API interactions, error handling, and authentication. Used throughout `client.py` for all Slack API calls including `conversations_history`, `chat_postMessage`, `search_messages`, and file operations.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework for building command-line interfaces with automatic help generation and type validation. Powers the entire CLI interface in `cli.py` with decorators like `@app.command()` and automatic argument parsing.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Loads environment variables from `.env` files for development convenience. Used in `cli.py:6` via `load_dotenv()` to configure API tokens and settings.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [formatting]: Terminal formatting library providing tables, progress bars, and styled console output. Used extensively in `cli.py` for `Table` rendering, colored output with `console.print()`, and error formatting with styled text.</p>
+<br>
+<p>- <strong>structlog</strong> (>=24.4.0) [logging]: Structured logging library that outputs JSON-formatted log entries. Used in `client.py:25` via `structlog.get_logger()` to provide consistent logging format compatible with the tool-server pipeline.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Core Commands</h3>
+<br>
+<p>- <strong>search</strong>: Search messages across channels with filtering and ranking</p>
+<p>- <strong>send</strong>: Send messages to channels with optional threading</p>
+<p>- <strong>channel</strong>: Get channel history with pagination and time boundaries  </p>
+<p>- <strong>thread</strong>: Retrieve thread replies with full conversation context</p>
+<p>- <strong>upload</strong>: Upload files to channels with metadata and sharing</p>
+<p>- <strong>channels</strong>: List workspace channels with member counts and purposes</p>
+<p>- <strong>users</strong>: Search and list workspace members with profile details</p>
+<br>
+<h3> Feedback Commands</h3>
+<br>
+<p>- <strong>feedback collect</strong>: Scan channels for bot interaction feedback</p>
+<p>- <strong>feedback digest</strong>: Generate markdown summaries of collected feedback</p>
+<p>- <strong>feedback improve</strong>: Automatically dispatch improvement agents based on feedback</p>
+<p>- <strong>feedback loop</strong>: Continuously monitor and improve bot behavior</p>
+<br>
+<h3> File Operations</h3>
+<br>
+<p>- <strong>files</strong>: List and download message attachments</p>
+<p>- <strong>search-files</strong>: Search workspace files by content and metadata</p>
+<p>- <strong>dump</strong>: Export complete channel conversations with threading</p>
+<br>
+<h3> Advanced Features</h3>
+<br>
+<p>- <strong>sync-history</strong>: Incremental channel synchronization for ETL pipelines</p>
+<p>- <strong>usergroups</strong>: Manage Slack user groups and memberships</p>
+<p>- <strong>channel-members</strong>: Export channel member lists and email addresses</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Slack Web API</h3>
+<p>The component integrates deeply with Slack's Web API using both bot tokens (for interactive operations) and optional user tokens (for enhanced search capabilities). Requires <code>channels:read</code>, <code>chat:write</code>, <code>files:read</code>, <code>files:write</code>, and <code>users:read</code> scopes.</p>
+<br>
+<h3> Centaur Agent Platform</h3>
+<p>Integrates with the Centaur agent execution platform to dispatch automated improvement runs based on collected feedback. Uses the <code>/agent/spawn</code>, <code>/agent/message</code>, and <code>/agent/execute</code> endpoints for background task orchestration.</p>
+<br>
+<h3> File System</h3>
+<p>Uses local caching in <code>~/.cache/paradigm-slack/</code> for channel lists, user mappings, and feedback database storage to minimize API calls and provide offline capabilities.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<h3> Centaur SDK Integration</h3>
+<p>Uses <code>centaur_sdk.tool_sdk</code> for secret management (<code>SLACK_BOT_TOKEN</code>, <code>SLACK_SEARCH_TOKEN</code>), tool context access for thread-aware operations, and attachment handling for file operations.</p>
+<br>
+<h3> SQLite Database</h3>
+<p>Maintains local SQLite database at <code>~/.cache/paradigm-slack/feedback.db</code> for persistent feedback tracking, improvement analytics, and incremental processing state.</p>
+<br>
+<h3> HTTP Services</h3>
+<p>Makes direct HTTP requests to the Centaur API for agent orchestration and file download operations using Python's <code>urllib.request</code> module with proper authentication headers.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

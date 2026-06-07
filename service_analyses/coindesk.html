@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: coindesk — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>coindesk</h1>
+</header>
+<h1>CoinDesk Library Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The CoinDesk library is a Python-based crypto news aggregation tool that fetches and processes cryptocurrency news from CoinDesk's RSS feed. It provides both a programmatic API through the <code>CoinDeskClient</code> class and a command-line interface for users to retrieve and search crypto news articles.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a simple layered architecture pattern with three main layers:</p>
+<p>- <strong>Presentation Layer</strong>: CLI interface (`cli.py`) with Typer for command parsing and Rich for output formatting</p>
+<p>- <strong>Business Logic Layer</strong>: Client class (`client.py`) that handles RSS parsing and data processing</p>
+<p>- <strong>Data Access Layer</strong>: HTTP client integration with CoinDesk's RSS feed and fallback parsers</p>
+<br>
+<p>The architecture emphasizes resilience with multiple fallback parsing strategies when the primary RSS feed fails or returns unexpected content.</p>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Commands] --&gt; B[CoinDeskClient]
+    B --&gt; C[RSS Feed Fetcher]
+    C --&gt; D[Primary RSS Parser]
+    C --&gt; E[JSON Fallback Parser]
+    C --&gt; F[HTML Fallback Parser]
+    D --&gt; G[Article Normalization]
+    E --&gt; G
+    F --&gt; G
+    G --&gt; H[Filtered Results]</code></pre>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> CoinDeskClient Class</h3>
+<p>The core client class handles all RSS feed operations with robust error handling and multiple parsing strategies. It implements a primary RSS parser using feedparser and two fallback parsers for JSON and HTML content when RSS parsing fails.</p>
+<br>
+<h3> RSS Feed Fetcher</h3>
+<p>A sophisticated HTTP client implementation that uses browser-like headers to avoid being blocked by CoinDesk's servers. It includes proper timeout handling, redirect following, and comprehensive error reporting.</p>
+<br>
+<h3> Fallback Parsers</h3>
+<p>Two alternative parsing strategies: a JSON parser that looks for common article field patterns in JSON responses, and an HTML parser that extracts article links using regex patterns. Both parsers normalize URLs and filter for legitimate CoinDesk articles.</p>
+<br>
+<h3> CLI Interface</h3>
+<p>A Typer-based command-line interface providing two main commands: <code>news</code> for latest articles and <code>search</code> for keyword-based filtering. Supports multiple output formats including JSON, markdown tables, and Rich-formatted console output.</p>
+<br>
+<h3> URL Validation</h3>
+<p>A strict URL validation system that ensures only legitimate CoinDesk article URLs are processed, filtering out external links and non-article pages based on domain and path patterns.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> News Retrieval Flow</h3>
+<p>The primary data flow starts with the CLI command, proceeds through the client to fetch and parse the RSS feed, applies any necessary fallback parsing, normalizes the data structure, and returns formatted results to the user.</p>
+<br>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant CLI
+    participant Client
+    participant HTTP
+    participant RSS
+    participant Fallback
+    
+    CLI-&gt;&gt;Client: news(limit=20)
+    Client-&gt;&gt;HTTP: GET RSS feed with headers
+    HTTP--&gt;&gt;Client: RSS content or error
+    Client-&gt;&gt;RSS: feedparser.parse()
+    alt RSS parsing successful
+        RSS--&gt;&gt;Client: parsed entries
+    else RSS parsing fails
+        Client-&gt;&gt;Fallback: parse_json_or_html()
+        Fallback--&gt;&gt;Client: extracted articles
+    end
+    Client-&gt;&gt;Client: normalize articles
+    Client--&gt;&gt;CLI: article list
+    CLI-&gt;&gt;CLI: format output (table/json/markdown)</code></pre>
+<br>
+<h3> Search Flow</h3>
+<p>Search functionality reuses the same feed fetching mechanism but applies client-side filtering based on title, summary, and tag content matching the search query.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>feedparser</strong> (>=6.0.0) [rss-parsing]: Provides RSS/Atom feed parsing capabilities for processing CoinDesk's RSS feed. Used as the primary parsing mechanism in `_fetch_feed()` method. Imported in: `tools/crypto/coindesk/client.py`.</p>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library for making requests to CoinDesk's RSS endpoint with proper timeout handling, redirect following, and comprehensive error handling. Dynamically imported and used within `_fetch_feed()` method. Imported in: `tools/crypto/coindesk/client.py`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Framework for building command-line interfaces with automatic help generation, type validation, and argument parsing. Used to create the main CLI application with `news` and `search` commands. Imported in: `tools/crypto/coindesk/cli.py`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Library for rich text and beautiful formatting in terminals, providing table rendering and colored console output for the CLI interface. Used for creating formatted tables and console output. Imported in: `tools/crypto/coindesk/cli.py`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (dev dependency) [configuration]: Loads environment variables from .env files for configuration management. Used in CLI module to load environment configuration. Imported in: `tools/crypto/coindesk/cli.py`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The library exposes a clean public API through the <code>CoinDeskClient</code> class:</p>
+<br>
+<h3> CoinDeskClient Methods</h3>
+<p>- <code>news(limit: int = 20) -> list[dict]</code>: Retrieves the latest crypto news articles from CoinDesk</p>
+<p>- <code>search(query: str, limit: int = 20) -> list[dict]</code>: Searches articles by keyword matching in title, summary, or tags</p>
+<br>
+<h3> CLI Commands</h3>
+<p>- <code>coindesk news [--limit N] [--json] [--markdown]</code>: Get latest crypto news with various output formats</p>
+<p>- <code>coindesk search QUERY [--limit N] [--json] [--markdown]</code>: Search articles by keyword</p>
+<br>
+<h3> Article Data Structure</h3>
+<p>All methods return articles as dictionaries with standardized fields:</p>
+<p>- <code>title</code>: Article headline</p>
+<p>- <code>link</code>: Full URL to the article</p>
+<p>- <code>published</code>: Publication timestamp</p>
+<p>- <code>summary</code>: Article summary/excerpt</p>
+<p>- <code>author</code>: Article author name</p>
+<p>- <code>tags</code>: List of article tags/categories</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

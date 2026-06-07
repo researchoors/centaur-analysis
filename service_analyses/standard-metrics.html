@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: standard-metrics — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>standard-metrics</h1>
+</header>
+<p>Now I have enough information to provide a comprehensive analysis. Let me write the analysis:</p>
+<br>
+<h1>Standard Metrics Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The <strong>standard-metrics</strong> component is a Python library that provides both a CLI tool and an API client for interfacing with the Standard Metrics portfolio analytics service. This component serves as a bridge for accessing portfolio company data, financial metrics, and documents through Standard Metrics' REST API using OAuth2 client credentials authentication.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture pattern</strong> with clear separation of concerns:</p>
+<br>
+<p>1. <strong>CLI Layer</strong> (`cli.py`) - User interface with rich table formatting and JSON output options</p>
+<p>2. <strong>Client Layer</strong> (`client.py`) - HTTP client with OAuth2 authentication and API abstraction</p>
+<p>3. <strong>Configuration Layer</strong> - Environment-based configuration using the Centaur SDK</p>
+<br>
+<p>The design emphasizes simplicity and direct API mapping, with each CLI command corresponding closely to a client method that wraps a specific Standard Metrics API endpoint.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. StandardMetricsClient Class</h3>
+<p><strong>Location</strong>: `client.py:14-208`  </p>
+<p><strong>Purpose</strong>: Core API client providing OAuth2-authenticated HTTP requests to Standard Metrics API</p>
+<br>
+<p>Key responsibilities:</p>
+<li>OAuth2 client credentials authentication with token caching</li>
+<li>Base HTTP client configuration with proper headers and timeouts</li>
+<li>Error handling and response parsing</li>
+<li>API endpoint abstraction for portfolio data access</li>
+<br>
+<h3> 2. CLI Command Set</h3>
+<p><strong>Location</strong>: `cli.py:23-301`  </p>
+<p><strong>Purpose</strong>: Typer-based CLI providing user-friendly commands for data access</p>
+<br>
+<p>Commands include:</p>
+<p>- <code>companies</code> - List and filter portfolio companies</p>
+<p>- <code>company</code> - Get detailed company information</p>
+<p>- <code>metrics</code> - Retrieve company performance metrics with filtering</p>
+<p>- <code>financials</code> - Specialized financial metrics aggregation</p>
+<p>- <code>documents</code> - List company documents and reports</p>
+<p>- <code>funds</code> - List available funds</p>
+<p>- <code>raw</code> - Direct API endpoint access for advanced users</p>
+<br>
+<h3> 3. Authentication System</h3>
+<p><strong>Location</strong>: `client.py:28-68`  </p>
+<p><strong>Purpose</strong>: OAuth2 client credentials flow with automatic token refresh</p>
+<br>
+<p>Features:</p>
+<li>Credential retrieval from Centaur SDK secrets</li>
+<li>Token caching with expiration handling</li>
+<li>Basic authentication header encoding</li>
+<li>Comprehensive error messaging for credential issues</li>
+<br>
+<h3> 4. Rich Console Output</h3>
+<p><strong>Location</strong>: `cli.py:42-274`  </p>
+<p><strong>Purpose</strong>: Formatted table output using Rich library for improved readability</p>
+<br>
+<p>Provides:</p>
+<li>Tabular display of companies, metrics, and documents</li>
+<li>Financial value formatting (K/M suffixes)</li>
+<li>JSON output option for programmatic use</li>
+<li>Color-coded status indicators</li>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Authentication Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[Get Client]
+    B --&gt; C[Check Token Cache]
+    C --&gt; D{Token Valid?}
+    D --&gt;|Yes| E[Use Cached Token]
+    D --&gt;|No| F[Get Credentials from Centaur SDK]
+    F --&gt; G[POST /o/token/ with Basic Auth]
+    G --&gt; H[Cache New Token]
+    H --&gt; E
+    E --&gt; I[Make API Request]</code></pre>
+<br>
+<h3> Data Retrieval Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[User Command] --&gt; B[Parse CLI Args]
+    B --&gt; C[Create Client Instance]
+    C --&gt; D[Authenticate]
+    D --&gt; E[Build Query Parameters]
+    E --&gt; F[HTTP GET Request]
+    F --&gt; G{Success?}
+    G --&gt;|Yes| H[Parse JSON Response]
+    G --&gt;|No| I[Extract Error Message]
+    I --&gt; J[Display Error &amp; Exit]
+    H --&gt; K{JSON Output?}
+    K --&gt;|Yes| L[Print Raw JSON]
+    K --&gt;|No| M[Format Rich Table]
+    M --&gt; N[Display Results]</code></pre>
+<br>
+<h3> Financial Metrics Aggregation</h3>
+<pre><code class="language-mermaid">graph TD
+    A[financials command] --&gt; B[Define Categories Array]
+    B --&gt; C[Loop Through Categories]
+    C --&gt; D[API Call per Category]
+    D --&gt; E[Aggregate Results]
+    E --&gt; F[Sort by Category &amp; Date]
+    F --&gt; G[Format Currency Values]
+    G --&gt; H[Display Combined Table]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client used for all API communications. Provides connection pooling, timeout handling, and redirect following. Used extensively in `client.py` for OAuth token requests and Standard Metrics API calls.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework built on Click that provides type hints, automatic help generation, and option parsing. Used in `cli.py` to define all commands, arguments, and options with rich type annotations.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting library for creating rich text and beautiful tables. Used in `cli.py` for console output, table formatting, and color-coded status displays.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk.tool_sdk</strong> [internal]: Provides the `secret()` function for secure credential retrieval from environment variables. Used in `client.py:30-31` for OAuth credential access.</p>
+<br>
+<p>- <strong>centaur_sdk.cli_tables</strong> [internal]: Provides enhanced table formatting capabilities. Used in `cli.py:11` as the `Table` class for structured output display.</p>
+<br>
+<p>- <strong>python-dotenv</strong> [config]: Environment variable loading from `.env` files. Used in `cli.py:5-7` for development configuration.</p>
+<br>
+<h3> Build System</h3>
+<br>
+<p>- <strong>hatchling</strong> [build-tool]: Modern Python build backend for packaging. Specified in `pyproject.toml:13-14` as the build system.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Client API</h3>
+<p>The <code>StandardMetricsClient</code> class exposes the following public methods:</p>
+<br>
+<p>- <code>list_companies(page, page_size, name, ids)</code> - Paginated company listing with filtering</p>
+<p>- <code>get_company(company_id)</code> - Single company retrieval by ID</p>
+<p>- <code>get_metrics(company_id, company_slug, category, from_date, to_date, cadence, page, page_size)</code> - Flexible metrics querying</p>
+<p>- <code>get_documents(company_id, parse_state, source, from_date, to_date, page, page_size)</code> - Document listing and filtering</p>
+<p>- <code>get_budgets(company_id, page, page_size)</code> - Budget data access</p>
+<p>- <code>get_funds(page, page_size)</code> - Fund listing</p>
+<p>- <code>get_notes(company_id, page, page_size)</code> - Company notes retrieval</p>
+<p>- <code>raw_request(method, endpoint, params)</code> - Direct API access</p>
+<br>
+<h3> CLI Commands</h3>
+<p>Seven main commands available via the <code>standard-metrics</code> CLI:</p>
+<br>
+<p>1. <strong>companies</strong> - List portfolio companies with name filtering and pagination</p>
+<p>2. <strong>company</strong> - Display detailed company information</p>
+<p>3. <strong>metrics</strong> - Query company metrics with category, date, and cadence filters</p>
+<p>4. <strong>financials</strong> - Aggregate financial metrics (revenue, burn, runway, etc.)</p>
+<p>5. <strong>documents</strong> - List company documents with source and state filters</p>
+<p>6. <strong>funds</strong> - Display available funds</p>
+<p>7. <strong>raw</strong> - Make direct API calls for advanced usage</p>
+<br>
+<p>All commands support <code>--json</code> output for programmatic consumption and <code>--limit</code> for result pagination.</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Standard Metrics API</h3>
+<p>- <strong>Base URL</strong>: https://api.standardmetrics.io/v1</p>
+<p>- <strong>Authentication</strong>: OAuth2 client credentials flow</p>
+<p>- <strong>Token Endpoint</strong>: https://api.standardmetrics.io/o/token/</p>
+<p>- <strong>Protocol</strong>: REST over HTTPS</p>
+<p>- <strong>Data Format</strong>: JSON</p>
+<br>
+<p>The component integrates with Standard Metrics' portfolio analytics platform to provide access to:</p>
+<li>Portfolio company information and metadata</li>
+<li>Financial and operational metrics with time series data</li>
+<li>Document management and parsing status</li>
+<li>Fund and investment data</li>
+<li>Budget and forecasting information</li>
+<br>
+<h3> Configuration Requirements</h3>
+<p>- <strong>STANDARD_METRICS_CLIENT_ID</strong>: OAuth2 client identifier</p>
+<p>- <strong>STANDARD_METRICS_CLIENT_SECRET</strong>: OAuth2 client secret</p>
+<br>
+<p>These credentials must be obtained from the Standard Metrics developer console and configured in the Centaur environment.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

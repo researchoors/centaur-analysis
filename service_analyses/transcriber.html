@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: transcriber — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>transcriber</h1>
+</header>
+<h1>Transcriber Component Analysis</h1>
+<br>
+<p>The transcriber component is a sophisticated local-first voice transcription library that provides CLI functionality for real-time audio recording and transcription using OpenAI's Whisper models. It implements a streaming architecture with platform-specific optimizations for both macOS (using MLX) and Linux (using faster-whisper) backends.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> with clear separation of concerns:</p>
+<br>
+<p>1. <strong>CLI Layer</strong>: Handles user interaction, command parsing, and output formatting using Typer and Rich</p>
+<p>2. <strong>Client Layer</strong>: Manages Whisper model operations, audio recording, and transcription logic</p>
+<p>3. <strong>Platform Abstraction</strong>: Provides cross-platform compatibility for audio recording and model backends</p>
+<br>
+<p>The design emphasizes local processing without external API dependencies, making it suitable for privacy-sensitive use cases.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> TranscriberClient (client.py)</h3>
+<p>The core transcription engine that manages Whisper model lifecycle and audio processing. It implements platform-specific model selection (MLX for macOS, faster-whisper for Linux) and handles model caching for performance optimization. The client provides unified interfaces for recording audio chunks and transcribing them while filtering out common Whisper hallucinations.</p>
+<br>
+<h3> CLI Commands (cli.py)</h3>
+<p>Four main command interfaces provide different usage modes:</p>
+<p>- <strong>record</strong>: Live streaming transcription with real-time feedback</p>
+<p>- <strong>file</strong>: Batch transcription of existing audio files  </p>
+<p>- <strong>listen</strong>: Continuous listening mode for repeated recordings</p>
+<p>- <strong>models</strong>: List available Whisper model variants</p>
+<br>
+<h3> Audio Recording System</h3>
+<p>Cross-platform audio capture using multiple backends (sox, ffmpeg, arecord) with automatic fallback detection. The system records 16kHz mono audio optimized for Whisper input requirements.</p>
+<br>
+<h3> Streaming Architecture</h3>
+<p>Implements background recording threads with chunk-based processing, allowing real-time transcription while continuing to record new audio. Uses queue-based communication between recording and transcription threads.</p>
+<br>
+<h3> Model Management</h3>
+<p>Intelligent caching system that maintains loaded Whisper models in memory across transcriptions. Platform-specific model selection chooses MLX-optimized models on macOS and standard faster-whisper models on Linux.</p>
+<br>
+<h3> Hallucination Filtering</h3>
+<p>Built-in detection and filtering of common Whisper hallucinations like "thank you", "subscribe", and other artifacts that commonly appear in silent audio or low-quality recordings.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Live Recording Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[User starts recording] --&gt; B[Background recorder thread]
+    B --&gt; C[Record 5-second chunks]
+    C --&gt; D[Queue chunk for processing]
+    D --&gt; E[Transcribe chunk]
+    E --&gt; F[Display real-time text]
+    F --&gt; G{End phrase detected?}
+    G --&gt;|No| C
+    G --&gt;|Yes| H[Merge all chunks]
+    H --&gt; I[Final transcription]
+    I --&gt; J[Output result]</code></pre>
+<br>
+<h3> File Processing Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[Load audio file] --&gt; B[Validate file exists]
+    B --&gt; C[Load Whisper model]
+    C --&gt; D[Transcribe entire file]
+    D --&gt; E[Filter hallucinations]
+    E --&gt; F[Output result]</code></pre>
+<br>
+<h3> Model Loading Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[Request model] --&gt; B{Model cached?}
+    B --&gt;|Yes| C[Return cached model]
+    B --&gt;|No| D{Platform check}
+    D --&gt;|macOS| E[Load MLX model]
+    D --&gt;|Linux| F[Load faster-whisper]
+    E --&gt; G[Cache model]
+    F --&gt; G
+    G --&gt; C</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Core Dependencies</h3>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework providing command parsing, type validation, and help generation. Used throughout cli.py for defining commands, arguments, and options with rich type annotations.</p>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting and display library providing styled console output, progress indicators, and panels. Used in cli.py for status displays, panels, and colored output formatting.</p>
+<br>
+<h3> Optional Platform Dependencies</h3>
+<br>
+<p>- <strong>python-dotenv</strong> [configuration]: Environment variable loading from .env files. Imported and used in cli.py for loading configuration, though not declared in pyproject.toml dependencies.</p>
+<p>- <strong>mlx-whisper</strong> [ai-model] (macOS only): Apple Silicon optimized Whisper implementation. Dynamically imported in client.py when running on macOS for hardware-accelerated transcription.</p>
+<p>- <strong>faster-whisper</strong> [ai-model] (Linux/other): CPU/CUDA optimized Whisper implementation. Dynamically imported in client.py on non-macOS platforms for efficient transcription.</p>
+<br>
+<h3> System Dependencies</h3>
+<br>
+<p>The component requires external system tools for audio recording:</p>
+<p>- <strong>sox/rec</strong>: Preferred audio recording backend with simple command interface</p>
+<p>- <strong>ffmpeg</strong>: Fallback audio recording and processing with cross-platform support  </p>
+<p>- <strong>arecord</strong>: Additional fallback for basic ALSA recording on Linux</p>
+<p>- <strong>pbcopy/xclip</strong>: System clipboard integration for copying transcription results</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Library Interface</h3>
+<br>
+<p>The component exposes a clean programmatic API through <code>TranscriberClient</code>:</p>
+<br>
+<pre><code class="language-python">client = TranscriberClient()
+# File transcription
+text = client.transcribe_file(path, model=&quot;turbo&quot;, language=&quot;en&quot;)
+# Model management
+models = client.list_models()
+# Audio recording
+client.record_chunk(output_path, duration=5.0)</code></pre>
+<br>
+<h3> CLI Interface</h3>
+<br>
+<p>Four main commands provide comprehensive transcription functionality:</p>
+<br>
+<p>- <code>record [options]</code>: Live recording with streaming transcription</p>
+<p>- <code>file <path> [options]</code>: Transcribe existing audio files</p>
+<p>- <code>listen [options]</code>: Continuous listening mode for repeated use</p>
+<p>- <code>models</code>: Display available Whisper model information</p>
+<br>
+<p>All commands support model selection (<code>-m/--model</code>), language specification (<code>-l/--language</code>), and output file saving (<code>-o/--output</code>).</p>
+<br>
+<h3> Configuration Options</h3>
+<br>
+<li>Model variants: tiny, base, small, medium, large, turbo (default)</li>
+<li>Audio parameters: 16kHz sample rate, mono channel, 16-bit PCM</li>
+<li>Streaming: Configurable chunk size (default 5 seconds)</li>
+<li>End phrase detection: "over and out" to stop recording</li>
+<li>Platform optimization: Automatic backend selection based on OS</li>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

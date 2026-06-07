@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: coingecko — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>coingecko</h1>
+</header>
+<h1>CoinGecko CLI Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The CoinGecko component follows a <strong>layered architecture</strong> pattern with clear separation between the CLI interface layer and the HTTP client layer. The component is designed as a command-line tool that provides structured access to the CoinGecko Pro API for cryptocurrency market data.</p>
+<br>
+<p>The architecture consists of two main layers:</p>
+<p>1. <strong>CLI Layer</strong> (`cli.py`) - Handles user interaction, argument parsing, and output formatting</p>
+<p>2. <strong>Client Layer</strong> (`client.py`) - Manages API communication and authentication with CoinGecko Pro API</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. CoinGeckoClient Class</h3>
+<p><strong>Location</strong>: `tools/crypto/coingecko/client.py`  </p>
+<p><strong>Purpose</strong>: Core HTTP client for CoinGecko Pro API interactions</p>
+<br>
+<p>The client provides a comprehensive interface to the CoinGecko Pro API with methods for:</p>
+<p>- Price retrieval (<code>get_price</code>)</p>
+<p>- Market data (<code>get_markets</code>) </p>
+<p>- Coin details (<code>get_coin</code>)</p>
+<p>- Historical data (<code>get_market_chart</code>)</p>
+<p>- Search functionality (<code>search</code>)</p>
+<p>- Trending coins (<code>get_trending</code>)</p>
+<li>Categories and exchanges listing</li>
+<br>
+<h3> 2. CLI Command Router</h3>
+<p><strong>Location</strong>: `tools/crypto/coingecko/cli.py:14`  </p>
+<p><strong>Purpose</strong>: Main Typer application that defines the CLI interface</p>
+<br>
+<p>Defines the primary CLI application using Typer with the name "coingecko" and provides help text describing its purpose for cryptocurrency market data access.</p>
+<br>
+<h3> 3. Output Formatting System</h3>
+<p><strong>Location</strong>: `tools/crypto/coingecko/cli.py:24-45`  </p>
+<p><strong>Purpose</strong>: Handles multiple output formats (console tables, JSON, markdown)</p>
+<br>
+<p>Key functions:</p>
+<p>- <code>format_number()</code> - Formats large numbers with B/M/K suffixes</p>
+<p>- <code>print_markdown_table()</code> - Generates markdown table output</p>
+<li>Rich console integration for styled terminal output</li>
+<br>
+<h3> 4. Command Implementations</h3>
+<p><strong>Location</strong>: `tools/crypto/coingecko/cli.py:47-479`  </p>
+<p><strong>Purpose</strong>: Nine distinct CLI commands covering different CoinGecko API endpoints</p>
+<br>
+<p>Commands include: <code>price</code>, <code>markets</code>, <code>coin</code>, <code>trending</code>, <code>search</code>, <code>history</code>, <code>categories</code>, <code>exchanges</code>, and <code>raw</code>.</p>
+<br>
+<h3> 5. Authentication System</h3>
+<p><strong>Location</strong>: `tools/crypto/coingecko/client.py:24-28, 36-41`  </p>
+<p><strong>Purpose</strong>: Manages CoinGecko Pro API key authentication</p>
+<br>
+<p>Uses the centaur_sdk secret management system to retrieve the API key from environment variables and includes it in requests via the <code>x-cg-pro-api-key</code> header.</p>
+<br>
+<h3> 6. Error Handling</h3>
+<p><strong>Location</strong>: `tools/crypto/coingecko/client.py:47-50`  </p>
+<p><strong>Purpose</strong>: Comprehensive HTTP error handling with user-friendly messages</p>
+<br>
+<p>Catches both HTTP status errors and request errors, converting them to RuntimeError with descriptive messages.</p>
+<br>
+<h3> 7. HTTP Connection Management</h3>
+<p><strong>Location</strong>: `tools/crypto/coingecko/client.py:19-22, 129-139`  </p>
+<p><strong>Purpose</strong>: Lazy-loaded HTTP client with context manager support</p>
+<br>
+<p>Provides both explicit resource management via <code>close()</code> and automatic cleanup through context manager protocol.</p>
+<br>
+<h3> 8. Configuration Management</h3>
+<p><strong>Location</strong>: `tools/crypto/coingecko/cli.py:3-5`  </p>
+<p><strong>Purpose</strong>: Environment variable loading for API configuration</p>
+<br>
+<p>Uses python-dotenv to automatically load environment variables from <code>.env</code> files.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> API Request Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[User Command] --&gt; B[CLI Parser]
+    B --&gt; C[get_client()]
+    C --&gt; D[CoinGeckoClient.__init__]
+    D --&gt; E[_get_api_key()]
+    E --&gt; F[secret(&#x27;COINGECKO_API_KEY&#x27;)]
+    F --&gt; G[_request()]
+    G --&gt; H[httpx.Client.get()]
+    H --&gt; I[CoinGecko Pro API]
+    I --&gt; J[JSON Response]
+    J --&gt; K[Format Output]
+    K --&gt; L[Console/JSON/Markdown]</code></pre>
+<br>
+<h3> Output Format Selection Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[Command Execution] --&gt; B{json_output?}
+    B --&gt;|Yes| C[JSON.dumps()]
+    B --&gt;|No| D{markdown?}
+    D --&gt;|Yes| E[print_markdown_table()]
+    D --&gt;|No| F[Rich Console Table]
+    C --&gt; G[stdout]
+    E --&gt; G
+    F --&gt; G</code></pre>
+<br>
+<h3> Error Handling Flow</h3>
+<pre><code class="language-mermaid">graph TD
+    A[API Request] --&gt; B{Request Success?}
+    B --&gt;|No| C[httpx.HTTPStatusError]
+    C --&gt; D[RuntimeError with status]
+    B --&gt;|Network Error| E[httpx.RequestError]  
+    E --&gt; F[RuntimeError with details]
+    B --&gt;|Success| G[Parse JSON Response]
+    D --&gt; H[CLI Error Display]
+    F --&gt; H
+    G --&gt; I[Format Output]</code></pre>
+<br>
+<h2>Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library providing async and sync interfaces. Used in `client.py` for making authenticated requests to the CoinGecko Pro API. Imported in: `tools/crypto/coingecko/client.py:4`.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework that automatically generates help text and handles argument parsing. Powers the entire command-line interface. Imported in: `tools/crypto/coingecko/cli.py:9`.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Rich text and beautiful formatting in the terminal. Used for styled console output including colored tables and formatted text. Imported in: `tools/crypto/coingecko/cli.py:10`.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [build-tool]: Loads environment variables from .env files. Used for development configuration management. Imported in: `tools/crypto/coingecko/cli.py:3`.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal]: Provides the `secret()` function for secure environment variable access and the `Table` class for rich console tables. Imported in: `tools/crypto/coingecko/client.py:6`, `tools/crypto/coingecko/cli.py:12`.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>The component exposes a comprehensive command-line interface through the <code>coingecko</code> script:</p>
+<br>
+<p>- <strong>price</strong>: Get current prices for specified coins with market cap and volume data</p>
+<p>- <strong>markets</strong>: List coins ranked by market capitalization  </p>
+<p>- <strong>coin</strong>: Get detailed information about a specific coin including price history</p>
+<p>- <strong>trending</strong>: Display currently trending cryptocurrencies</p>
+<p>- <strong>search</strong>: Search for coins by name or symbol</p>
+<p>- <strong>history</strong>: Get historical price data for a specified time period</p>
+<p>- <strong>categories</strong>: List cryptocurrency categories with market data</p>
+<p>- <strong>exchanges</strong>: List exchanges ranked by trading volume and trust score</p>
+<p>- <strong>raw</strong>: Make direct API calls to any CoinGecko endpoint</p>
+<br>
+<h3> Output Formats</h3>
+<br>
+<p>All commands support three output formats:</p>
+<p>- <strong>Console</strong>: Rich-formatted tables with colors and styling (default)</p>
+<p>- <strong>JSON</strong>: Machine-readable JSON output (`--json` flag)</p>
+<p>- <strong>Markdown</strong>: Markdown-formatted tables (`--markdown` flag)</p>
+<br>
+<h3> Python API</h3>
+<br>
+<p>The <code>CoinGeckoClient</code> class provides a programmatic interface:</p>
+<li>Authentication management with API key handling</li>
+<li>HTTP connection pooling and error handling</li>
+<li>Context manager support for resource cleanup</li>
+<li>Comprehensive coverage of CoinGecko Pro API endpoints</li>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> CoinGecko Pro API</h3>
+<p><strong>Service</strong>: pro-api.coingecko.com  </p>
+<p><strong>Protocol</strong>: HTTPS REST API  </p>
+<p><strong>Authentication</strong>: API key via `x-cg-pro-api-key` header  </p>
+<p><strong>Purpose</strong>: Primary data source for all cryptocurrency market data including prices, market caps, trading volumes, and historical data.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

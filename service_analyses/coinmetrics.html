@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: coinmetrics — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>coinmetrics</h1>
+</header>
+<h1>Coinmetrics Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The coinmetrics component follows a <strong>layered CLI architecture</strong> pattern, separating concerns into distinct layers: a command-line interface layer, an HTTP API client layer, and external API integration. The component is structured as a Python package with two primary modules - `cli.py` for user interaction and `client.py` for API communication with Coin Metrics' REST API v4.</p>
+<br>
+<p>The architecture employs a <strong>facade pattern</strong> where the CLI serves as a simplified interface to the underlying Coin Metrics API, providing multiple output formats (JSON, markdown tables, rich console tables) and common parameter handling across all commands.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> CLI Application (`cli.py`)</h3>
+<p>The main entry point providing a Typer-based command-line interface with 7 primary commands. Each command supports consistent output formatting options (JSON, markdown, rich tables) and implements standardized parameter validation and error handling.</p>
+<br>
+<h3> HTTP Client (`client.py`) </h3>
+<p>A lightweight wrapper around the Coin Metrics API v4 that handles authentication, request formatting, and response parsing. Implements connection pooling via httpx and provides both high-level domain methods and raw API access.</p>
+<br>
+<h3> Command Router (`app`)</h3>
+<p>The central Typer application instance that registers all CLI commands and manages help text, argument parsing, and command dispatch.</p>
+<br>
+<h3> Output Formatters</h3>
+<p>Three formatting utilities: <code>print_markdown_table()</code> for markdown output, Rich Table integration for terminal display, and <code>format_number()</code> for human-readable numeric formatting with K/M/B/T suffixes.</p>
+<br>
+<h3> API Key Management</h3>
+<p>Centralized secret management through <code>centaur_sdk.secret()</code> with fallback to environment variables, supporting both explicit API key provision and automatic discovery.</p>
+<br>
+<h3> HTTP Session Management</h3>
+<p>Lazy-initialized httpx.Client with configurable timeouts and automatic connection reuse, supporting context manager pattern for resource cleanup.</p>
+<br>
+<h3> Error Handling</h3>
+<p>Comprehensive error handling with user-friendly messages for HTTP errors, network failures, and API rate limiting scenarios.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TB
+    User[User Command] --&gt; CLI[CLI Parser]
+    CLI --&gt; Client[CoinMetrics Client]
+    Client --&gt; Auth[API Key Resolution]
+    Auth --&gt; HTTP[HTTP Request]
+    HTTP --&gt; API[Coin Metrics API v4]
+    API --&gt; Response[JSON Response]
+    Response --&gt; Parser[Response Parser]
+    Parser --&gt; Format{Output Format?}
+    Format --&gt;|JSON| JSON_Out[JSON Output]
+    Format --&gt;|Markdown| MD_Out[Markdown Table]
+    Format --&gt;|Default| Rich_Out[Rich Table]</code></pre>
+<br>
+<h3> Request Flow</h3>
+<p>1. User invokes CLI command with arguments and options</p>
+<p>2. Typer parses arguments and validates parameters</p>
+<p>3. CLI instantiates CoinMetricsClient and calls appropriate method</p>
+<p>4. Client resolves API key from centaur_sdk or environment</p>
+<p>5. HTTP request constructed with base URL, endpoint, and query parameters</p>
+<p>6. httpx executes request with timeout and error handling</p>
+<p>7. JSON response parsed and returned as Python data structures</p>
+<br>
+<h3> Data Transformation Flow</h3>
+<p>1. Raw API response (JSON) received from Coin Metrics</p>
+<p>2. Response unwrapped from <code>{"data": [...]}</code> envelope if present</p>
+<p>3. Data limited to user-specified count via slicing</p>
+<p>4. Output format determined from CLI flags</p>
+<p>5. Data formatted as JSON, markdown table, or Rich table</p>
+<p>6. Formatted output sent to stdout with appropriate styling</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client for Python. Provides the core HTTP functionality for API requests with connection pooling, timeout handling, and comprehensive error handling. Used throughout `client.py` for all API communication.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework built on top of Click. Provides argument parsing, command registration, help generation, and type validation. Used in `cli.py` to define all 7 CLI commands with their parameters and options.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Library for rich text and beautiful formatting in the terminal. Provides the Table class for tabular output and Console for styled terminal output. Used in `cli.py` for the default table display format across all commands.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [cli]: Loads environment variables from .env files. Used at CLI startup to automatically load configuration from local .env files. Imported and called in `cli.py` line 3-5.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal]: Provides the `Table` class for rich table formatting and `secret()` function for secure credential management. Used in both `cli.py` (Table import) and `client.py` (secret function for API key resolution).</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>The component exposes 7 CLI commands through the <code>coinmetrics</code> executable:</p>
+<br>
+<p>- <strong>assets</strong>: List available cryptocurrencies and digital assets with metadata</p>
+<p>- <strong>metrics</strong>: List available on-chain and market metrics for assets  </p>
+<p>- <strong>timeseries</strong>: Retrieve time-series data for specified assets and metrics</p>
+<p>- <strong>asset-metrics</strong>: Get available metrics for a specific asset</p>
+<p>- <strong>market-data</strong>: Retrieve market candles (OHLCV) or trade data</p>
+<p>- <strong>exchanges</strong>: List supported cryptocurrency exchanges</p>
+<p>- <strong>raw</strong>: Make direct API calls to any Coin Metrics endpoint</p>
+<br>
+<h3> Common CLI Options</h3>
+<br>
+<p>All commands support standardized output formatting:</p>
+<p>- <code>--json</code>: Output raw JSON data</p>
+<p>- <code>--markdown/-m</code>: Output as markdown tables  </p>
+<p>- <code>--limit/-n</code>: Limit number of results returned</p>
+<br>
+<h3> Python API</h3>
+<br>
+<p>The component also exposes a programmatic API through the <code>CoinMetricsClient</code> class:</p>
+<br>
+<pre><code class="language-python">from coinmetrics.client import CoinMetricsClient
+
+client = CoinMetricsClient(api_key=&quot;optional&quot;)
+assets = client.list_assets()
+metrics = client.get_asset_metrics(&quot;btc,eth&quot;, &quot;PriceUSD&quot;, frequency=&quot;1d&quot;)</code></pre>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Coin Metrics API v4</h3>
+<p>The primary external system integration is with Coin Metrics' REST API v4 hosted at <code>api.coinmetrics.io</code>. The client authenticates using API keys passed as query parameters and supports both free and paid tiers. All requests use HTTPS with configurable timeouts (default 30 seconds).</p>
+<br>
+<h3> Environment Configuration</h3>
+<p>The component reads configuration from environment variables, particularly <code>COINMETRICS_API_KEY</code> for authentication. Supports <code>.env</code> file loading for local development environments.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component has no direct interactions with other components in the centaur-src codebase. It operates as a standalone CLI tool that can be invoked independently or as part of larger workflows. The only internal dependency is on <code>centaur_sdk</code> for utility functions (Table formatting and secret management).</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

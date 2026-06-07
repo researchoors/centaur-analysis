@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: token-terminal — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>token-terminal</h1>
+</header>
+<h1>Token Terminal Library</h1>
+<br>
+<p>The token-terminal component is a Python library that provides a client interface to the Token Terminal API, which aggregates protocol revenue, fees, financial statements, and metrics for decentralized finance (DeFi) protocols and blockchain projects. This library serves as a structured wrapper around the Token Terminal REST API, offering programmatic access to crypto protocol financial data.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a simple client-server architecture pattern with a single-class design. The <code>TokenTerminalClient</code> class serves as the primary interface, implementing a RESTful API client pattern with lazy initialization of the HTTP client. The architecture is straightforward and focused, providing a clean abstraction over HTTP requests with proper error handling and resource management through context manager support.</p>
+<br>
+<p>The library uses dependency injection for API key management through the centaur SDK's secret management system, allowing for secure credential handling across different deployment environments.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> TokenTerminalClient Class</h3>
+<p>The core client class located in <code>client.py</code> that provides all API interaction capabilities. It implements lazy initialization for the HTTP client and uses bearer token authentication. The class includes proper resource management through context manager protocol implementation.</p>
+<br>
+<h3> API Request Handler</h3>
+<p>The <code>_request</code> method serves as the central HTTP request dispatcher, handling URL construction, authentication headers, error handling, and response parsing. It provides consistent error handling across all API operations, converting HTTP and network errors into runtime exceptions.</p>
+<br>
+<h3> Projects API Methods</h3>
+<p>A collection of methods (<code>list_projects</code>, <code>get_project</code>, <code>get_project_metrics</code>, <code>get_financial_statement</code>) that provide access to individual protocol data including revenue, fees, TVL (Total Value Locked), and financial statements with various time intervals.</p>
+<br>
+<h3> Market Sectors API Methods</h3>
+<p>Methods (<code>list_market_sectors</code>, <code>get_market_sector_metrics</code>) that provide access to aggregated market sector data, allowing analysis of entire categories of protocols rather than individual projects.</p>
+<br>
+<h3> Client Factory Function</h3>
+<p>The <code>_client</code> function serves as a factory that creates configured client instances using environment-based API key management through the centaur SDK's secret system.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant User
+    participant TokenTerminalClient
+    participant HTTPClient
+    participant TokenTerminalAPI
+
+    User-&gt;&gt;TokenTerminalClient: Create client with API key
+    User-&gt;&gt;TokenTerminalClient: Call API method (e.g., get_project)
+    TokenTerminalClient-&gt;&gt;TokenTerminalClient: Lazy init HTTP client if needed
+    TokenTerminalClient-&gt;&gt;HTTPClient: GET request with bearer token
+    HTTPClient-&gt;&gt;TokenTerminalAPI: HTTPS request
+    TokenTerminalAPI--&gt;&gt;HTTPClient: JSON response
+    HTTPClient--&gt;&gt;TokenTerminalClient: Response object
+    TokenTerminalClient-&gt;&gt;TokenTerminalClient: Parse JSON and handle errors
+    TokenTerminalClient--&gt;&gt;User: Return parsed data</code></pre>
+<br>
+<p>The primary data flow involves initialization with an API key, lazy creation of the HTTP client, and synchronous request-response cycles to the Token Terminal API. All requests use bearer token authentication and return JSON data that is parsed and returned as Python dictionaries or lists.</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library for Python providing sync/async capabilities. Used as the core HTTP client for all API requests to Token Terminal. Imported and used throughout the `TokenTerminalClient` class for making REST API calls with proper timeout handling and connection management.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework for Python based on type hints. While not directly used in the current client code, it's included in dependencies suggesting future CLI interface development for the library.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Library for rich text and beautiful formatting in the terminal. Similar to typer, this suggests planned CLI functionality that would provide formatted output for terminal usage.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Library for loading environment variables from `.env` files. Not directly imported in the current code but supports the secret management pattern used by the centaur SDK.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal]: The centaur SDK provides the `secret` function used for secure API key management. This creates a dependency on the centaur SDK's secret management system for credential handling.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The library exposes a clean, focused API surface through the <code>TokenTerminalClient</code> class:</p>
+<br>
+<h3> Initialization</h3>
+<p>- <code>TokenTerminalClient(api_key: str, timeout: float = 30.0)</code>: Create client instance with API credentials</p>
+<p>- <code>_client()</code>: Factory function that creates client using environment-based API key</p>
+<br>
+<h3> Project Methods</h3>
+<p>- <code>list_projects(limit: int = 50) -> list[dict]</code>: List all available protocols</p>
+<p>- <code>get_project(project_id: str) -> dict</code>: Get detailed information for a specific protocol</p>
+<p>- <code>get_project_metrics(project_id: str, metric: str = "fees", interval: str = "daily", limit: int = 30) -> list[dict]</code>: Get time-series metrics for a protocol</p>
+<p>- <code>get_financial_statement(project_id: str, interval: str = "quarterly") -> dict</code>: Get financial statements</p>
+<br>
+<h3> Market Sector Methods</h3>
+<p>- <code>list_market_sectors() -> list[dict]</code>: List all market sectors</p>
+<p>- <code>get_market_sector_metrics(sector: str, metric: str = "fees", interval: str = "daily", limit: int = 30) -> list[dict]</code>: Get aggregated metrics by sector</p>
+<br>
+<h3> Resource Management</h3>
+<p>- <code>close()</code>: Explicitly close HTTP client</p>
+<p>- Context manager support via <code>__enter__</code> and <code>__exit__</code> for automatic resource cleanup</p>
+<br>
+<p>The API surface is designed for both programmatic integration and potential CLI usage, with clear parameter types and comprehensive docstrings. All methods return either dictionaries or lists of dictionaries containing the JSON responses from the Token Terminal API.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

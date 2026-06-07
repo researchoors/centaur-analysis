@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: telegram — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>telegram</h1>
+</header>
+<h1>Telegram Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The Telegram component is a comprehensive Python library that provides AI agents with full-featured Telegram communication capabilities. It offers dual-mode operation supporting both Bot API (for automated responses) and MTProto/user API (for direct user account access), enabling rich messaging, chat management, and context gathering functionality.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>layered architecture</strong> with clear separation between client implementations, CLI interface, and error handling. The architecture supports two distinct operational modes:</p>
+<br>
+<p>1. <strong>Bot Mode</strong>: Uses the official Telegram Bot API via `python-telegram-bot` for automated messaging</p>
+<p>2. <strong>User Mode</strong>: Uses MTProto via `Telethon` for user account operations with access to full chat history</p>
+<br>
+<p>The design emphasizes async/await patterns throughout with synchronous wrapper functions for convenience, making it suitable for both interactive CLI usage and programmatic integration.</p>
+<br>
+<pre><code class="language-mermaid">graph TB
+    CLI[CLI Interface&lt;br/&gt;cli.py] --&gt; BC[Bot Client&lt;br/&gt;client.py]
+    CLI --&gt; UC[User Client&lt;br/&gt;user_client.py]
+    BC --&gt; BotAPI[Telegram Bot API&lt;br/&gt;python-telegram-bot]
+    UC --&gt; MTProto[Telegram MTProto&lt;br/&gt;telethon]
+    CLI --&gt; SDK[Centaur SDK&lt;br/&gt;secrets, tables]
+    BC --&gt; ERR[Error Handler&lt;br/&gt;error.py]
+    UC --&gt; ERR</code></pre>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> 1. TelegramClient (client.py)</h3>
+<p><strong>Purpose</strong>: High-level Bot API wrapper for automated messaging operations  </p>
+<p><strong>Key Methods</strong>: `send_message()`, `get_updates()`, `get_chat()`, `forward_message()`, `set_webhook()`  </p>
+<p><strong>Authentication</strong>: Uses `TELEGRAM_BOT_TOKEN` from environment via Centaur SDK secrets  </p>
+<p><strong>Usage Pattern</strong>: Async-first with context manager pattern for proper connection handling</p>
+<br>
+<h3> 2. UserClient (user_client.py)  </h3>
+<p><strong>Purpose</strong>: MTProto client for user account access and full Telegram functionality  </p>
+<p><strong>Key Methods</strong>: `login()`, `get_messages()`, `get_dialogs()`, `search_messages()`, `send_message()`  </p>
+<p><strong>Authentication</strong>: Requires `TELEGRAM_API_ID`, `TELEGRAM_API_HASH`, and interactive login flow  </p>
+<p><strong>Session Management</strong>: Persistent sessions stored in `~/.config/telegram/session`</p>
+<br>
+<h3> 3. CLI Interface (cli.py)</h3>
+<p><strong>Purpose</strong>: Comprehensive command-line interface exposing all client functionality  </p>
+<p><strong>Bot Commands</strong>: `send`, `updates`, `chat`, `me`, `forward`, `delete`, `webhook`  </p>
+<p><strong>User Commands</strong>: `login`, `whoami`, `dialogs`, `history`  </p>
+<p><strong>Features</strong>: Rich terminal output, JSON output mode, watch mode for live updates, search capabilities</p>
+<br>
+<h3> 4. Error Handling (error.py)</h3>
+<p><strong>Purpose</strong>: Custom exception hierarchy for Telegram-specific errors  </p>
+<p><strong>Implementation</strong>: Simple base `TelegramError` class for unified error handling across clients</p>
+<br>
+<h3> 5. Async Utilities</h3>
+<p><strong>Purpose</strong>: Helper functions for sync/async interoperability  </p>
+<p><strong>Key Functions</strong>: `run_async()` decorator, sync wrapper functions (`send_message()`, `get_updates()`, `get_chat()`)  </p>
+<p><strong>Pattern</strong>: Enables both async library usage and synchronous CLI operations</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<h3> Bot Message Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant C as CLI/Client
+    participant TC as TelegramClient  
+    participant BA as Bot API
+    participant T as Telegram
+    
+    C-&gt;&gt;TC: send_message(chat_id, text)
+    TC-&gt;&gt;BA: Bot.send_message()
+    BA-&gt;&gt;T: HTTP POST /bot{token}/sendMessage
+    T--&gt;&gt;BA: Message object
+    BA--&gt;&gt;TC: Message response
+    TC--&gt;&gt;C: Formatted dict result</code></pre>
+<br>
+<h3> User Authentication Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant CLI as CLI
+    participant UC as UserClient
+    participant MT as MTProto
+    participant T as Telegram
+    
+    CLI-&gt;&gt;UC: login(phone)
+    UC-&gt;&gt;MT: send_code_request(phone)
+    MT-&gt;&gt;T: auth.sendCode
+    T--&gt;&gt;MT: auth.SentCode
+    MT--&gt;&gt;UC: phone_code_hash
+    UC--&gt;&gt;CLI: code_sent status
+    CLI-&gt;&gt;UC: verify_code(code)
+    UC-&gt;&gt;MT: sign_in(phone, code)
+    MT-&gt;&gt;T: auth.signIn
+    T--&gt;&gt;MT: User object
+    MT--&gt;&gt;UC: User response
+    UC--&gt;&gt;CLI: logged_in status</code></pre>
+<br>
+<h3> Message History Retrieval</h3>
+<pre><code class="language-mermaid">flowchart TD
+    A[history command] --&gt; B{User authenticated?}
+    B --&gt;|No| C[Error: Run login first]
+    B --&gt;|Yes| D[UserClient.get_messages()]
+    D --&gt; E[Telethon iter_messages()]
+    E --&gt; F[Format message data]
+    F --&gt; G{JSON output?}
+    G --&gt;|Yes| H[Print JSON]
+    G --&gt;|No| I[Rich console display]</code></pre>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Dependencies</h3>
+<br>
+<p>- <strong>python-telegram-bot</strong> (>=21.0) [messaging]: Official Telegram Bot API wrapper providing high-level async interface. Used in `client.py` for all bot operations including message sending, updates polling, and webhook management. Core dependency for Bot API functionality.</p>
+<br>
+<p>- <strong>telethon</strong> (>=1.36.0) [messaging]: MTProto client library for accessing Telegram as a user account. Used in `user_client.py` for authentication, message history retrieval, chat management, and search operations. Enables full Telegram API access beyond bot limitations.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework with automatic help generation and type validation. Used throughout `cli.py` for command parsing, argument validation, and interactive prompts. Provides the entire command-line interface structure.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Terminal formatting and display library for enhanced CLI output. Used in `cli.py` for colored output, tables, progress indicators, and rich text formatting. Improves user experience with formatted displays.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable loader for development workflows. Used in `cli.py` to automatically load `.env` files for local development and testing.</p>
+<br>
+<h3> Development Dependencies</h3>
+<br>
+<p>The component uses hatchling as the build backend for packaging and distribution.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> Bot API Operations</h3>
+<pre><code class="language-python"># Synchronous convenience functions
+send_message(chat_id: int | str, text: str, **kwargs) -&gt; dict
+get_updates(limit: int = 100, **kwargs) -&gt; list[dict]  
+get_chat(chat_id: int | str) -&gt; dict
+
+# Async client methods
+async def send_message(chat_id, text, parse_mode=None, reply_to_message_id=None)
+async def get_updates(limit=100, timeout=0, offset=None)  
+async def forward_message(chat_id, from_chat_id, message_id)
+async def delete_message(chat_id, message_id)
+async def set_webhook(url) / delete_webhook()</code></pre>
+<br>
+<h3> User API Operations  </h3>
+<pre><code class="language-python">async def login(phone: str) -&gt; dict  # Start login flow
+async def verify_code(phone, code, phone_code_hash) -&gt; dict
+async def get_messages(entity, limit=50, search=None) -&gt; list[dict]
+async def get_dialogs(limit=50) -&gt; list[dict]  # List chats
+async def send_message(entity, text, reply_to=None) -&gt; dict</code></pre>
+<br>
+<h3> CLI Commands</h3>
+<pre><code class="language-bash"># Bot operations (requires TELEGRAM_BOT_TOKEN)
+telegram send @username &quot;Hello world&quot; --markdown
+telegram updates --watch --full
+telegram chat @channel_name  
+telegram webhook https://mybot.example.com/webhook
+
+# User operations (requires API credentials + login)  
+telegram login +1234567890
+telegram history @channel --search &quot;keyword&quot; --limit 100
+telegram dialogs --json</code></pre>
+<br>
+<h2>External Systems</h2>
+<br>
+<p>- <strong>Telegram Bot API</strong> (api.telegram.org): RESTful HTTP API for bot operations, webhook management, and message delivery. Requires bot token authentication.</p>
+<br>
+<p>- <strong>Telegram MTProto</strong> (telegram.org): Binary protocol for direct Telegram client access, enabling full user account functionality including private chat access and advanced features.</p>
+<br>
+<p>- <strong>Centaur SDK</strong>: Internal dependency providing secret management (`secret()` function) and UI components (`Table` class) for consistent integration with the Centaur platform.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component has no direct interactions with other components in the codebase. It operates as a standalone library that other components can import and use for Telegram communication needs. The integration happens through:</p>
+<br>
+<p>- <strong>Centaur SDK</strong>: Uses `secret()` for secure credential management and `Table` for consistent CLI output formatting</p>
+<p>- <strong>Environment</strong>: Expects secrets to be managed by the Centaur platform's secret management system</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

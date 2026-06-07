@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: airtable — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>airtable</h1>
+</header>
+<h1>Airtable API Client Component Analysis</h1>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The airtable component follows a <strong>layered architecture</strong> pattern with clear separation between the CLI interface layer, client abstraction layer, and underlying HTTP transport layer. The component is structured as a Python package with two main modules:</p>
+<br>
+<p>- <strong>CLI Layer</strong> (`cli.py`): Provides command-line interface using Typer for user interaction</p>
+<p>- <strong>Client Layer</strong> (`client.py`): Implements the core Airtable API client with comprehensive error handling and data transformation</p>
+<p>- <strong>Test Layer</strong> (`test_client.py`): Contains unit tests with HTTP mocking capabilities</p>
+<br>
+<p>The architecture emphasizes robust error handling, with dedicated functions for parsing API errors, validating authentication, and providing detailed diagnostic information through preflight checks.</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> AirtableClient Class</h3>
+<p>The core client class that encapsulates all Airtable API interactions. It manages authentication via API keys, handles HTTP requests with proper error checking, and provides methods for accessing bases, schemas, tables, views, and records. The client supports both direct API calls and URL-based operations.</p>
+<br>
+<h3> CLI Application (app)</h3>
+<p>A Typer-based command-line interface that exposes four primary commands: <code>bases</code> (list visible bases), <code>schema</code> (get base schema), <code>records</code> (list records from tables/views), and <code>from_url</code> (snapshot from Airtable URLs). Each command uses Rich for formatted JSON output.</p>
+<br>
+<h3> Data Transformation Functions</h3>
+<p>A suite of utility functions including <code>_simplify_cell()</code> for cleaning Airtable attachment and collaborator data, <code>_compact_record()</code> for creating streamlined record representations, and <code>_match_text()</code> for implementing text search across nested data structures.</p>
+<br>
+<h3> Authentication & Error Handling System</h3>
+<p>Comprehensive authentication management including API key validation, token refresh mechanisms, and detailed error classification. The <code>preflight_access()</code> method provides extensive diagnostics for auth and permission issues before attempting data operations.</p>
+<br>
+<h3> URL Parser</h3>
+<p>The <code>parse_url()</code> method extracts base, table, view, page, and record IDs from Airtable URLs, enabling seamless integration with shared Airtable links in workflows.</p>
+<br>
+<h3> HTTP Transport Layer</h3>
+<p>Built on httpx with configurable timeouts, proper authorization headers, and structured error responses. Includes mock transport capabilities for testing without network dependencies.</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[CLI Command] --&gt; B[AirtableClient]
+    B --&gt; C[API Key Validation]
+    C --&gt; D[HTTP Request via httpx]
+    D --&gt; E[Airtable API]
+    E --&gt; F[Response Processing]
+    F --&gt; G[Error Handling]
+    F --&gt; H[Data Transformation]
+    H --&gt; I[JSON Output via Rich]
+    
+    B --&gt; J[URL Parser]
+    J --&gt; K[Extract IDs]
+    K --&gt; D
+    
+    B --&gt; L[Preflight Check]
+    L --&gt; M[Auth Probe]
+    M --&gt; N[Access Probe]
+    N --&gt; O[Diagnostic Report]</code></pre>
+<br>
+<h3> Request Processing Flow</h3>
+<p>1. <strong>CLI Input</strong>: User invokes command with parameters (base ID, table name, etc.)</p>
+<p>2. <strong>Client Initialization</strong>: AirtableClient loads API key from environment or 1Password</p>
+<p>3. <strong>Authentication</strong>: Client validates API key and refreshes if needed</p>
+<p>4. <strong>Request Construction</strong>: HTTP parameters are built with proper URL encoding</p>
+<p>5. <strong>API Communication</strong>: httpx sends requests to Airtable's REST endpoints</p>
+<p>6. <strong>Response Processing</strong>: JSON responses are parsed and transformed</p>
+<p>7. <strong>Output Formatting</strong>: Rich console displays formatted results</p>
+<br>
+<h3> URL-Based Operations Flow</h3>
+<p>1. <strong>URL Parsing</strong>: Extract base, table, and view IDs from Airtable URLs</p>
+<p>2. <strong>Validation</strong>: Ensure URL belongs to airtable.com domain</p>
+<p>3. <strong>API Translation</strong>: Convert parsed IDs to appropriate API calls</p>
+<p>4. <strong>Data Retrieval</strong>: Fetch records using standard API methods</p>
+<p>5. <strong>Snapshot Creation</strong>: Transform records into tabular format with consistent column ordering</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> Runtime Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern HTTP client library providing async/sync request capabilities with connection pooling and timeout management. Used throughout `client.py` for all Airtable API communication via the `_client` instance and request methods.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: CLI framework built on Click that provides type hints, automatic help generation, and command grouping. Powers the entire CLI interface in `cli.py` including the `app` instance and all command decorators.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Advanced terminal formatting library for colored output, progress bars, and structured data display. Used in `cli.py` via the `Console` class for JSON pretty-printing in the `_print()` function.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [configuration]: Environment variable management for loading `.env` files automatically. Imported in `cli.py` to enable local development with environment-based configuration.</p>
+<br>
+<h3> Development Dependencies</h3>
+<br>
+<p>The component relies on the internal <code>centaur_sdk</code> for secret management, specifically the <code>secret()</code> function used in <code>client.py</code> for retrieving the AIRTABLE_API_KEY from 1Password or environment variables.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<h3> CLI Commands</h3>
+<br>
+<p>- <strong>airtable bases</strong> `[--limit N]`: Lists visible Airtable bases with optional result limiting</p>
+<p>- <strong>airtable schema</strong> `<base_id>`: Retrieves complete schema for a base including tables, fields, and views</p>
+<p>- <strong>airtable records</strong> `<base_id> <table> [--view VIEW] [--max-records N]`: Lists records from specified table or view</p>
+<p>- <strong>airtable from-url</strong> `<url> [--max-records N]`: Creates snapshot from Airtable URL with automatic ID extraction</p>
+<br>
+<h3> Python API</h3>
+<br>
+<p>The <code>AirtableClient</code> class provides programmatic access with methods including:</p>
+<br>
+<p>- <strong>Authentication</strong>: `whoami()`, `preflight_access()` for token validation and capability testing</p>
+<p>- <strong>Base Operations</strong>: `list_bases()`, `find_bases()`, `schema()` for base-level metadata</p>
+<p>- <strong>Table Operations</strong>: `list_tables()`, `find_tables()` for table discovery and schema retrieval  </p>
+<p>- <strong>Record Operations</strong>: `list_records()`, `get_record()`, `search_records()` for data retrieval with filtering</p>
+<p>- <strong>URL Operations</strong>: `parse_url()`, `records_from_url()`, `snapshot_from_url()` for URL-based workflows</p>
+<br>
+<h3> Configuration</h3>
+<br>
+<p>The component expects the <code>AIRTABLE_API_KEY</code> environment variable or 1Password secret for authentication. The tool configuration in <code>pyproject.toml</code> specifies this as an HTTP secret that matches Authorization headers for api.airtable.com.</p>
+<br>
+<h2>External Systems</h2>
+<br>
+<h3> Airtable REST API</h3>
+<p>The component integrates with Airtable's official REST API at <code>api.airtable.com/v0</code> for data operations and <code>api.airtable.com/v0/meta</code> for metadata operations. It handles rate limiting, authentication errors, and permission validation through comprehensive error checking.</p>
+<br>
+<h3> 1Password Integration</h3>
+<p>Authentication leverages the centaur SDK's secret management system to retrieve API keys from 1Password vaults, providing secure credential storage for production environments.</p>
+<br>
+<h2>Component Interactions</h2>
+<br>
+<p>This component operates independently with no direct calls to other components in the centaur codebase. It serves as a standalone productivity tool that can be invoked by other systems or used directly by developers for Airtable data access and manipulation.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>

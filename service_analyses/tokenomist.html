@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centaur: tokenomist — Component Analysis</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--purple:#a371f7;--orange:#d2991d;--radius:8px;--font:'SF Mono','Fira Code',monospace;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:20px}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+header a:hover{text-decoration:underline}
+h1{font-size:1.6rem;color:#fff;font-family:var(--font);margin-bottom:4px}
+h2{font-size:1.15rem;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:#fff;margin:20px 0 8px}
+h4{font-size:0.85rem;color:var(--muted);margin:14px 0 4px}
+p{font-size:0.85rem;margin-bottom:10px;color:var(--text)}
+li{font-size:0.82rem;margin-left:20px;margin-bottom:4px;color:var(--text)}
+code{background:var(--surface);padding:2px 6px;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--green)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;overflow-x:auto;margin:10px 0;font-size:0.75rem}
+pre code{background:none;padding:0;color:var(--text)}
+strong{color:#fff}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-right:6px}
+.badge-library{background:#3fb95022;color:var(--green)}
+.badge-cli{background:#1f6feb22;color:var(--accent)}
+.badge-service{background:#a371f722;color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<a href="../index.html">← Back to Centaur Analysis</a>
+<h1>tokenomist</h1>
+</header>
+<h1>Tokenomist Component Analysis</h1>
+<br>
+<h2>Overview</h2>
+<br>
+<p>The tokenomist component is a Python library that provides a client for interacting with the Tokenomist API service (api.unlocks.app), which specializes in token unlock schedules, vesting, emissions, and allocations data for cryptocurrency projects. This component serves as a lightweight wrapper around the external Tokenomist API, offering structured access to token economics data commonly needed for crypto research and analysis.</p>
+<br>
+<h2>Architecture</h2>
+<br>
+<p>The component follows a <strong>client-wrapper pattern</strong>, providing a single cohesive interface to an external REST API. The architecture is straightforward and focused:</p>
+<br>
+<p>- <strong>Single responsibility</strong>: HTTP client wrapper for Tokenomist API</p>
+<p>- <strong>Simple abstraction</strong>: Minimal transformation of API responses</p>
+<p>- <strong>Resource management</strong>: Context manager support for proper connection handling</p>
+<p>- <strong>Error handling</strong>: Wraps HTTP exceptions into runtime errors with meaningful messages</p>
+<br>
+<h2>Key Components</h2>
+<br>
+<h3> TokenomistClient Class</h3>
+<p><strong>Location</strong>: `tools/crypto/tokenomist/client.py` (lines 9-116)</p>
+<br>
+<p>The core class that encapsulates all API interactions. Features include:</p>
+<p>- <strong>Authentication</strong>: API key-based authentication via headers</p>
+<p>- <strong>Connection management</strong>: Lazy initialization of httpx.Client with configurable timeout</p>
+<p>- <strong>Context manager support</strong>: Proper resource cleanup via `__enter__`/`__exit__`</p>
+<p>- <strong>Error handling</strong>: Consistent exception wrapping for HTTP errors</p>
+<br>
+<h3> API Methods</h3>
+<br>
+<p>1. <strong>list_tokens()</strong> (lines 46-59): Retrieves available tokens with pagination support</p>
+<p>2. <strong>get_allocations()</strong> (lines 61-70): Fetches token allocation breakdowns  </p>
+<p>3. <strong>get_unlock_events()</strong> (lines 72-81): Gets scheduled unlock events with timestamps</p>
+<p>4. <strong>get_daily_emissions()</strong> (lines 83-92): Retrieves daily emission data</p>
+<p>5. <strong>get_fundraising()</strong> (lines 94-103): Accesses fundraising rounds and investor data</p>
+<br>
+<h3> Private Methods</h3>
+<br>
+<p>- <strong>_request()</strong> (lines 30-44): Core HTTP request handler with authentication headers</p>
+<p>- <strong>_client()</strong> (lines 118-119): Factory function for creating client instances</p>
+<br>
+<h2>Data Flows</h2>
+<br>
+<pre><code class="language-mermaid">graph TD
+    A[Client Application] --&gt; B[TokenomistClient]
+    B --&gt; C[_request method]
+    C --&gt; D[httpx.Client]
+    D --&gt; E[api.unlocks.app]
+    E --&gt; F[JSON Response]
+    F --&gt; G[Response Processing]
+    G --&gt; H[Return dict/list]
+    
+    I[centaur_sdk.secret] --&gt; J[API Key Resolution]
+    J --&gt; B
+    
+    K[Configuration] --&gt; L[Environment Variables]
+    L --&gt; I</code></pre>
+<br>
+<p>The data flow follows a simple request-response pattern:</p>
+<p>1. Client instantiates TokenomistClient with optional API key</p>
+<p>2. API key is resolved from environment via centaur_sdk.secret()</p>
+<p>3. Method calls route through _request() with endpoint-specific parameters</p>
+<p>4. HTTP requests made to api.unlocks.app with authentication headers</p>
+<p>5. JSON responses returned directly with minimal processing</p>
+<br>
+<h2>External Dependencies</h2>
+<br>
+<h3> External Libraries</h3>
+<br>
+<p>- <strong>httpx</strong> (>=0.27.0) [networking]: Modern async-capable HTTP client library. Used for all API requests to the Tokenomist service. Provides better performance and async support compared to requests. Imported in: `client.py` line 4.</p>
+<br>
+<p>- <strong>typer</strong> (>=0.12.0) [cli]: Modern CLI framework for Python. Listed as dependency but not currently used in the codebase, likely planned for future CLI interface. Not imported in current implementation.</p>
+<br>
+<p>- <strong>rich</strong> (>=13.0.0) [cli]: Rich text and beautiful formatting library for terminal applications. Also listed but not used, likely for future CLI output formatting. Not imported in current implementation.</p>
+<br>
+<p>- <strong>python-dotenv</strong> (>=1.0.0) [build-tool]: Environment variable loading from .env files. Listed as dependency but not directly imported, may be used by the broader Centaur framework. Not imported in current implementation.</p>
+<br>
+<h3> Internal Dependencies</h3>
+<br>
+<p>- <strong>centaur_sdk</strong> [internal]: Centaur framework SDK providing secret management functionality. Used via `secret()` function to resolve API keys from environment variables. Imported in: `client.py` line 6.</p>
+<br>
+<h2>API Surface</h2>
+<br>
+<p>The component exposes a clean public interface through the TokenomistClient class:</p>
+<br>
+<h3> Public Methods</h3>
+<p>- <code>__init__(api_key: str | None, timeout: float)</code>: Initialize client with optional API key and timeout</p>
+<p>- <code>list_tokens(limit: int) -> list[dict]</code>: List available tokens</p>
+<p>- <code>get_allocations(token_id: str) -> dict | list</code>: Get allocation data for specific token</p>
+<p>- <code>get_unlock_events(token_id: str) -> dict | list</code>: Get unlock schedule events</p>
+<p>- <code>get_daily_emissions(token_id: str) -> dict | list</code>: Get daily emission data</p>
+<p>- <code>get_fundraising(token_id: str) -> dict | list</code>: Get fundraising round information</p>
+<p>- <code>close()</code>: Cleanup HTTP connections</p>
+<p>- Context manager support via <code>__enter__</code>/<code>__exit__</code></p>
+<br>
+<h3> Factory Function</h3>
+<p>- <code>_client() -> TokenomistClient</code>: Convenience factory for creating client instances</p>
+<br>
+<p>The API is designed for simplicity and consistency, with all data methods returning either dict or list depending on the API response structure.</p>
+<br>
+<h2>Configuration</h2>
+<br>
+<p>The component requires a single configuration parameter:</p>
+<p>- <strong>TOKENOMIST_API_KEY</strong>: Required environment variable for API authentication</p>
+<p>- <strong>timeout</strong>: Optional timeout configuration (default 30.0 seconds)</p>
+<br>
+<p>Configuration is managed through the Centaur SDK's secret management system, providing a consistent approach to handling sensitive configuration data.</p>
+<br>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.7rem">
+<a href="https://github.com/researchoors/centaur-analysis" style="color:var(--accent)">centaur-analysis</a> · generated by <a href="https://github.com/Layr-Labs/github-flashlight" style="color:var(--accent)">Flashlight</a>
+</footer>
+</div>
+</body>
+</html>
